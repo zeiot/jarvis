@@ -1,4 +1,4 @@
-# HackHome
+# Jarvis
 
 [![License Apache 2][badge-license]](LICENSE)
 [![GitHub version](https://badge.fury.io/gh/zeiot%2Frasphome.svg)](https://badge.fury.io/gh/zeiot%2Frasphome)
