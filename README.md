@@ -6,46 +6,22 @@
 * Extract the energy consumption information from an EDF meter ([ERDF Teleinfo][])
 * Analyze the indoor / outdoor temperature
 
-Hardware :
+Requirements:
 
 * [RaspberryPI][]
 * [Arduino][]
-* 433Mhz RF transmitter and receiver kit for Arduino/ARM
-* DHT22 temperature-humidity sensor
-
-Software :
-
 * [Grafana][]
 * [InfluxDB][]
+* [Ansible][]
 
 
 ## Intallation
 
-### Raspbian
+### Raspberry PI
 
 Install the image into a SDCard:
 
     $ ./raspbian.sh sdbX
-
-
-### Configuration
-
-In file `/boot/cmdline.txt` delete line :
-
-    console=ttyAMA0,115200 kgdboc=ttyAMA0,115200
-
-In file `/etc/inittab`, comment line using *#* :
-
-    T0:23:respawn:/sbin/getty -L ttyAMA0 115200 vt100
-
-Then reboot the Raspberry PI.
-
-Configure the serial port and check inputs :
-
-    $ stty -F /dev/ttyAMA0 1200 sane evenp parenb cs7 -crtscts
-    $ cat /dev/ttyAMA0
-
-
 
 
 ## Contributing
