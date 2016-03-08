@@ -6,13 +6,17 @@
 * Extract the energy consumption information from an EDF meter ([ERDF Teleinfo][])
 * Analyze the indoor / outdoor temperature
 
-Requirements:
+Hardware :
 
 * [RaspberryPI][]
 * [Arduino][]
+* 433Mhz RF transmitter and receiver kit for Arduino/ARM
+* DHT22 temperature-humidity sensor
+
+Software :
+
 * [Grafana][]
 * [InfluxDB][]
-* [Ansible][]
 
 
 ## Intallation
