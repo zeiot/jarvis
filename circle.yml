@@ -1,0 +1,9 @@
+dependencies:
+    pre:
+        # Install the latest stable PlatformIO
+        - sudo pip install -U platformio
+
+test:
+    override:
+        - platformio ci arduino/dht/src/jarvis-dht.ino --lib=arduino/dht/lib --board=uno
+        - platformio ci arduino/teleinfo/src/jarvis-teleinfo.ino --board=uno
