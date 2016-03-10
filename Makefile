@@ -22,7 +22,7 @@ OK_COLOR=\033[32;01m
 ERROR_COLOR=\033[31;01m
 WARN_COLOR=\033[33;01m
 
-MAKE_COLOR=\033[33;01m%-20s\033[0m
+MAKE_COLOR=\033[33;01m%-15s\033[0m
 
 .DEFAULT_GOAL := help
 
@@ -37,5 +37,10 @@ clean: ## clean installation
 
 .PHONY: init
 init: ## Initialize environment
-	virtualenv venv
-	. venv/bin/activate && pip install platformio
+	virtualenv --python=/usr/bin/python2 venv && \
+		. venv/bin/activate && pip install platformio
+
+.PHONY: test
+test: ## Launch unit tests
+	platformio ci arduino/dht/src/jarvis-dht.ino --lib=arduino/dht/lib/DHT --board=uno
+	platformio ci arduino/teleinfo/src/jarvis-teleinfo.ino --board=uno
