@@ -1,0 +1,15 @@
+[Unit]
+Description=InfluxDB Server
+Wants=network-online.target
+After=network-online.target
+
+[Install]
+WantedBy=network.target
+
+[Service]
+User=influxdb
+Group=influxdb
+PermissionsStartOnly=true
+ExecStart=/usr/share/influxdb/influxdb \
+              -config /etc/influxdb-config.toml
+Restart=on-failure
