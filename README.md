@@ -58,5 +58,6 @@ Nicolas Lamirault <nicolas.lamirault@gmail.com>
 [Arduino]: https://www.arduino.cc/
 [Grafana]: http://grafana.org/
 [InfluxDB]: https://influxdata.com/
+[Ansible]: https://www.ansible.com/
 
 [ERDF Teleinfo]: http://www.erdf.fr/sites/default/files/ERDF-NOI-CPT_02E.pdf
