@@ -33,6 +33,8 @@ help:
 
 .PHONY: clean
 clean: ## clean installation
+	platformio run -d arduino/dht --target clean
+	platformio run -d arduino/teleinfo --target clean
 	@rm -fr venv
 
 .PHONY: init
@@ -40,7 +42,17 @@ init: ## Initialize environment
 	virtualenv --python=/usr/bin/python2 venv && \
 		. venv/bin/activate && pip install platformio
 
-.PHONY: test
-test: ## Launch unit tests
+.PHONY: arduino-test
+arduino-test: ## Launch unit tests
 	platformio ci arduino/dht/src/jarvis-dht.ino --lib=arduino/dht/lib/DHT --board=uno
 	platformio ci arduino/teleinfo/src/jarvis-teleinfo.ino --board=uno
+
+.PHONY: arduino-run
+arduino-run: ## Build projects
+	platformio run -d arduino/dht
+	platformio run -d arduino/teleinfo
+
+.PHONY: arduino-upload
+arduino-upload: ## Build and upload projects
+	platformio run -d arduino/dht --target upload
+	platformio run -d arduino/teleinfo --target upload

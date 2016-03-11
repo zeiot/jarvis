@@ -21,6 +21,7 @@ Requirements:
 * [Grafana][]
 * [InfluxDB][]
 * [Ansible][]
+* [PlatformIO][]
 
 
 ## Intallation
@@ -30,6 +31,13 @@ Requirements:
 Install the image into a SDCard:
 
     $ ./raspbian.sh sdbX
+
+
+### Arduino
+
+#### DHT
+
+#### Teleinfo
 
 
 ## Contributing
@@ -59,5 +67,6 @@ Nicolas Lamirault <nicolas.lamirault@gmail.com>
 [Grafana]: http://grafana.org/
 [InfluxDB]: https://influxdata.com/
 [Ansible]: https://www.ansible.com/
+[PlatformIO]: http://platformio.org/
 
 [ERDF Teleinfo]: http://www.erdf.fr/sites/default/files/ERDF-NOI-CPT_02E.pdf
