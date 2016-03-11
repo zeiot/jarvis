@@ -35,7 +35,7 @@ help:
 clean: ## clean installation
 	platformio run -d arduino/dht --target clean
 	platformio run -d arduino/teleinfo --target clean
-	@rm -fr venv
+	@cd server && make clean
 
 .PHONY: init
 init: ## Initialize environment
