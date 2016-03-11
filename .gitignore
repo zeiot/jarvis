@@ -2,5 +2,5 @@
 
 # Platform.io
 venv
-# arduino/teleinfo/.pioenvs
-# arduino/dht/.pioenvs
+arduino/teleinfo/.pioenvs
+arduino/dht/.pioenvs
