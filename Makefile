@@ -69,7 +69,18 @@ arduino-upload: ## Build and upload projects
 	platformio run -d arduino/dht --target upload
 	platformio run -d arduino/teleinfo --target upload
 
-
 #
 # API Server
 #
+
+.PHONY: server-build
+server-build:  ## Build the Jarvis Server
+	@cd server && make build
+
+.PHONY: server-run
+server-run: ## Run the Jarvis server
+	@server/jarvis-server
+
+.PHONY: server-exe
+server-exe: ## Create the Jarvis server executable
+	@cd server && make gox
