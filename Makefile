@@ -42,6 +42,18 @@ init: ## Initialize environment
 	virtualenv --python=/usr/bin/python2 venv && \
 		. venv/bin/activate && pip install platformio
 
+#
+# Raspberry PI
+#
+
+.PHONY: rasp-create
+rasp-install: ## Create the Raspberry PI SDCard (sdb=sdbXXX)
+	@raspberrypi/raspbian.sh $(sdb)
+
+#
+# Arduino
+#
+
 .PHONY: arduino-test
 arduino-test: ## Launch unit tests
 	platformio ci arduino/dht/src/jarvis-dht.ino --lib=arduino/dht/lib/DHT --board=uno
@@ -56,3 +68,8 @@ arduino-run: ## Build projects
 arduino-upload: ## Build and upload projects
 	platformio run -d arduino/dht --target upload
 	platformio run -d arduino/teleinfo --target upload
+
+
+#
+# API Server
+#
