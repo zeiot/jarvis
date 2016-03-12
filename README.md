@@ -18,6 +18,7 @@ Requirements:
 
 * [RaspberryPI][]
 * [Arduino][]
+* [Mosquitto][]
 * [Grafana][]
 * [InfluxDB][]
 * [Ansible][]
@@ -65,6 +66,7 @@ Nicolas Lamirault <nicolas.lamirault@gmail.com>
 
 [RaspberryPI]: https://www.raspberrypi.org/
 [Arduino]: https://www.arduino.cc/
+[Mosquitto]: http://mosquitto.org/
 [Grafana]: http://grafana.org/
 [InfluxDB]: https://influxdata.com/
 [Ansible]: https://www.ansible.com/
