@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include <ESP8266WiFi.h>
+#include <ESP8266wifi.h>
 #include <PubSubClient.h>
 #include <SoftwareSerial.h>
 
