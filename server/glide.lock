@@ -1,0 +1,35 @@
+hash: 6247e7c3042576fb2e47ee0115b12ab5c77c1453dd4197e319f5714ce57d556b
+updated: 2016-03-11T14:36:21.860375088+01:00
+imports:
+- name: github.com/BurntSushi/toml
+  version: bbd5bb678321a0d6e58f1099321dfa73391c1b6f
+- name: github.com/eclipse/paho.mqtt.golang
+  version: 183329365eb3c151b3f8403f90c89cf4e21ed739
+  subpackages:
+  - packets
+- name: github.com/hashicorp/logutils
+  version: efbd0a4b7eec9dcb8e4aecba138f2cfe9ce41495
+- name: github.com/labstack/echo
+  version: 300d57894d77ebb9cb9eee0c31aaf3a9e08b0193
+  subpackages:
+  - middleware
+  - engine
+- name: github.com/labstack/gommon
+  version: c7a42f4800da9d39225ce15411f48288d622e517
+  subpackages:
+  - color
+  - log
+- name: github.com/mattn/go-colorable
+  version: 9cbef7c35391cca05f15f8181dc0b18bc9736dbb
+- name: github.com/mattn/go-isatty
+  version: 56b76bdf51f7708750eac80fa38b952bb9f32639
+- name: golang.org/x/net
+  version: e7da8edaa52631091740908acaf2c2d4c9b3ce90
+  subpackages:
+  - context
+  - websocket
+- name: golang.org/x/sys
+  version: 7a56174f0086b32866ebd746a794417edbc678a1
+  subpackages:
+  - unix
+devImports: []
