@@ -41,6 +41,9 @@ clean: ## clean installation
 init: ## Initialize environment
 	virtualenv --python=/usr/bin/python2 venv && \
 		. venv/bin/activate && pip install platformio
+	. venv/bin/activate && \
+		platformio lib install 89 && \
+		platformio lib install 1101
 
 #
 # Raspberry PI
@@ -60,7 +63,7 @@ arduino-test: ## Launch unit tests
 	platformio ci arduino/teleinfo/src/jarvis-teleinfo.ino --board=uno
 
 .PHONY: arduino-run
-arduino-run: ## Build projects
+arduino-build: ## Build projects
 	platformio run -d arduino/dht
 	platformio run -d arduino/teleinfo
 
