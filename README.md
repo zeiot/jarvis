@@ -23,6 +23,7 @@ Requirements:
 * [Ansible][]
 * [PlatformIO][]
 
+![Architecture](https://cdn.rawgit.com/zeiot/jarvis/develop/jarvis.svg)
 
 ## Intallation
 
