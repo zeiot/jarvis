@@ -16,21 +16,26 @@
 
 #include <ESP8266wifi.h>
 #include <PubSubClient.h>
+
 #include <SoftwareSerial.h>
+#include <SPI.h>
+#include <WiFi.h>
+#include <WiFiClient.h>
 
 /************************* Configuration *********************************/
 
-const char* ssid = "xxxxxxx";
-const char* password = "xxxxxxxxxxx";
+char ssid[] = "xxxxx";
+char password []= "xxxx";
+
 const char* mqtt_server = "192.10.10.2";
 const int mqtt_port = 8083;
 
 /************************* End configuration *****************************/
 
-
 WiFiClient wifiClient;
 PubSubClient mqttClient;
 
+char message_buff[100];
 
 SoftwareSerial cptSerial(2, 3);
 
@@ -38,7 +43,8 @@ void setup_wifi() {
 
   delay(10);
   // We start by connecting to a WiFi network
-  Serial.printf("[Jarvis] Connecting to : %s\n", ssid);
+  Serial.print("[Jarvis] Connecting to : ");
+  Serial.println(ssid);
 
   WiFi.begin(ssid, password);
   while (WiFi.status() != WL_CONNECTED) {
@@ -46,12 +52,14 @@ void setup_wifi() {
     Serial.print(".");
   }
 
-  Serial.printf("[Jarvis] WiFi connected. IP: %s\n", WiFi.localIP());
+  Serial.print("[Jarvis] WiFi connected. IP: ");
+  Serial.println(WiFi.localIP());
 }
 
 void callback(char* topic, byte* payload, unsigned int length) {
   Serial.println("[Jarvis] Message arrived:  topic: " + String(topic));
   Serial.println("[Jarvis] Length: " + String(length,DEC));
+  unsigned int i;
   for(i=0; i<length; i++) {
     message_buff[i] = payload[i];
   }
@@ -85,7 +93,7 @@ void setup_mqtt() {
 
 
 void setup() {
-  Serial.begin(1200);
+  Serial.begin(9600);
   cptSerial.begin(1200);
   setup_wifi();
   setup_mqtt();
@@ -93,11 +101,15 @@ void setup() {
 
 }
 
-char character;
+String inputString = "";
 
 void loop() {
   if (cptSerial.available()) {
-    char teleinfo = cptSerial.read() & 0x7F;
-    client.publish("/jarvis/sensor/teleinfo", teleinfo);
+    char inChar = (char)Serial.read();
+    inputString += inChar;
+    if (inChar == '\n') {
+      //mqttClient.publish("/jarvis/sensor/teleinfo", inputString);
+    }
+    //char teleinfo = cptSerial.read() & 0x7F;
   }
 }
