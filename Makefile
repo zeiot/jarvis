@@ -57,20 +57,29 @@ rasp-install: ## Create the Raspberry PI SDCard (sdb=sdbXXX)
 # Arduino
 #
 
-.PHONY: arduino-test
-arduino-test: ## Launch unit tests
+.PHONY: arduino-test-all
+arduino-test-all: ## Launch unit tests
 	platformio ci arduino/dht/src/jarvis-dht.ino --lib=arduino/dht/lib/DHT --board=uno
 	platformio ci arduino/teleinfo/src/jarvis-teleinfo.ino --board=uno
 
-.PHONY: arduino-run
-arduino-build: ## Build projects
+.PHONY: arduino-run-all
+arduino-build-all: ## Build projects
 	platformio run -d arduino/dht
 	platformio run -d arduino/teleinfo
 
-.PHONY: arduino-upload
-arduino-upload: ## Build and upload projects
+.PHONY: arduino-upload-all
+arduino-upload-all: ## Build and upload projects
 	platformio run -d arduino/dht --target upload
 	platformio run -d arduino/teleinfo --target upload
+
+.PHONY: arduino-run
+arduino-build: ## Build projects
+	platformio run -d $(project)
+
+.PHONY: arduino-upload
+arduino-upload: ## Build and upload projects
+	platformio run -d $(project) --target upload
+
 
 #
 # API Server
