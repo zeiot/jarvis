@@ -136,23 +136,34 @@ void DataCallback(ValueList * teleinfodata, uint8_t flags) {
 
 
 void NewFrameCallback(ValueList * teleinfodata) {
-  Serial.println(F("[jarvis] Teleinfo new frame"));
+  Serial.println("[jarvis] Teleinfo new frame");
   sendTeleinfoData(teleinfodata);
 }
 
 
 void UpdatedFrameCallback(ValueList * teleinfodata) {
-   Serial.println(F("[jarvis] Teleinfo frame updated"));
+   Serial.println("[jarvis] Teleinfo frame updated");
    sendTeleinfoData(teleinfodata);
 }
 
 
 void  sendTeleinfoData(ValueList * teleinfodata) {
   if (teleinfodata) {
+    String output = "";
+    bool firstdata = true;
     while (teleinfodata->next) {
       teleinfodata = teleinfodata->next;
-
+      if (firstdata) {
+          firstdata = false;
+      } else {
+          output += ", ";
+      }
+      output += teleinfodata->name;
+      output += "=";
+      output += teleinfodata->value;
     }
+    Serial.print("[jarvis] Teleinfo mqtt output: ");
+    Serial.println(output);
   }
 }
 
