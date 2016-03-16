@@ -16,6 +16,7 @@
 
 #include <ESP8266wifi.h>
 #include <PubSubClient.h>
+#include <LibTeleinfo.h>
 
 #include <SoftwareSerial.h>
 #include <SPI.h>
@@ -34,15 +35,21 @@ const int mqtt_port = 8083;
 
 WiFiClient wifiClient;
 PubSubClient mqttClient;
+TInfo tinfo;
 
 char message_buff[100];
 
-SoftwareSerial cptSerial(2, 3);
+// Teleinfo Serial (on D3)
+SoftwareSerial teleinfoSerial(3, 4);
+
+
+
+/* *********************** Wifi ***************************************/
+
 
 void setup_wifi() {
 
   delay(10);
-  // We start by connecting to a WiFi network
   Serial.print("[Jarvis] Connecting to : ");
   Serial.println(ssid);
 
@@ -55,6 +62,13 @@ void setup_wifi() {
   Serial.print("[Jarvis] WiFi connected. IP: ");
   Serial.println(WiFi.localIP());
 }
+
+
+/* *********************** End Wifi ***************************************/
+
+
+
+/* *********************** MQTT ***************************************/
 
 void callback(char* topic, byte* payload, unsigned int length) {
   Serial.println("[Jarvis] Message arrived:  topic: " + String(topic));
@@ -70,7 +84,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
 
 void reconnect() {
   while (!mqttClient.connected()) {
-    Serial.print("[Jarvis] Attempting MQTT connection...");
+    Serial.println("[Jarvis] Attempting MQTT connection...");
     // Attempt to connect
     if (mqttClient.connect("ESP8266Client")) {
       Serial.println("[Jarvis] connected");
@@ -86,17 +100,82 @@ void reconnect() {
 }
 
 void setup_mqtt() {
+  Serial.println("[Jarvis] Setup MQTT");
   mqttClient = PubSubClient(mqtt_server, mqtt_port, callback, wifiClient);
   reconnect();
-
 }
+
+
+/* *********************** End MQTT ***************************************/
+
+
+/* *********************** Teleinfo ***************************************/
+
+void ADPSCallback(uint8_t phase) {
+  if (phase == 0) {
+    phase = 1;
+  }
+  Serial.print("[jarvis] Teleinfo ADPS: ");
+  Serial.println('0' + phase);
+}
+
+
+void DataCallback(ValueList * teleinfodata, uint8_t flags) {
+  if (flags & TINFO_FLAGS_ADDED) {
+    Serial.print("[jarvis] Teleinfo New : ");
+  }
+
+  if (flags & TINFO_FLAGS_UPDATED) {
+    Serial.print("[jarvis] Teleinfo Update : ");
+  }
+
+  Serial.print(teleinfodata->name);
+  Serial.print("=");
+  Serial.println(teleinfodata->value);
+}
+
+
+void NewFrameCallback(ValueList * teleinfodata) {
+  Serial.println(F("[jarvis] Teleinfo new frame"));
+  sendTeleinfoData(teleinfodata);
+}
+
+
+void UpdatedFrameCallback(ValueList * teleinfodata) {
+   Serial.println(F("[jarvis] Teleinfo frame updated"));
+   sendTeleinfoData(teleinfodata);
+}
+
+
+void  sendTeleinfoData(ValueList * teleinfodata) {
+  if (teleinfodata) {
+    while (teleinfodata->next) {
+      teleinfodata = teleinfodata->next;
+
+    }
+  }
+}
+
+
+void setup_teleinfo() {
+  Serial.println("[Jarvis] Setup Teleinfo");
+  tinfo.init();
+  tinfo.attachADPS(ADPSCallback);
+  tinfo.attachUpdatedFrame(UpdatedFrameCallback);
+  tinfo.attachNewFrame(NewFrameCallback);
+}
+
+
+/* *********************** End Teleinfo ***************************************/
+
 
 
 void setup() {
   Serial.begin(9600);
-  cptSerial.begin(1200);
+  teleinfoSerial.begin(1200);
   setup_wifi();
   setup_mqtt();
+  setup_teleinfo();
   Serial.println("[Jarvis] TeleInfo ready");
 
 }
@@ -104,12 +183,14 @@ void setup() {
 String inputString = "";
 
 void loop() {
-  if (cptSerial.available()) {
-    char inChar = (char)Serial.read();
-    inputString += inChar;
-    if (inChar == '\n') {
-      //mqttClient.publish("/jarvis/sensor/teleinfo", inputString);
-    }
-    //char teleinfo = cptSerial.read() & 0x7F;
+  if (teleinfoSerial.available()) {
+    /* char inChar = (char)Serial.read(); */
+    /* inputString += inChar; */
+    /* if (inChar == '\n') { */
+    /*   //mqttClient.publish("/jarvis/sensor/teleinfo", inputString); */
+    /* } */
+    /* //char teleinfo = cptSerial.read() & 0x7F; */
+
+    tinfo.process(teleinfoSerial.read());
   }
 }
