@@ -64,7 +64,7 @@ arduino-ci: ## Launch unit tests
 	platformio ci arduino/teleinfo/src/jarvis-teleinfo.ino \
 		--lib=arduino/teleinfo/lib/ESP8266wifi_ID1101 \
 		--lib=arduino/teleinfo/lib/PubSubClient_ID89  \
-		--lib=arduino/teleinfo/lib/LibTeleinfo \
+		--lib=arduino/teleinfo/lib/LibTeleinfo_ID214 \
 		--board=uno
 
 .PHONY: arduino-run-all
