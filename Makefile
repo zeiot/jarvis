@@ -41,9 +41,6 @@ clean: ## clean installation
 init: ## Initialize environment
 	virtualenv --python=/usr/bin/python2 venv && \
 		. venv/bin/activate && pip install platformio
-	. venv/bin/activate && \
-		platformio lib install 89 && \
-		platformio lib install 1101
 
 #
 # Raspberry PI
@@ -57,14 +54,18 @@ rasp-install: ## Create the Raspberry PI SDCard (sdb=sdbXXX)
 # Arduino
 #
 
-.PHONY: arduino-test-all
-arduino-test-all: ## Launch unit tests
+.PHONY: arduino-ci
+arduino-ci: ## Launch unit tests
 	platformio ci arduino/dht/src/jarvis-dht.ino \
-		--lib=arduino/dht/lib/DHT --board=uno
+		--lib=arduino/teleinfo/ESP8266wifi_ID1101 \
+		--lib=arduino/teleinfo/PubSubClient_ID89  \
+		--lib=arduino/dht/lib/Adafruit_DHT_ID19 \
+		--board=uno
 	platformio ci arduino/teleinfo/src/jarvis-teleinfo.ino \
 		--lib=arduino/teleinfo/ESP8266wifi_ID1101 \
 		--lib=arduino/teleinfo/PubSubClient_ID89  \
-		--lib=arduino/teleinfo/LibTeleinfo --board=uno
+		--lib=arduino/teleinfo/LibTeleinfo \
+		--board=uno
 
 .PHONY: arduino-run-all
 arduino-build-all: ## Build projects
