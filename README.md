@@ -10,6 +10,7 @@ Master :
 Develop:
 * [![Circle CI](https://circleci.com/gh/zeiot/jarvis/tree/develop.svg?style=svg)](https://circleci.com/gh/zeiot/jarvis/tree/develop)
 
+Features :
 
 * Extract the energy consumption information from an EDF meter ([ERDF Teleinfo][])
 * Analyze the indoor / outdoor temperature ([DHT22][])
