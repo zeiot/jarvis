@@ -12,7 +12,7 @@ Develop:
 
 
 * Extract the energy consumption information from an EDF meter ([ERDF Teleinfo][])
-* Analyze the indoor / outdoor temperature
+* Analyze the indoor / outdoor temperature ([DHT22][])
 
 Requirements:
 
@@ -73,3 +73,4 @@ Nicolas Lamirault <nicolas.lamirault@gmail.com>
 [PlatformIO]: http://platformio.org/
 
 [ERDF Teleinfo]: http://www.erdf.fr/sites/default/files/ERDF-NOI-CPT_02E.pdf
+[DHT22]: https://www.adafruit.com/products/385
