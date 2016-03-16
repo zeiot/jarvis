@@ -1,0 +1,8 @@
+dependencies:
+  pre:
+    # Install the latest stable PlatformIO
+    - sudo pip install -U platformio
+
+test:
+  override:
+    - make arduino-ci

@@ -1,1 +1,7 @@
 2016-02-26-raspbian-jessie-lite.*
+
+# Platform.io
+venv
+.pioenvs
+arduino/teleinfo/.pioenvs
+arduino/dht/.pioenvs

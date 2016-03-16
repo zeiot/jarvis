@@ -1,0 +1,8 @@
+- name: Make InfluxDB directory
+  file: path={{ influxdb_root_path }} state=directory recurse=yes
+
+- name: Download InfluxDB
+  get_url: url=https://s3.amazonaws.com/influxdb/influxdb-0.10.3-1_linux_amd64.tar.gz dest=/opt/influxdb-0.10.3-1_linux_amd64.tar.gz mode=0440
+
+- name: Extract InfluxDB
+  unarchive: src=/tmp/influxdb-{{ influxdb_version }}.tar.gz dest={{ influxdb_root_path }} copy=false creates={{ influxdb_root_path }}/influxdb-{{ influxdb_version }}/README.md

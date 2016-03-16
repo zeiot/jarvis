@@ -3,45 +3,43 @@
 [![License Apache 2][badge-license]](LICENSE)
 [![GitHub version](https://badge.fury.io/gh/zeiot%2Frasphome.svg)](https://badge.fury.io/gh/zeiot%2Frasphome)
 
+
+Master :
+* [![Circle CI](https://circleci.com/gh/zeiot/jarvis/tree/master.svg?style=svg)](https://circleci.com/gh/zeiot/jarvis/tree/master)
+
+Develop:
+* [![Circle CI](https://circleci.com/gh/zeiot/jarvis/tree/develop.svg?style=svg)](https://circleci.com/gh/zeiot/jarvis/tree/develop)
+
+
 * Extract the energy consumption information from an EDF meter ([ERDF Teleinfo][])
-* Analyze the indoor / outdoor temperature
+* Analyze the indoor / outdoor temperature ([DHT22][])
 
 Requirements:
 
 * [RaspberryPI][]
 * [Arduino][]
+* [Mosquitto][]
 * [Grafana][]
 * [InfluxDB][]
 * [Ansible][]
+* [PlatformIO][]
 
+![Architecture](https://cdn.rawgit.com/zeiot/jarvis/develop/jarvis.svg)
 
 ## Intallation
 
-### Raspbian
+### Raspberry PI
 
 Install the image into a SDCard:
 
     $ ./raspbian.sh sdbX
 
 
-### Configuration
+### Arduino
 
-In file `/boot/cmdline.txt` delete line :
+#### DHT
 
-    console=ttyAMA0,115200 kgdboc=ttyAMA0,115200
-
-In file `/etc/inittab`, comment line using *#* :
-
-    T0:23:respawn:/sbin/getty -L ttyAMA0 115200 vt100
-
-Then reboot the Raspberry PI.
-
-Configure the serial port and check inputs :
-
-    $ stty -F /dev/ttyAMA0 1200 sane evenp parenb cs7 -crtscts
-    $ cat /dev/ttyAMA0
-
-
+#### Teleinfo
 
 
 ## Contributing
@@ -68,7 +66,11 @@ Nicolas Lamirault <nicolas.lamirault@gmail.com>
 
 [RaspberryPI]: https://www.raspberrypi.org/
 [Arduino]: https://www.arduino.cc/
+[Mosquitto]: http://mosquitto.org/
 [Grafana]: http://grafana.org/
 [InfluxDB]: https://influxdata.com/
+[Ansible]: https://www.ansible.com/
+[PlatformIO]: http://platformio.org/
 
 [ERDF Teleinfo]: http://www.erdf.fr/sites/default/files/ERDF-NOI-CPT_02E.pdf
+[DHT22]: https://www.adafruit.com/products/385
