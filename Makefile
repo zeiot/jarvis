@@ -59,8 +59,12 @@ rasp-install: ## Create the Raspberry PI SDCard (sdb=sdbXXX)
 
 .PHONY: arduino-test-all
 arduino-test-all: ## Launch unit tests
-	platformio ci arduino/dht/src/jarvis-dht.ino --lib=arduino/dht/lib/DHT --board=uno
-	platformio ci arduino/teleinfo/src/jarvis-teleinfo.ino --board=uno
+	platformio ci arduino/dht/src/jarvis-dht.ino \
+		--lib=arduino/dht/lib/DHT --board=uno
+	platformio ci arduino/teleinfo/src/jarvis-teleinfo.ino \
+		--lib=arduino/teleinfo/ESP8266wifi_ID1101 \
+		--lib=arduino/teleinfo/PubSubClient_ID89  \
+		--lib=arduino/teleinfo/LibTeleinfo --board=uno
 
 .PHONY: arduino-run-all
 arduino-build-all: ## Build projects
