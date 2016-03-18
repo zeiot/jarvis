@@ -6,15 +6,26 @@ html
       .nav-wrapper
         a.brand-logo
           span Jarvis
-        //-  img(src= "images/jarvis.svg")
         ul#nav-mobile.right.hide-on-med-and-down
-          //- li(class="logo")
-          //-   img(src= "images/jarvis.svg")
           li.bold(class=(page == "Grafana" ? "active" : ""))
             a.waves-effect.waves-teal(href='grafana') Grafana
           li.bold(class=(page == "InfluxDB" ? "active" : ""))
             a.waves-effect.waves-teal(href='grafana') InfluxDB
           li.bold(class=(page == "About" ? "active" : ""))
             a.waves-effect.waves-teal(href='about') About
+
+    .row
+      .col.s12.m7
+        .card
+          .card-image
+            img(src= "images/jarvis.svg")
+          .card-content
+            p Jarvis is an Open Source Domotic system.
+            p Components used :
+              .ul
+                .li Raspberry PI
+                .li Arduino
+                .li Mosquitto
+                .li NodeJS
 
   include foot
