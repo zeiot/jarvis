@@ -12,8 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {bootstrap}    from 'angular2/platform/browser';
+var express = require('express');
+var router = express.Router();
 
-import {AppComponent} from './app.component';
+router.get('/', function(req, res, next) {
+  res.send('respond with a resource');
+});
 
-bootstrap(AppComponent);
+module.exports = router;

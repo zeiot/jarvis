@@ -12,12 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {Component} from 'angular2/core';
+var express = require('express');
+var router = express.Router();
 
-@Component({
-	selector: 'my-app',
-	template: '<img src="assets/images/jarvis.svg" />'
-})
-export class AppComponent{
+router.get('/', function(req, res, next) {
+  res.render('index', { title: 'Jarvis' });
+});
 
-}
+module.exports = router;
