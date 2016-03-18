@@ -2,30 +2,40 @@ doctype html
 html
   include head
   body
-    nav
-      .nav-wrapper
-        a.brand-logo
-          span Jarvis
-        ul#nav-mobile.right.hide-on-med-and-down
-          li.bold(class=(page == "Grafana" ? "active" : ""))
-            a.waves-effect.waves-teal(href='grafana') Grafana
-          li.bold(class=(page == "InfluxDB" ? "active" : ""))
-            a.waves-effect.waves-teal(href='grafana') InfluxDB
-          li.bold(class=(page == "About" ? "active" : ""))
-            a.waves-effect.waves-teal(href='about') About
-
+    header
+      nav
+        .nav-wrapper.container
+          a.waves-effect.waves-teal(href='/').brand-logo
+            span Jarvis
+          ul#nav-mobile.right.hide-on-med-and-down
+            li.bold(class=(page == "Grafana" ? "active" : ""))
+              a.waves-effect.waves-teal(href='grafana') Grafana
+            li.bold(class=(page == "InfluxDB" ? "active" : ""))
+              a.waves-effect.waves-teal(href='influxdb') InfluxDB
+            li.bold(class=(page == "about" ? "active" : ""))
+              a.waves-effect.waves-teal(href='about') About
+          .row.right.hide-on-large-only
+            .col.s4
+              a.waves-effect.waves-teal(href='about') About
+            .col.s4
+              a.waves-effect.waves-teal(href='grafana') Grafana
+            .col.s4
+              a.waves-effect.waves-teal(href='influxdb') InfluxDB
     .row
-      .col.s12.m7
-        .card
-          .card-image
-            img(src= "images/jarvis.svg")
-          .card-content
-            p Jarvis is an Open Source Domotic system.
-            p Components used :
+      .col.s12.m8.offset-m2.offset-13
+        .card-panel.grey.lighten-5.z-depth-4
+          .row.valign-wrapper
+            .col.s3
+              img(src='images/jarvis.png',width='150', height='10').responsive-img
+            .col.s10
+              .black-text Jarvis is an Open Source Domotic system.
+              .black-text Components used :
               .ul
                 .li Raspberry PI
                 .li Arduino
                 .li Mosquitto
                 .li NodeJS
+        .card-action
+          a(href='https://github.com/zeiot/jarvis') Project homepage
 
   include foot

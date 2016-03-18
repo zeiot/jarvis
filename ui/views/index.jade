@@ -2,19 +2,24 @@ doctype html
 html
   include head
   body
-    nav
-      .nav-wrapper
-        a.brand-logo
-          span Jarvis
-        //-  img(src= "images/jarvis.svg")
-        ul#nav-mobile.right.hide-on-med-and-down
-          //- li(class="logo")
-          //-   img(src= "images/jarvis.svg")
-          li.bold(class=(page == "Grafana" ? "active" : ""))
-            a.waves-effect.waves-teal(href='grafana') Grafana
-          li.bold(class=(page == "InfluxDB" ? "active" : ""))
-            a.waves-effect.waves-teal(href='grafana') InfluxDB
-          li.bold(class=(page == "About" ? "active" : ""))
-            a.waves-effect.waves-teal(href='about') About
+    header
+      nav
+        .nav-wrapper.container
+          a.waves-effect.waves-teal(href='/').brand-logo
+            span Jarvis
+          ul#nav-mobile.right.hide-on-med-and-down
+            li.bold(class=(page == "Grafana" ? "active" : ""))
+              a.waves-effect.waves-teal(href='grafana') Grafana
+            li.bold(class=(page == "InfluxDB" ? "active" : ""))
+              a.waves-effect.waves-teal(href='influxdb') InfluxDB
+            li.bold(class=(page == "about" ? "active" : ""))
+              a.waves-effect.waves-teal(href='about') About
+          .row.right.hide-on-large-only
+            .col.s4
+              a.waves-effect.waves-teal(href='about') About
+            .col.s4
+              a.waves-effect.waves-teal(href='grafana') Grafana
+            .col.s4
+              a.waves-effect.waves-teal(href='influxdb') InfluxDB
 
   include foot
