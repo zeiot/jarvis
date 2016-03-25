@@ -411,7 +411,7 @@ func TestRouterMultiRoute(t *testing.T) {
 	c = NewContext(nil, nil, e)
 	r.Find(GET, "/user", c)
 	he := c.Handle(c).(*HTTPError)
-	assert.Equal(t, http.StatusNotFound, he.code)
+	assert.Equal(t, http.StatusNotFound, he.Code)
 }
 
 func TestRouterPriority(t *testing.T) {
@@ -514,7 +514,7 @@ func TestRouterPriorityNotFound(t *testing.T) {
 	c = NewContext(nil, nil, e)
 	r.Find(GET, "/abc/def", c)
 	he := c.Handle(c).(*HTTPError)
-	assert.Equal(t, http.StatusNotFound, he.Code())
+	assert.Equal(t, http.StatusNotFound, he.Code)
 }
 
 func TestRouterParamNames(t *testing.T) {
@@ -568,6 +568,31 @@ func TestRouterAPI(t *testing.T) {
 			if assert.NotEmpty(t, n) {
 				assert.Equal(t, ":"+n, c.P(i))
 			}
+		}
+	}
+}
+
+func BenchmarkRouterGitHubAPI(b *testing.B) {
+	e := New()
+	r := e.router
+	b.ReportAllocs()
+
+	// Add routes
+	for _, route := range api {
+		r.Add(route.Method, route.Path, HandlerFunc(func(c Context) error {
+			return nil
+		}), e)
+	}
+
+	// Find routes
+	for i := 0; i < b.N; i++ {
+		for _, route := range api {
+			// c := e.pool.Get().(*context)
+			c := e.GetContext()
+			r.Find(route.Method, route.Path, c)
+			// router.Find(r.Method, r.Path, c)
+			e.PutContext(c)
+			// e.pool.Put(c)
 		}
 	}
 }

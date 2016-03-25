@@ -79,8 +79,6 @@ func NsecToTimespec(nsec int64) (ts Timespec) {
 	return
 }
 
-func TimevalToNsec(tv Timeval) int64 { return int64(tv.Sec)*1e9 + int64(tv.Usec)*1e3 }
-
 func NsecToTimeval(nsec int64) (tv Timeval) {
 	nsec += 999 // round up to microsecond
 	tv.Sec = nsec / 1e9
@@ -150,6 +148,10 @@ func (cmsg *Cmsghdr) SetLen(length int) {
 
 func InotifyInit() (fd int, err error) {
 	return InotifyInit1(0)
+}
+
+func Dup2(oldfd int, newfd int) (err error) {
+	return Dup3(oldfd, newfd, 0)
 }
 
 // TODO(dfc): constants that should be in zsysnum_linux_arm64.go, remove

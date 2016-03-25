@@ -2,36 +2,50 @@ package middleware
 
 import (
 	"fmt"
-	"io"
-	"mime"
 	"net/http"
 	"path"
-	"path/filepath"
 
 	"github.com/labstack/echo"
 )
 
 type (
-	StaticOptions struct {
-		Root   string `json:"root"`
-		Index  string `json:"index"`
-		Browse bool   `json:"browse"`
+	// StaticConfig defines config for static middleware.
+	StaticConfig struct {
+		// Root is the directory from where the static content is served.
+		Root string `json:"root"`
+
+		// Index is the index file to be used while serving a directory.
+		// Default is `index.html`.
+		Index string `json:"index"`
+
+		// Browse is a flag to enable/disable directory browsing.
+		Browse bool `json:"browse"`
 	}
 )
 
-func Static(root string, options ...*StaticOptions) echo.MiddlewareFunc {
-	return func(next echo.Handler) echo.Handler {
-		// Default options
-		opts := new(StaticOptions)
-		if len(options) > 0 {
-			opts = options[0]
-		}
-		if opts.Index == "" {
-			opts.Index = "index.html"
-		}
+var (
+	// DefaultStaticConfig is the default static middleware config.
+	DefaultStaticConfig = StaticConfig{
+		Root:   "",
+		Index:  "index.html",
+		Browse: false,
+	}
+)
 
+// Static returns a static middleware to serves static content from the provided
+// root directory.
+func Static(root string) echo.MiddlewareFunc {
+	c := DefaultStaticConfig
+	c.Root = root
+	return StaticFromConfig(c)
+}
+
+// StaticFromConfig returns a static middleware from config.
+// See `Static()`.
+func StaticFromConfig(config StaticConfig) echo.MiddlewareFunc {
+	return func(next echo.Handler) echo.Handler {
 		return echo.HandlerFunc(func(c echo.Context) error {
-			fs := http.Dir(root)
+			fs := http.Dir(config.Root)
 			file := path.Clean(c.Request().URL().Path())
 			f, err := fs.Open(file)
 			if err != nil {
@@ -52,19 +66,19 @@ func Static(root string, options ...*StaticOptions) echo.MiddlewareFunc {
 				d := f
 
 				// Index file
-				file = path.Join(file, opts.Index)
+				file = path.Join(file, config.Index)
 				f, err = fs.Open(file)
 				if err != nil {
-					if opts.Browse {
+					if config.Browse {
 						dirs, err := d.Readdir(-1)
 						if err != nil {
 							return err
 						}
 
 						// Create a directory index
-						res := c.Response()
-						res.Header().Set(echo.ContentType, echo.TextHTMLCharsetUTF8)
-						if _, err = fmt.Fprintf(res, "<pre>\n"); err != nil {
+						rs := c.Response()
+						rs.Header().Set(echo.ContentType, echo.TextHTMLCharsetUTF8)
+						if _, err = fmt.Fprintf(rs, "<pre>\n"); err != nil {
 							return err
 						}
 						for _, d := range dirs {
@@ -74,34 +88,18 @@ func Static(root string, options ...*StaticOptions) echo.MiddlewareFunc {
 								color = "#e91e63"
 								name += "/"
 							}
-							if _, err = fmt.Fprintf(res, "<a href=\"%s\" style=\"color: %s;\">%s</a>\n", name, color, name); err != nil {
+							if _, err = fmt.Fprintf(rs, "<a href=\"%s\" style=\"color: %s;\">%s</a>\n", name, color, name); err != nil {
 								return err
 							}
 						}
-						_, err = fmt.Fprintf(res, "</pre>\n")
+						_, err = fmt.Fprintf(rs, "</pre>\n")
 						return err
 					}
 					return next.Handle(c)
 				}
 				fi, _ = f.Stat() // Index file stat
 			}
-			ct := mime.TypeByExtension(filepath.Ext(fi.Name()))
-			if ct == "" {
-				ct = echo.OctetStream
-			}
-			c.Response().Header().Set(echo.ContentType, ct)
-			c.Response().WriteHeader(http.StatusOK)
-			_, err = io.Copy(c.Response(), f)
-			return err
-			// TODO:
-			// http.ServeContent(c.Response(), c.Request(), fi.Name(), fi.ModTime(), f)
+			return echo.ServeContent(c.Request(), c.Response(), f, fi)
 		})
-	}
-}
-
-// Favicon serves the default favicon - GET /favicon.ico.
-func Favicon() echo.HandlerFunc {
-	return func(c echo.Context) error {
-		return nil
 	}
 }

@@ -5,8 +5,10 @@ import (
 	"encoding/xml"
 	"io"
 	"mime"
+	"mime/multipart"
 	"net/http"
 	"os"
+	"path"
 	"path/filepath"
 	"time"
 
@@ -21,49 +23,136 @@ import (
 )
 
 type (
-	// Context represents context for the current request. It holds request and
-	// response objects, path parameters, data and registered handler.
+	// Context represents the context of the current HTTP request. It holds request and
+	// response objects, path, path parameters, data and registered handler.
 	Context interface {
 		netContext.Context
+
+		// NetContext returns `http://blog.golang.org/context.Context` interface.
+		NetContext() netContext.Context
+
+		// SetNetContext sets `http://blog.golang.org/context.Context` interface.
+		SetNetContext(netContext.Context)
+
+		// Request returns `engine.Request` interface.
 		Request() engine.Request
+
+		// Request returns `engine.Response` interface.
 		Response() engine.Response
+
+		// Path returns the registered path for the handler.
 		Path() string
+
+		// P returns path parameter by index.
 		P(int) string
+
+		// Param returns path parameter by name.
 		Param(string) string
+
+		// ParamNames returns path parameter names.
 		ParamNames() []string
-		Query(string) string
-		Form(string) string
-		Set(string, interface{})
+
+		// QueryParam returns the query param for the provided name. It is an alias
+		// for `engine.URL#QueryParam()`.
+		QueryParam(string) string
+
+		// QueryParam returns the query parameters as map. It is an alias for `engine.URL#QueryParams()`.
+		QueryParams() map[string][]string
+
+		// FormValue returns the form field value for the provided name. It is an
+		// alias for `engine.Request#FormValue()`.
+		FormValue(string) string
+
+		// FormParams returns the form parameters as map. It is an alias for `engine.Request#FormParams()`.
+		FormParams() map[string][]string
+
+		// FormFile returns the multipart form file for the provided name. It is an
+		// alias for `engine.Request#FormFile()`.
+		FormFile(string) (*multipart.FileHeader, error)
+
+		// MultipartForm returns the multipart form. It is an alias for `engine.Request#MultipartForm()`.
+		MultipartForm() (*multipart.Form, error)
+
+		// Get retrieves data from the context.
 		Get(string) interface{}
+
+		// Set saves data in the context.
+		Set(string, interface{})
+
+		// Bind binds the request body into provided type `i`. The default binder does
+		// it based on Content-Type header.
 		Bind(interface{}) error
+
+		// Render renders a template with data and sends a text/html response with status
+		// code. Templates can be registered using `Echo.SetRenderer()`.
 		Render(int, string, interface{}) error
+
+		// HTML sends an HTTP response with status code.
 		HTML(int, string) error
+
+		// String sends a string response with status code.
 		String(int, string) error
+
+		// JSON sends a JSON response with status code.
 		JSON(int, interface{}) error
+
+		// JSONBlob sends a JSON blob response with status code.
 		JSONBlob(int, []byte) error
+
+		// JSONP sends a JSONP response with status code. It uses `callback` to construct
+		// the JSONP payload.
 		JSONP(int, string, interface{}) error
+
+		// XML sends an XML response with status code.
 		XML(int, interface{}) error
+
+		// XMLBlob sends a XML blob response with status code.
 		XMLBlob(int, []byte) error
-		Attachment(string) error
+
+		// File sends a response with the content of the file.
+		File(string) error
+
+		// Attachment sends a response from `io.Reader` as attachment, prompting client
+		// to save the file.
+		Attachment(io.Reader, string) error
+
+		// NoContent sends a response with no body and a status code.
 		NoContent(int) error
+
+		// Redirect redirects the request with status code.
 		Redirect(int, string) error
+
+		// Error invokes the registered HTTP error handler. Generally used by middleware.
 		Error(err error)
+
+		// Handler implements `Handler` interface.
 		Handle(Context) error
+
+		// Logger returns the `Logger` instance.
 		Logger() *log.Logger
+
+		// Echo returns the `Echo` instance.
 		Echo() *Echo
+
+		// Object returns the `context` instance.
 		Object() *context
+
+		// Reset resets the context after request completes. It must be called along
+		// with `Echo#GetContext()` and `Echo#PutContext()`. See `Echo#ServeHTTP()`
+		Reset(engine.Request, engine.Response)
 	}
 
 	context struct {
-		request  engine.Request
-		response engine.Response
-		path     string
-		pnames   []string
-		pvalues  []string
-		query    url.Values
-		store    store
-		handler  Handler
-		echo     *Echo
+		netContext netContext.Context
+		request    engine.Request
+		response   engine.Response
+		path       string
+		pnames     []string
+		pvalues    []string
+		query      url.Values
+		store      store
+		handler    Handler
+		echo       *Echo
 	}
 
 	store map[string]interface{}
@@ -74,10 +163,10 @@ const (
 )
 
 // NewContext creates a Context object.
-func NewContext(req engine.Request, res engine.Response, e *Echo) Context {
+func NewContext(rq engine.Request, rs engine.Response, e *Echo) Context {
 	return &context{
-		request:  req,
-		response: res,
+		request:  rq,
+		response: rs,
 		echo:     e,
 		pvalues:  make([]string, *e.maxParam),
 		store:    make(store),
@@ -85,42 +174,46 @@ func NewContext(req engine.Request, res engine.Response, e *Echo) Context {
 	}
 }
 
+func (c *context) NetContext() netContext.Context {
+	return c.netContext
+}
+
+func (c *context) SetNetContext(ctx netContext.Context) {
+	c.netContext = ctx
+}
+
+func (c *context) Deadline() (deadline time.Time, ok bool) {
+	return c.netContext.Deadline()
+}
+
+func (c *context) Done() <-chan struct{} {
+	return c.netContext.Done()
+}
+
+func (c *context) Err() error {
+	return c.netContext.Err()
+}
+
+func (c *context) Value(key interface{}) interface{} {
+	return c.netContext.Value(key)
+}
+
 func (c *context) Handle(ctx Context) error {
 	return c.handler.Handle(ctx)
 }
 
-func (c *context) Deadline() (deadline time.Time, ok bool) {
-	return
-}
-
-func (c *context) Done() <-chan struct{} {
-	return nil
-}
-
-func (c *context) Err() error {
-	return nil
-}
-
-func (c *context) Value(key interface{}) interface{} {
-	return nil
-}
-
-// Request returns *http.Request.
 func (c *context) Request() engine.Request {
 	return c.request
 }
 
-// Response returns `engine.Response`.
 func (c *context) Response() engine.Response {
 	return c.response
 }
 
-// Path returns the registered path for the handler.
 func (c *context) Path() string {
 	return c.path
 }
 
-// P returns path parameter by index.
 func (c *context) P(i int) (value string) {
 	l := len(c.pnames)
 	if i < l {
@@ -129,7 +222,6 @@ func (c *context) P(i int) (value string) {
 	return
 }
 
-// Param returns path parameter by name.
 func (c *context) Param(name string) (value string) {
 	l := len(c.pnames)
 	for i, n := range c.pnames {
@@ -141,27 +233,34 @@ func (c *context) Param(name string) (value string) {
 	return
 }
 
-// ParamNames returns path parameter names.
 func (c *context) ParamNames() []string {
 	return c.pnames
 }
 
-// Query returns query parameter by name.
-func (c *context) Query(name string) string {
-	return c.request.URL().QueryValue(name)
+func (c *context) QueryParam(name string) string {
+	return c.request.URL().QueryParam(name)
 }
 
-// Form returns form parameter by name.
-func (c *context) Form(name string) string {
+func (c *context) QueryParams() map[string][]string {
+	return c.request.URL().QueryParams()
+}
+
+func (c *context) FormValue(name string) string {
 	return c.request.FormValue(name)
 }
 
-// Get retrieves data from the context.
-func (c *context) Get(key string) interface{} {
-	return c.store[key]
+func (c *context) FormParams() map[string][]string {
+	return c.request.FormParams()
 }
 
-// Set saves data in the context.
+func (c *context) FormFile(name string) (*multipart.FileHeader, error) {
+	return c.request.FormFile(name)
+}
+
+func (c *context) MultipartForm() (*multipart.Form, error) {
+	return c.request.MultipartForm()
+}
+
 func (c *context) Set(key string, val interface{}) {
 	if c.store == nil {
 		c.store = make(store)
@@ -169,14 +268,14 @@ func (c *context) Set(key string, val interface{}) {
 	c.store[key] = val
 }
 
-// Bind binds the request body into specified type `i`. The default binder does
-// it based on Content-Type header.
+func (c *context) Get(key string) interface{} {
+	return c.store[key]
+}
+
 func (c *context) Bind(i interface{}) error {
 	return c.echo.binder.Bind(i, c)
 }
 
-// Render renders a template with data and sends a text/html response with status
-// code. Templates can be registered using `Echo.SetRenderer()`.
 func (c *context) Render(code int, name string, data interface{}) (err error) {
 	if c.echo.renderer == nil {
 		return ErrRendererNotRegistered
@@ -187,27 +286,24 @@ func (c *context) Render(code int, name string, data interface{}) (err error) {
 	}
 	c.response.Header().Set(ContentType, TextHTMLCharsetUTF8)
 	c.response.WriteHeader(code)
-	c.response.Write(buf.Bytes())
+	_, err = c.response.Write(buf.Bytes())
 	return
 }
 
-// HTML sends an HTTP response with status code.
 func (c *context) HTML(code int, html string) (err error) {
 	c.response.Header().Set(ContentType, TextHTMLCharsetUTF8)
 	c.response.WriteHeader(code)
-	c.response.Write([]byte(html))
+	_, err = c.response.Write([]byte(html))
 	return
 }
 
-// String sends a string response with status code.
 func (c *context) String(code int, s string) (err error) {
 	c.response.Header().Set(ContentType, TextPlainCharsetUTF8)
 	c.response.WriteHeader(code)
-	c.response.Write([]byte(s))
+	_, err = c.response.Write([]byte(s))
 	return
 }
 
-// JSON sends a JSON response with status code.
 func (c *context) JSON(code int, i interface{}) (err error) {
 	b, err := json.Marshal(i)
 	if c.echo.Debug() {
@@ -219,16 +315,13 @@ func (c *context) JSON(code int, i interface{}) (err error) {
 	return c.JSONBlob(code, b)
 }
 
-// JSONBlob sends a JSON blob response with status code.
 func (c *context) JSONBlob(code int, b []byte) (err error) {
 	c.response.Header().Set(ContentType, ApplicationJSONCharsetUTF8)
 	c.response.WriteHeader(code)
-	c.response.Write(b)
+	_, err = c.response.Write(b)
 	return
 }
 
-// JSONP sends a JSONP response with status code. It uses `callback` to construct
-// the JSONP payload.
 func (c *context) JSONP(code int, callback string, i interface{}) (err error) {
 	b, err := json.Marshal(i)
 	if err != nil {
@@ -236,13 +329,16 @@ func (c *context) JSONP(code int, callback string, i interface{}) (err error) {
 	}
 	c.response.Header().Set(ContentType, ApplicationJavaScriptCharsetUTF8)
 	c.response.WriteHeader(code)
-	c.response.Write([]byte(callback + "("))
-	c.response.Write(b)
-	c.response.Write([]byte(");"))
+	if _, err = c.response.Write([]byte(callback + "(")); err != nil {
+		return
+	}
+	if _, err = c.response.Write(b); err != nil {
+		return
+	}
+	_, err = c.response.Write([]byte(");"))
 	return
 }
 
-// XML sends an XML response with status code.
 func (c *context) XML(code int, i interface{}) (err error) {
 	b, err := xml.Marshal(i)
 	if c.echo.Debug() {
@@ -254,36 +350,51 @@ func (c *context) XML(code int, i interface{}) (err error) {
 	return c.XMLBlob(code, b)
 }
 
-// XMLBlob sends a XML blob response with status code.
 func (c *context) XMLBlob(code int, b []byte) (err error) {
 	c.response.Header().Set(ContentType, ApplicationXMLCharsetUTF8)
 	c.response.WriteHeader(code)
-	c.response.Write([]byte(xml.Header))
-	c.response.Write(b)
-	return
-}
-
-// Attachment sends specified file as an attachment to the client.
-func (c *context) Attachment(file string) (err error) {
-	f, err := os.Open(file)
-	if err != nil {
+	if _, err = c.response.Write([]byte(xml.Header)); err != nil {
 		return
 	}
-	_, name := filepath.Split(file)
-	c.response.Header().Set(ContentDisposition, "attachment; filename="+name)
-	c.response.Header().Set(ContentType, c.detectContentType(file))
-	c.response.WriteHeader(http.StatusOK)
-	_, err = io.Copy(c.response, f)
+	_, err = c.response.Write(b)
 	return
 }
 
-// NoContent sends a response with no body and a status code.
+func (c *context) File(file string) error {
+	root, file := filepath.Split(file)
+	fs := http.Dir(root)
+	f, err := fs.Open(file)
+	if err != nil {
+		return ErrNotFound
+	}
+	defer f.Close()
+
+	fi, _ := f.Stat()
+	if fi.IsDir() {
+		file = path.Join(file, "index.html")
+		f, err = fs.Open(file)
+		if err != nil {
+			return ErrNotFound
+		}
+		fi, _ = f.Stat()
+	}
+
+	return ServeContent(c.Request(), c.Response(), f, fi)
+}
+
+func (c *context) Attachment(r io.Reader, name string) (err error) {
+	c.response.Header().Set(ContentType, detectContentType(name))
+	c.response.Header().Set(ContentDisposition, "attachment; filename="+name)
+	c.response.WriteHeader(http.StatusOK)
+	_, err = io.Copy(c.response, r)
+	return
+}
+
 func (c *context) NoContent(code int) error {
 	c.response.WriteHeader(code)
 	return nil
 }
 
-// Redirect redirects the request with status code.
 func (c *context) Redirect(code int, url string) error {
 	if code < http.StatusMultipleChoices || code > http.StatusTemporaryRedirect {
 		return ErrInvalidRedirectCode
@@ -293,36 +404,43 @@ func (c *context) Redirect(code int, url string) error {
 	return nil
 }
 
-// Error invokes the registered HTTP error handler. Generally used by middleware.
 func (c *context) Error(err error) {
 	c.echo.httpErrorHandler(err, c)
 }
 
-// Echo returns the `Echo` instance.
 func (c *context) Echo() *Echo {
 	return c.echo
 }
 
-// Logger returns the `Logger` instance.
 func (c *context) Logger() *log.Logger {
 	return c.echo.logger
 }
 
-// Object returns the `context` object.
 func (c *context) Object() *context {
 	return c
 }
 
-func (c *context) detectContentType(name string) (t string) {
+// ServeContent sends a response from `io.Reader`. It automatically sets the `Content-Type`
+// and `Last-Modified` headers.
+func ServeContent(rq engine.Request, rs engine.Response, f http.File, fi os.FileInfo) error {
+	rs.Header().Set(ContentType, detectContentType(fi.Name()))
+	rs.Header().Set(LastModified, fi.ModTime().UTC().Format(http.TimeFormat))
+	rs.WriteHeader(http.StatusOK)
+	_, err := io.Copy(rs, f)
+	return err
+}
+
+func detectContentType(name string) (t string) {
 	if t = mime.TypeByExtension(filepath.Ext(name)); t == "" {
 		t = OctetStream
 	}
 	return
 }
 
-func (c *context) reset(req engine.Request, res engine.Response) {
-	c.request = req
-	c.response = res
+func (c *context) Reset(rq engine.Request, rs engine.Response) {
+	c.netContext = nil
+	c.request = rq
+	c.response = rs
 	c.query = nil
 	c.store = nil
 	c.handler = notFoundHandler

@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"bytes"
 	"net/http"
 	"testing"
 
@@ -12,13 +13,15 @@ import (
 func TestRecover(t *testing.T) {
 	e := echo.New()
 	e.SetDebug(true)
-	req := test.NewRequest(echo.GET, "/", nil)
+	buf := new(bytes.Buffer)
+	e.SetLogOutput(buf)
+	rq := test.NewRequest(echo.GET, "/", nil)
 	rec := test.NewResponseRecorder()
-	c := echo.NewContext(req, rec, e)
+	c := echo.NewContext(rq, rec, e)
 	h := Recover()(echo.HandlerFunc(func(c echo.Context) error {
 		panic("test")
 	}))
 	h.Handle(c)
 	assert.Equal(t, http.StatusInternalServerError, rec.Status())
-	assert.Contains(t, rec.Body.String(), "panic recover")
+	assert.Contains(t, buf.String(), "PANIC RECOVER")
 }

@@ -51,7 +51,6 @@ import (
 	"os"
 	"reflect"
 	"runtime"
-	"sort"
 	"strconv"
 	"strings"
 	"sync"
@@ -598,10 +597,11 @@ type readFrameResult struct {
 // It's run on its own goroutine.
 func (sc *serverConn) readFrames() {
 	gate := make(gate)
+	gateDone := gate.Done
 	for {
 		f, err := sc.framer.ReadFrame()
 		select {
-		case sc.readFrameCh <- readFrameResult{f, err, gate.Done}:
+		case sc.readFrameCh <- readFrameResult{f, err, gateDone}:
 		case <-sc.doneServing:
 			return
 		}
@@ -2025,7 +2025,12 @@ func (rws *responseWriterState) promoteUndeclaredTrailers() {
 		rws.declareTrailer(trailerKey)
 		rws.handlerHeader[http.CanonicalHeaderKey(trailerKey)] = vv
 	}
-	sort.Strings(rws.trailers)
+
+	if len(rws.trailers) > 1 {
+		sorter := sorterPool.Get().(*sorter)
+		sorter.SortStrings(rws.trailers)
+		sorterPool.Put(sorter)
+	}
 }
 
 func (w *responseWriter) Flush() {

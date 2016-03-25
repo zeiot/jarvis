@@ -1,9 +1,9 @@
-package: github.com/nlamirault/jarvis/server
+package: github.com/zeiot/jarvis/server
 import:
-- package: github.com/hashicorp/logutils
-- package: github.com/eclipse/paho.mqtt.golang
 - package: github.com/BurntSushi/toml
+- package: github.com/eclipse/paho.mqtt.golang
+- package: github.com/hashicorp/logutils
 - package: github.com/labstack/echo
-- package: github.com/labstack/gommon
   subpackages:
-  - color
+  - engine/standard
+  - middleware

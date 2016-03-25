@@ -2,6 +2,7 @@ package test
 
 import (
 	"io"
+	"mime/multipart"
 	"net/http"
 
 	"github.com/labstack/echo/engine"
@@ -59,6 +60,10 @@ func (r *Request) Header() engine.Header {
 // 	return r.request.ProtoMinor()
 // }
 
+func (r *Request) UserAgent() string {
+	return r.request.UserAgent()
+}
+
 func (r *Request) RemoteAddress() string {
 	return r.request.RemoteAddr
 }
@@ -67,11 +72,15 @@ func (r *Request) Method() string {
 	return r.request.Method
 }
 
+func (r *Request) SetMethod(method string) {
+	r.request.Method = method
+}
+
 func (r *Request) URI() string {
 	return r.request.RequestURI
 }
 
-func (r *Request) Body() io.ReadCloser {
+func (r *Request) Body() io.Reader {
 	return r.request.Body
 }
 
@@ -79,12 +88,23 @@ func (r *Request) FormValue(name string) string {
 	return r.request.FormValue(name)
 }
 
-func (r *Request) Object() interface{} {
-	return r.request
+func (r *Request) FormParams() map[string][]string {
+	r.request.ParseForm()
+	return map[string][]string(r.request.PostForm)
 }
 
-func (r *Request) reset(req *http.Request, h engine.Header, u engine.URL) {
-	r.request = req
+func (r *Request) FormFile(name string) (*multipart.FileHeader, error) {
+	_, fh, err := r.request.FormFile(name)
+	return fh, err
+}
+
+func (r *Request) MultipartForm() (*multipart.Form, error) {
+	err := r.request.ParseMultipartForm(32 << 20) // 32 MB
+	return r.request.MultipartForm, err
+}
+
+func (r *Request) reset(rq *http.Request, h engine.Header, u engine.URL) {
+	r.request = rq
 	r.header = h
 	r.url = u
 }

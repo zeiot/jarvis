@@ -5,7 +5,7 @@ package fasthttp
 import (
 	"bytes"
 	"io"
-	"io/ioutil"
+	"mime/multipart"
 )
 
 import (
@@ -14,6 +14,7 @@ import (
 )
 
 type (
+	// Request implements `engine.Request`.
 	Request struct {
 		*fasthttp.RequestCtx
 		url    engine.URL
@@ -21,52 +22,84 @@ type (
 	}
 )
 
-func NewRequest(c *fasthttp.RequestCtx) *Request {
-	return &Request{
-		RequestCtx: c,
-		url:        &URL{URI: c.URI()},
-		header:     &RequestHeader{c.Request.Header},
-	}
-}
-
+// TLS implements `engine.Request#TLS` function.
 func (r *Request) TLS() bool {
 	return r.IsTLS()
 }
 
+// Scheme implements `engine.Request#Scheme` function.
 func (r *Request) Scheme() string {
 	return string(r.RequestCtx.URI().Scheme())
 }
 
+// Host implements `engine.Request#Host` function.
 func (r *Request) Host() string {
 	return string(r.RequestCtx.Host())
 }
 
-func (r *Request) URI() string {
-	return string(r.RequestURI())
-}
-
+// URL implements `engine.Request#URL` function.
 func (r *Request) URL() engine.URL {
 	return r.url
 }
 
+// Header implements `engine.Request#Header` function.
 func (r *Request) Header() engine.Header {
 	return r.header
 }
 
+// UserAgent implements `engine.Request#UserAgent` function.
+func (r *Request) UserAgent() string {
+	return string(r.RequestCtx.UserAgent())
+}
+
+// RemoteAddress implements `engine.Request#RemoteAddress` function.
 func (r *Request) RemoteAddress() string {
 	return r.RemoteAddr().String()
 }
 
+// Method implements `engine.Request#Method` function.
 func (r *Request) Method() string {
 	return string(r.RequestCtx.Method())
 }
 
-func (r *Request) Body() io.ReadCloser {
-	return ioutil.NopCloser(bytes.NewBuffer(r.PostBody()))
+// SetMethod implements `engine.Request#SetMethod` function.
+func (r *Request) SetMethod(method string) {
+	r.Request.Header.SetMethod(method)
 }
 
+// URI implements `engine.Request#URI` function.
+func (r *Request) URI() string {
+	return string(r.RequestURI())
+}
+
+// Body implements `engine.Request#Body` function.
+func (r *Request) Body() io.Reader {
+	return bytes.NewBuffer(r.PostBody())
+}
+
+// FormValue implements `engine.Request#FormValue` function.
 func (r *Request) FormValue(name string) string {
-	return ""
+	return string(r.RequestCtx.FormValue(name))
+}
+
+// FormParams implements `engine.Request#FormParams` function.
+func (r *Request) FormParams() (params map[string][]string) {
+	params = make(map[string][]string)
+	r.PostArgs().VisitAll(func(k, v []byte) {
+		// TODO: Filling with only first value
+		params[string(k)] = []string{string(v)}
+	})
+	return
+}
+
+// FormFile implements `engine.Request#FormFile` function.
+func (r *Request) FormFile(name string) (*multipart.FileHeader, error) {
+	return r.RequestCtx.FormFile(name)
+}
+
+// MultipartForm implements `engine.Request#MultipartForm` function.
+func (r *Request) MultipartForm() (*multipart.Form, error) {
+	return r.RequestCtx.MultipartForm()
 }
 
 func (r *Request) reset(c *fasthttp.RequestCtx, h engine.Header, u engine.URL) {

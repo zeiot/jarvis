@@ -12,6 +12,7 @@ import (
 )
 
 type (
+	// Response implements `engine.Response`.
 	Response struct {
 		*fasthttp.RequestCtx
 		header    engine.Header
@@ -23,19 +24,12 @@ type (
 	}
 )
 
-func NewResponse(c *fasthttp.RequestCtx) *Response {
-	return &Response{
-		RequestCtx: c,
-		header:     &ResponseHeader{c.Response.Header},
-		writer:     c,
-		logger:     log.New("test"),
-	}
-}
-
+// Header implements `engine.Response#Header` function.
 func (r *Response) Header() engine.Header {
 	return r.header
 }
 
+// WriteHeader implements `engine.Response#WriteHeader` function.
 func (r *Response) WriteHeader(code int) {
 	if r.committed {
 		r.logger.Warn("response already committed")
@@ -46,28 +40,36 @@ func (r *Response) WriteHeader(code int) {
 	r.committed = true
 }
 
-func (r *Response) Write(b []byte) (int, error) {
-	return r.RequestCtx.Write(b)
+// Write implements `engine.Response#Write` function.
+func (r *Response) Write(b []byte) (n int, err error) {
+	n, err = r.writer.Write(b)
+	r.size += int64(n)
+	return
 }
 
+// Status implements `engine.Response#Status` function.
 func (r *Response) Status() int {
 	return r.status
 }
 
+// Size implements `engine.Response#Size` function.
 func (r *Response) Size() int64 {
 	return r.size
 }
 
+// Committed implements `engine.Response#Committed` function.
 func (r *Response) Committed() bool {
 	return r.committed
 }
 
-func (r *Response) SetWriter(w io.Writer) {
-	r.writer = w
-}
-
+// Writer implements `engine.Response#Writer` function.
 func (r *Response) Writer() io.Writer {
 	return r.writer
+}
+
+// SetWriter implements `engine.Response#SetWriter` function.
+func (r *Response) SetWriter(w io.Writer) {
+	r.writer = w
 }
 
 func (r *Response) reset(c *fasthttp.RequestCtx, h engine.Header) {

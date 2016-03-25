@@ -1,5 +1,5 @@
-hash: 6247e7c3042576fb2e47ee0115b12ab5c77c1453dd4197e319f5714ce57d556b
-updated: 2016-03-11T14:36:21.860375088+01:00
+hash: 7bb9369d783ba980782385fe78d54351d470877e7a015a272ede024a5c145bc4
+updated: 2016-03-25T12:36:11.533295838+01:00
 imports:
 - name: github.com/BurntSushi/toml
   version: bbd5bb678321a0d6e58f1099321dfa73391c1b6f
@@ -8,28 +8,31 @@ imports:
   subpackages:
   - packets
 - name: github.com/hashicorp/logutils
-  version: efbd0a4b7eec9dcb8e4aecba138f2cfe9ce41495
+  version: 0dc08b1671f34c4250ce212759ebd880f743d883
 - name: github.com/labstack/echo
-  version: 300d57894d77ebb9cb9eee0c31aaf3a9e08b0193
+  version: 3a67c062deb4e03e3450d220fd64ea6eec3ba8ed
   subpackages:
+  - engine/standard
   - middleware
   - engine
 - name: github.com/labstack/gommon
-  version: c7a42f4800da9d39225ce15411f48288d622e517
+  version: f4ba73f8bcf88df1524069c117f7878cf530ee4e
   subpackages:
-  - color
   - log
+  - color
 - name: github.com/mattn/go-colorable
   version: 9cbef7c35391cca05f15f8181dc0b18bc9736dbb
 - name: github.com/mattn/go-isatty
   version: 56b76bdf51f7708750eac80fa38b952bb9f32639
+- name: github.com/valyala/fasttemplate
+  version: 3b874956e03f1636d171bda64b130f9135f42cff
 - name: golang.org/x/net
-  version: e7da8edaa52631091740908acaf2c2d4c9b3ce90
+  version: 991d3e32f76f19ee6d9caadb3a22eae8d23315f7
   subpackages:
   - context
   - websocket
 - name: golang.org/x/sys
-  version: 7a56174f0086b32866ebd746a794417edbc678a1
+  version: 320cb01ddbbf0473674c2585f9b6e245721de355
   subpackages:
   - unix
 devImports: []

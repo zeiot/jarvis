@@ -1,3 +1,42 @@
+/*
+Package echo implements a fast and unfancy micro web framework for Go.
+
+Example:
+
+	package main
+
+	import (
+	    "net/http"
+
+	    "github.com/labstack/echo"
+	    "github.com/labstack/echo/engine/standard"
+	    "github.com/labstack/echo/middleware"
+	)
+
+	// Handler
+	func hello() echo.HandlerFunc {
+	    return func(c echo.Context) error {
+	        return c.String(http.StatusOK, "Hello, World!\n")
+	    }
+	}
+
+	func main() {
+	    // Echo instance
+	    e := echo.New()
+
+	    // Middleware
+	    e.Use(middleware.Logger())
+	    e.Use(middleware.Recover())
+
+	    // Routes
+	    e.Get("/", hello())
+
+	    // Start server
+	    e.Run(standard.New(":1323"))
+	}
+
+Learn more at https://labstack.com/echo
+*/
 package echo
 
 import (
@@ -7,6 +46,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"path"
 	"reflect"
 	"runtime"
 	"strings"
@@ -19,10 +59,12 @@ import (
 )
 
 type (
+	// Echo is the top-level framework instance.
 	Echo struct {
 		prefix           string
 		middleware       []Middleware
 		head             Handler
+		pristineHead     Handler
 		maxParam         *int
 		notFoundHandler  HandlerFunc
 		httpErrorHandler HTTPErrorHandler
@@ -34,33 +76,43 @@ type (
 		logger           *log.Logger
 	}
 
+	// Route contains a handler and information for matching against requests.
 	Route struct {
 		Method  string
 		Path    string
 		Handler string
 	}
 
+	// HTTPError represents an error that occured while handling a request.
 	HTTPError struct {
-		code    int
-		message string
+		Code    int
+		Message string
 	}
 
+	// Middleware defines an interface for middleware via `Handle(Handler) Handler`
+	// function.
 	Middleware interface {
 		Handle(Handler) Handler
 	}
 
+	// MiddlewareFunc is an adapter to allow the use of `func(Handler) Handler` as
+	// middleware.
 	MiddlewareFunc func(Handler) Handler
 
+	// Handler defines an interface to server HTTP requests via `Handle(Context)`
+	// function.
 	Handler interface {
 		Handle(Context) error
 	}
 
+	// HandlerFunc is an adapter to allow the use of `func(Context)` as an HTTP
+	// handler.
 	HandlerFunc func(Context) error
 
 	// HTTPErrorHandler is a centralized HTTP error handler.
 	HTTPErrorHandler func(error, Context)
 
-	// Binder is the interface that wraps the Bind method.
+	// Binder is the interface that wraps the Bind function.
 	Binder interface {
 		Bind(interface{}, Context) error
 	}
@@ -68,41 +120,32 @@ type (
 	binder struct {
 	}
 
-	// Validator is the interface that wraps the Validate method.
+	// Validator is the interface that wraps the Validate function.
 	Validator interface {
 		Validate() error
 	}
 
-	// Renderer is the interface that wraps the Render method.
+	// Renderer is the interface that wraps the Render function.
 	Renderer interface {
 		Render(io.Writer, string, interface{}, Context) error
 	}
 )
 
+// HTTP methods
 const (
-	// CONNECT HTTP method
 	CONNECT = "CONNECT"
-	// DELETE HTTP method
-	DELETE = "DELETE"
-	// GET HTTP method
-	GET = "GET"
-	// HEAD HTTP method
-	HEAD = "HEAD"
-	// OPTIONS HTTP method
+	DELETE  = "DELETE"
+	GET     = "GET"
+	HEAD    = "HEAD"
 	OPTIONS = "OPTIONS"
-	// PATCH HTTP method
-	PATCH = "PATCH"
-	// POST HTTP method
-	POST = "POST"
-	// PUT HTTP method
-	PUT = "PUT"
-	// TRACE HTTP method
-	TRACE = "TRACE"
+	PATCH   = "PATCH"
+	POST    = "POST"
+	PUT     = "PUT"
+	TRACE   = "TRACE"
+)
 
-	//-------------
-	// Media types
-	//-------------
-
+// Media types
+const (
 	ApplicationJSON                  = "application/json"
 	ApplicationJSONCharsetUTF8       = ApplicationJSON + "; " + CharsetUTF8
 	ApplicationJavaScript            = "application/javascript"
@@ -118,23 +161,22 @@ const (
 	TextPlainCharsetUTF8             = TextPlain + "; " + CharsetUTF8
 	MultipartForm                    = "multipart/form-data"
 	OctetStream                      = "application/octet-stream"
+)
 
-	//---------
-	// Charset
-	//---------
-
+// Charset
+const (
 	CharsetUTF8 = "charset=utf-8"
+)
 
-	//---------
-	// Headers
-	//---------
-
+// Headers
+const (
 	AcceptEncoding     = "Accept-Encoding"
 	Authorization      = "Authorization"
 	ContentDisposition = "Content-Disposition"
 	ContentEncoding    = "Content-Encoding"
 	ContentLength      = "Content-Length"
 	ContentType        = "Content-Type"
+	LastModified       = "Last-Modified"
 	Location           = "Location"
 	Upgrade            = "Upgrade"
 	Vary               = "Vary"
@@ -155,26 +197,26 @@ var (
 		PUT,
 		TRACE,
 	}
+)
 
-	//--------
-	// Errors
-	//--------
-
+// Errors
+var (
 	ErrUnsupportedMediaType  = NewHTTPError(http.StatusUnsupportedMediaType)
 	ErrNotFound              = NewHTTPError(http.StatusNotFound)
+	ErrUnauthorized          = NewHTTPError(http.StatusUnauthorized)
+	ErrMethodNotAllowed      = NewHTTPError(http.StatusMethodNotAllowed)
 	ErrRendererNotRegistered = errors.New("renderer not registered")
 	ErrInvalidRedirectCode   = errors.New("invalid redirect status code")
+)
 
-	//----------------
-	// Error handlers
-	//----------------
-
+// Error handlers
+var (
 	notFoundHandler = HandlerFunc(func(c Context) error {
-		return NewHTTPError(http.StatusNotFound)
+		return ErrNotFound
 	})
 
 	methodNotAllowedHandler = HandlerFunc(func(c Context) error {
-		return NewHTTPError(http.StatusMethodNotAllowed)
+		return ErrMethodNotAllowed
 	})
 )
 
@@ -182,32 +224,33 @@ var (
 func New() (e *Echo) {
 	e = &Echo{maxParam: new(int)}
 	e.pool.New = func() interface{} {
-		// NOTE: v2
 		return NewContext(nil, nil, e)
 	}
 	e.router = NewRouter(e)
-	e.head = e.router.Handle(nil)
+	e.middleware = []Middleware{e.router}
+	e.head = HandlerFunc(func(c Context) error {
+		return c.Handle(c)
+	})
+	e.pristineHead = e.head
+	e.chainMiddleware()
 
-	//----------
 	// Defaults
-	//----------
-
 	e.SetHTTPErrorHandler(e.DefaultHTTPErrorHandler)
 	e.SetBinder(&binder{})
-
-	// Logger
 	e.logger = log.New("echo")
 	e.logger.SetLevel(log.ERROR)
 
 	return
 }
 
-func (m MiddlewareFunc) Handle(h Handler) Handler {
-	return m(h)
+// Handle chains middleware.
+func (f MiddlewareFunc) Handle(h Handler) Handler {
+	return f(h)
 }
 
-func (h HandlerFunc) Handle(c Context) error {
-	return h(c)
+// Handle serves HTTP request.
+func (f HandlerFunc) Handle(c Context) error {
+	return f(c)
 }
 
 // Router returns router.
@@ -225,8 +268,8 @@ func (e *Echo) SetLogOutput(w io.Writer) {
 	e.logger.SetOutput(w)
 }
 
-// SetLogLevel sets the log level for the logger. Default value is `log.FATAL`.
-func (e *Echo) SetLogLevel(l log.Level) {
+// SetLogLevel sets the log level for the logger. Default value is `log.ERROR`.
+func (e *Echo) SetLogLevel(l uint8) {
 	e.logger.SetLevel(l)
 }
 
@@ -240,8 +283,8 @@ func (e *Echo) DefaultHTTPErrorHandler(err error, c Context) {
 	code := http.StatusInternalServerError
 	msg := http.StatusText(code)
 	if he, ok := err.(*HTTPError); ok {
-		code = he.code
-		msg = he.message
+		code = he.Code
+		msg = he.Message
 	}
 	if e.debug {
 		msg = err.Error()
@@ -249,7 +292,7 @@ func (e *Echo) DefaultHTTPErrorHandler(err error, c Context) {
 	if !c.Response().Committed() {
 		c.String(code, msg)
 	}
-	e.logger.Error(err)
+	e.logger.Debug(err)
 }
 
 // SetHTTPErrorHandler registers a custom Echo.HTTPErrorHandler.
@@ -257,12 +300,12 @@ func (e *Echo) SetHTTPErrorHandler(h HTTPErrorHandler) {
 	e.httpErrorHandler = h
 }
 
-// SetBinder registers a custom binder. It's invoked by Context.Bind().
+// SetBinder registers a custom binder. It's invoked by `Context#Bind()`.
 func (e *Echo) SetBinder(b Binder) {
 	e.binder = b
 }
 
-// SetRenderer registers an HTML template renderer. It's invoked by Context.Render().
+// SetRenderer registers an HTML template renderer. It's invoked by `Context#Render()`.
 func (e *Echo) SetRenderer(r Renderer) {
 	e.renderer = r
 }
@@ -278,83 +321,118 @@ func (e *Echo) Debug() bool {
 	return e.debug
 }
 
-// Use adds handler to the middleware chain.
+// Pre adds middleware to the chain which is run before router.
+func (e *Echo) Pre(middleware ...Middleware) {
+	e.middleware = append(middleware, e.middleware...)
+	e.chainMiddleware()
+}
+
+// Use adds middleware to the chain which is run after router.
 func (e *Echo) Use(middleware ...Middleware) {
 	e.middleware = append(e.middleware, middleware...)
-	m := append(e.middleware, e.router)
+	e.chainMiddleware()
+}
 
-	// Chain middleware
-	for i := len(m) - 1; i >= 0; i-- {
-		e.head = m[i].Handle(e.head)
+func (e *Echo) chainMiddleware() {
+	e.head = e.pristineHead
+	for i := len(e.middleware) - 1; i >= 0; i-- {
+		e.head = e.middleware[i].Handle(e.head)
 	}
 }
 
-// Connect adds a CONNECT route > handler to the router.
+// Connect registers a new CONNECT route for a path with matching handler in the
+// router with optional route-level middleware.
 func (e *Echo) Connect(path string, h Handler, m ...Middleware) {
 	e.add(CONNECT, path, h, m...)
 }
 
-// Delete adds a DELETE route > handler to the router.
+// Delete registers a new DELETE route for a path with matching handler in the router
+// with optional route-level middleware.
 func (e *Echo) Delete(path string, h Handler, m ...Middleware) {
 	e.add(DELETE, path, h, m...)
 }
 
-// Get adds a GET route > handler to the router.
+// Get registers a new GET route for a path with matching handler in the router
+// with optional route-level middleware.
 func (e *Echo) Get(path string, h Handler, m ...Middleware) {
 	e.add(GET, path, h, m...)
 }
 
-// Head adds a HEAD route > handler to the router.
+// Head registers a new HEAD route for a path with matching handler in the
+// router with optional route-level middleware.
 func (e *Echo) Head(path string, h Handler, m ...Middleware) {
 	e.add(HEAD, path, h, m...)
 }
 
-// Options adds an OPTIONS route > handler to the router.
+// Options registers a new OPTIONS route for a path with matching handler in the
+// router with optional route-level middleware.
 func (e *Echo) Options(path string, h Handler, m ...Middleware) {
 	e.add(OPTIONS, path, h, m...)
 }
 
-// Patch adds a PATCH route > handler to the router.
+// Patch registers a new PATCH route for a path with matching handler in the
+// router with optional route-level middleware.
 func (e *Echo) Patch(path string, h Handler, m ...Middleware) {
 	e.add(PATCH, path, h, m...)
 }
 
-// Post adds a POST route > handler to the router.
+// Post registers a new POST route for a path with matching handler in the
+// router with optional route-level middleware.
 func (e *Echo) Post(path string, h Handler, m ...Middleware) {
 	e.add(POST, path, h, m...)
 }
 
-// Put adds a PUT route > handler to the router.
+// Put registers a new PUT route for a path with matching handler in the
+// router with optional route-level middleware.
 func (e *Echo) Put(path string, h Handler, m ...Middleware) {
 	e.add(PUT, path, h, m...)
 }
 
-// Trace adds a TRACE route > handler to the router.
+// Trace registers a new TRACE route for a path with matching handler in the
+// router with optional route-level middleware.
 func (e *Echo) Trace(path string, h Handler, m ...Middleware) {
 	e.add(TRACE, path, h, m...)
 }
 
-// Any adds a route > handler to the router for all HTTP methods.
+// Any registers a new route for all HTTP methods and path with matching handler
+// in the router with optional route-level middleware.
 func (e *Echo) Any(path string, handler Handler, middleware ...Middleware) {
 	for _, m := range methods {
 		e.add(m, path, handler, middleware...)
 	}
 }
 
-// Match adds a route > handler to the router for multiple HTTP methods provided.
+// Match registers a new route for multiple HTTP methods and path with matching
+// handler in the router with optional route-level middleware.
 func (e *Echo) Match(methods []string, path string, handler Handler, middleware ...Middleware) {
 	for _, m := range methods {
 		e.add(m, path, handler, middleware...)
 	}
 }
 
+// Static serves files from provided `root` directory for `/<prefix>*` HTTP path.
+func (e *Echo) Static(prefix, root string) {
+	e.Get(prefix+"*", HandlerFunc(func(c Context) error {
+		return c.File(path.Join(root, c.P(0))) // Param `_`
+	}))
+}
+
+// File serves provided file for `/<path>` HTTP path.
+func (e *Echo) File(path, file string) {
+	e.Get(path, HandlerFunc(func(c Context) error {
+		return c.File(file)
+	}))
+}
+
 func (e *Echo) add(method, path string, handler Handler, middleware ...Middleware) {
 	name := handlerName(handler)
 	e.router.Add(method, path, HandlerFunc(func(c Context) error {
-		for _, m := range middleware {
-			handler = m.Handle(handler)
+		h := handler
+		// Chain middleware
+		for i := len(middleware) - 1; i >= 0; i-- {
+			h = middleware[i].Handle(h)
 		}
-		return handler.Handle(c)
+		return h.Handle(c)
 	}), e)
 	r := Route{
 		Method:  method,
@@ -364,7 +442,7 @@ func (e *Echo) add(method, path string, handler Handler, middleware ...Middlewar
 	e.router.routes = append(e.router.routes, r)
 }
 
-// Group creates a new sub-router with prefix.
+// Group creates a new router group with prefix and optional group-level middleware.
 func (e *Echo) Group(prefix string, m ...Middleware) (g *Group) {
 	g = &Group{prefix: prefix, echo: e}
 	g.Use(m...)
@@ -406,9 +484,21 @@ func (e *Echo) Routes() []Route {
 	return e.router.routes
 }
 
-func (e *Echo) ServeHTTP(req engine.Request, res engine.Response) {
+// GetContext returns `Context` from the sync.Pool. You must return the context by
+// calling `PutContext()`.
+func (e *Echo) GetContext() Context {
+	return e.pool.Get().(Context)
+}
+
+// PutContext returns `Context` instance back to the sync.Pool. You must call it after
+// `GetContext()`.
+func (e *Echo) PutContext(c Context) {
+	e.pool.Put(c)
+}
+
+func (e *Echo) ServeHTTP(rq engine.Request, rs engine.Response) {
 	c := e.pool.Get().(*context)
-	c.reset(req, res)
+	c.Reset(rq, rs)
 
 	// Execute chain
 	if err := e.head.Handle(c); err != nil {
@@ -418,47 +508,38 @@ func (e *Echo) ServeHTTP(req engine.Request, res engine.Response) {
 	e.pool.Put(c)
 }
 
-// Run starts the HTTP engine.
-func (e *Echo) Run(eng engine.Engine) {
-	eng.SetHandler(e)
-	eng.SetLogger(e.logger)
-	eng.Start()
+// Run starts the HTTP server.
+func (e *Echo) Run(s engine.Server) {
+	s.SetHandler(e)
+	s.SetLogger(e.logger)
+	e.logger.Error(s.Start())
 }
 
+// NewHTTPError creates a new HTTPError instance.
 func NewHTTPError(code int, msg ...string) *HTTPError {
-	he := &HTTPError{code: code, message: http.StatusText(code)}
+	he := &HTTPError{Code: code, Message: http.StatusText(code)}
 	if len(msg) > 0 {
 		m := msg[0]
-		he.message = m
+		he.Message = m
 	}
 	return he
 }
 
-// SetCode sets code.
-func (e *HTTPError) SetCode(code int) {
-	e.code = code
-}
-
-// Code returns code.
-func (e *HTTPError) Code() int {
-	return e.code
-}
-
-// Error returns message.
+// Error makes it compatible with `error` interface.
 func (e *HTTPError) Error() string {
-	return e.message
+	return e.Message
 }
 
 func (binder) Bind(i interface{}, c Context) (err error) {
-	req := c.Request()
-	ct := req.Header().Get(ContentType)
+	rq := c.Request()
+	ct := rq.Header().Get(ContentType)
 	err = ErrUnsupportedMediaType
 	if strings.HasPrefix(ct, ApplicationJSON) {
-		if err = json.NewDecoder(req.Body()).Decode(i); err != nil {
+		if err = json.NewDecoder(rq.Body()).Decode(i); err != nil {
 			err = NewHTTPError(http.StatusBadRequest, err.Error())
 		}
 	} else if strings.HasPrefix(ct, ApplicationXML) {
-		if err = xml.NewDecoder(req.Body()).Decode(i); err != nil {
+		if err = xml.NewDecoder(rq.Body()).Decode(i); err != nil {
 			err = NewHTTPError(http.StatusBadRequest, err.Error())
 		}
 	}
@@ -469,8 +550,8 @@ func (binder) Bind(i interface{}, c Context) (err error) {
 func WrapMiddleware(h Handler) MiddlewareFunc {
 	return func(next Handler) Handler {
 		return HandlerFunc(func(c Context) error {
-			if !c.Response().Committed() {
-				h.Handle(c)
+			if err := h.Handle(c); err != nil {
+				return err
 			}
 			return next.Handle(c)
 		})
