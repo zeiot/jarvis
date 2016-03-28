@@ -7,7 +7,6 @@ import (
 	"mime"
 	"mime/multipart"
 	"net/http"
-	"os"
 	"path"
 	"path/filepath"
 	"time"
@@ -133,6 +132,11 @@ type (
 
 		// Echo returns the `Echo` instance.
 		Echo() *Echo
+
+		// ServeContent sends static content from `io.Reader` and handles caching
+		// via `If-Modified-Since` request header. It automatically sets `Content-Type`
+		// and `Last-Modified` response headers.
+		ServeContent(io.Reader, string, time.Time) error
 
 		// Object returns the `context` instance.
 		Object() *context
@@ -378,8 +382,7 @@ func (c *context) File(file string) error {
 		}
 		fi, _ = f.Stat()
 	}
-
-	return ServeContent(c.Request(), c.Response(), f, fi)
+	return c.ServeContent(f, fi.Name(), fi.ModTime())
 }
 
 func (c *context) Attachment(r io.Reader, name string) (err error) {
@@ -420,13 +423,20 @@ func (c *context) Object() *context {
 	return c
 }
 
-// ServeContent sends a response from `io.Reader`. It automatically sets the `Content-Type`
-// and `Last-Modified` headers.
-func ServeContent(rq engine.Request, rs engine.Response, f http.File, fi os.FileInfo) error {
-	rs.Header().Set(ContentType, detectContentType(fi.Name()))
-	rs.Header().Set(LastModified, fi.ModTime().UTC().Format(http.TimeFormat))
+func (c *context) ServeContent(r io.Reader, name string, modtime time.Time) error {
+	rq := c.Request()
+	rs := c.Response()
+
+	if t, err := time.Parse(http.TimeFormat, rq.Header().Get(IfModifiedSince)); err == nil && modtime.Before(t.Add(1*time.Second)) {
+		rs.Header().Del(ContentType)
+		rs.Header().Del(ContentLength)
+		return c.NoContent(http.StatusNotModified)
+	}
+
+	rs.Header().Set(ContentType, detectContentType(name))
+	rs.Header().Set(LastModified, modtime.UTC().Format(http.TimeFormat))
 	rs.WriteHeader(http.StatusOK)
-	_, err := io.Copy(rs, f)
+	_, err := io.Copy(rs, r)
 	return err
 }
 

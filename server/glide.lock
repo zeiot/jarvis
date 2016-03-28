@@ -1,5 +1,5 @@
 hash: 7bb9369d783ba980782385fe78d54351d470877e7a015a272ede024a5c145bc4
-updated: 2016-03-25T12:36:11.533295838+01:00
+updated: 2016-03-28T14:02:53.977358824+02:00
 imports:
 - name: github.com/BurntSushi/toml
   version: bbd5bb678321a0d6e58f1099321dfa73391c1b6f
@@ -10,7 +10,7 @@ imports:
 - name: github.com/hashicorp/logutils
   version: 0dc08b1671f34c4250ce212759ebd880f743d883
 - name: github.com/labstack/echo
-  version: 3a67c062deb4e03e3450d220fd64ea6eec3ba8ed
+  version: 28ec39daaa57ea3e576db1b81a21695c1cb65927
   subpackages:
   - engine/standard
   - middleware
@@ -27,7 +27,7 @@ imports:
 - name: github.com/valyala/fasttemplate
   version: 3b874956e03f1636d171bda64b130f9135f42cff
 - name: golang.org/x/net
-  version: 991d3e32f76f19ee6d9caadb3a22eae8d23315f7
+  version: 1dd0d85fc0634d2dbe7f7d06d176c2ff548e6332
   subpackages:
   - context
   - websocket

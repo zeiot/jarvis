@@ -18,18 +18,23 @@ SHELL = /bin/bash
 
 DIR = $(shell pwd)
 
+DOCKER = docker
+
 GO = go
 GLIDE = glide
 
-GOX = gox -os="linux"
+GOX = gox -os="linux darwin windows freebsd openbsd netbsd"
+
+BINTRAY_URI = https://api.bintray.com
+BINTRAY_USERNAME = nlamirault
+BINTRAY_REPOSITORY= oss
 
 NO_COLOR=\033[0m
 OK_COLOR=\033[32;01m
 ERROR_COLOR=\033[31;01m
 WARN_COLOR=\033[33;01m
 
-MAKE_COLOR=\033[33;01m%-20s\033[0m
-
+MAIN = github.com/zeiot/jarvis/server
 SRCS = $(shell git ls-files '*.go' | grep -v '^vendor/')
 PKGS = $(shell glide novendor)
 EXE = jarvis-server
@@ -43,65 +48,78 @@ VERSION=$(shell \
 PACKAGE=$(APP)-$(VERSION)
 ARCHIVE=$(PACKAGE).tar
 
-.DEFAULT_GOAL := help
+all: help
 
 help:
 	@echo -e "$(OK_COLOR)==== $(APP) [$(VERSION)] ====$(NO_COLOR)"
-	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "$(MAKE_COLOR) : %s\n", $$1, $$2}'
+	@echo -e "$(WARN_COLOR)init$(NO_COLOR)      :  Install requirements"
+	@echo -e "$(WARN_COLOR)build$(NO_COLOR)     :  Make all binaries"
+	@echo -e "$(WARN_COLOR)test$(NO_COLOR)      :  Launch unit tests"
+	@echo -e "$(WARN_COLOR)lint$(NO_COLOR)      :  Launch golint"
+	@echo -e "$(WARN_COLOR)vet$(NO_COLOR)       :  Launch go vet"
+	@echo -e "$(WARN_COLOR)coverage$(NO_COLOR)  :  Launch code coverage"
+	@echo -e "$(WARN_COLOR)clean$(NO_COLOR)     :  Cleanup"
+	@echo -e "$(WARN_COLOR)binaries$(NO_COLOR)  :  Make binaries"
 
-clean: ## Clean environment
+clean:
 	@echo -e "$(OK_COLOR)[$(APP)] Cleanup$(NO_COLOR)"
-	@rm -fr $(EXE) $(APP)-*.tar.gz $(EXE)_*
+	@rm -fr $(EXE) $(APP)-*.tar.gz
 
 .PHONY: init
-init: ## Initialize requirements
+init:
 	@echo -e "$(OK_COLOR)[$(APP)] Install requirements$(NO_COLOR)"
 	@go get -u github.com/golang/glog
 	@go get -u github.com/Masterminds/glide
-	@go get -u github.com/golang/protobuf/{proto,protoc-gen-go}
-	@go get -u github.com/gengo/grpc-gateway/{protoc-gen-grpc-gateway,protoc-gen-swagger}
-	@go get -u github.com/Masterminds/rmvcsdir
 	@go get -u github.com/golang/lint/golint
 	@go get -u github.com/kisielk/errcheck
 	@go get -u golang.org/x/tools/cmd/oracle
 	@go get -u github.com/mitchellh/gox
 
 .PHONY: deps
-deps: ## Update dependencies
+deps:
 	@echo -e "$(OK_COLOR)[$(APP)] Update dependencies$(NO_COLOR)"
-	@glide up --update-vendored && rmvcsdir vendor
+	@glide up -v -s
 
 .PHONY: build
-build: ## Build project
+build:
 	@echo -e "$(OK_COLOR)[$(APP)] Build $(NO_COLOR)"
-	@$(GO) build -o $(EXE) .
+	@$(GO) build -o $(APP) .
 
 .PHONY: test
-test: ## Launch unit tests
+test:
 	@echo -e "$(OK_COLOR)[$(APP)] Launch unit tests $(NO_COLOR)"
 	@$(GO) test -v $$(glide nv)
 
 .PHONY: lint
-lint: ## go lint
+lint:
 	@$(foreach file,$(SRCS),golint $(file) || exit;)
 
 .PHONY: vet
-vet: ## go vet
+vet:
 	@$(foreach file,$(SRCS),$(GO) vet $(file) || exit;)
 
 .PHONY: errcheck
-errcheck: ## errcheck
+errcheck:
 	@echo -e "$(OK_COLOR)[$(APP)] Go Errcheck $(NO_COLOR)"
 	@$(foreach pkg,$(PKGS),errcheck $(pkg) $(glide novendor) || exit;)
 
 .PHONY: coverage
-coverage: ## Code coverage
+coverage:
 	@$(foreach pkg,$(PKGS),$(GO) test -cover $(pkg) $(glide novendor) || exit;)
 
-.PHONY: gox
-gox: ## Make binaries
+gox:
 	@echo -e "$(OK_COLOR)[$(APP)] Create binaries $(NO_COLOR)"
-	$(GOX) -output="jarvis-{{.Dir}}_{{.OS}}_{{.Arch}}" github.com/zeiot/jarvis/server
+	$(GOX) github.com/zeiot/jarvis/server
+
+.PHONY: binaries
+binaries: gox
+	@echo -e "$(OK_COLOR)[$(APP)] Upload binaries to Bintray $(NO_COLOR)"
+	for i in $(EXE); do \
+		curl -T $$i \
+			-u$(BINTRAY_USERNAME):$(BINTRAY_APIKEY) \
+			"$(BINTRAY_URI)/content/$(BINTRAY_USERNAME)/$(BINTRAY_REPOSITORY)/$(APP)/${VERSION}/$$i;publish=1"; \
+        done
+
 
 # for goprojectile
 .PHONY: gopath

@@ -61,7 +61,7 @@ func StaticFromConfig(config StaticConfig) echo.MiddlewareFunc {
 			if fi.IsDir() {
 				/* NOTE:
 				Not checking the Last-Modified header as it caches the response `304` when
-				changing differnt directories for the same path.
+				changing different directories for the same path.
 				*/
 				d := f
 
@@ -99,7 +99,7 @@ func StaticFromConfig(config StaticConfig) echo.MiddlewareFunc {
 				}
 				fi, _ = f.Stat() // Index file stat
 			}
-			return echo.ServeContent(c.Request(), c.Response(), f, fi)
+			return c.ServeContent(f, fi.Name(), fi.ModTime())
 		})
 	}
 }
