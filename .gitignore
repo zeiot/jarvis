@@ -8,3 +8,6 @@ arduino/dht/.pioenvs
 
 # UI
 ui/node_modules/
+
+# Server
+server/jarvis-server
