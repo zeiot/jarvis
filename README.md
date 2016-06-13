@@ -38,9 +38,20 @@ Install the image into a SDCard:
 
 ### Arduino
 
+For *arduino* projects, you could :
+
+* build all projects :
+
+        $ make arduino-build-all
+
+* build single project (for example dht):
+
+        $ make arduino-build project=arduino/dht
+
 #### DHT
 
 #### Teleinfo
+
 
 
 ## Contributing
