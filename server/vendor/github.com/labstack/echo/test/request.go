@@ -1,9 +1,12 @@
 package test
 
 import (
+	"errors"
 	"io"
+	"io/ioutil"
 	"mime/multipart"
 	"net/http"
+	"strings"
 
 	"github.com/labstack/echo/engine"
 )
@@ -16,8 +19,13 @@ type (
 	}
 )
 
+const (
+	defaultMemory = 32 << 20 // 32 MB
+)
+
 func NewRequest(method, url string, body io.Reader) engine.Request {
 	r, _ := http.NewRequest(method, url, body)
+	r.RequestURI = url
 	return &Request{
 		request: r,
 		url:     &URL{url: r.URL},
@@ -25,12 +33,12 @@ func NewRequest(method, url string, body io.Reader) engine.Request {
 	}
 }
 
-func (r *Request) TLS() bool {
+func (r *Request) IsTLS() bool {
 	return r.request.TLS != nil
 }
 
 func (r *Request) Scheme() string {
-	if r.TLS() {
+	if r.IsTLS() {
 		return "https"
 	}
 	return "http"
@@ -48,6 +56,10 @@ func (r *Request) Header() engine.Header {
 	return r.header
 }
 
+func (r *Request) Referer() string {
+	return r.request.Referer()
+}
+
 // func Proto() string {
 // 	return r.request.Proto()
 // }
@@ -59,6 +71,10 @@ func (r *Request) Header() engine.Header {
 // func ProtoMinor() int {
 // 	return r.request.ProtoMinor()
 // }
+
+func (r *Request) ContentLength() int64 {
+	return r.request.ContentLength
+}
 
 func (r *Request) UserAgent() string {
 	return r.request.UserAgent()
@@ -80,8 +96,16 @@ func (r *Request) URI() string {
 	return r.request.RequestURI
 }
 
+func (r *Request) SetURI(uri string) {
+	r.request.RequestURI = uri
+}
+
 func (r *Request) Body() io.Reader {
 	return r.request.Body
+}
+
+func (r *Request) SetBody(reader io.Reader) {
+	r.request.Body = ioutil.NopCloser(reader)
 }
 
 func (r *Request) FormValue(name string) string {
@@ -89,8 +113,16 @@ func (r *Request) FormValue(name string) string {
 }
 
 func (r *Request) FormParams() map[string][]string {
-	r.request.ParseForm()
-	return map[string][]string(r.request.PostForm)
+	if strings.HasPrefix(r.header.Get("Content-Type"), "multipart/form-data") {
+		if err := r.request.ParseMultipartForm(defaultMemory); err != nil {
+			panic(err)
+		}
+	} else {
+		if err := r.request.ParseForm(); err != nil {
+			panic(err)
+		}
+	}
+	return map[string][]string(r.request.Form)
 }
 
 func (r *Request) FormFile(name string) (*multipart.FileHeader, error) {
@@ -99,12 +131,30 @@ func (r *Request) FormFile(name string) (*multipart.FileHeader, error) {
 }
 
 func (r *Request) MultipartForm() (*multipart.Form, error) {
-	err := r.request.ParseMultipartForm(32 << 20) // 32 MB
+	err := r.request.ParseMultipartForm(defaultMemory)
 	return r.request.MultipartForm, err
 }
 
-func (r *Request) reset(rq *http.Request, h engine.Header, u engine.URL) {
-	r.request = rq
+func (r *Request) Cookie(name string) (engine.Cookie, error) {
+	c, err := r.request.Cookie(name)
+	if err != nil {
+		return nil, errors.New("cookie not found")
+	}
+	return &Cookie{c}, nil
+}
+
+// Cookies implements `engine.Request#Cookies` function.
+func (r *Request) Cookies() []engine.Cookie {
+	cs := r.request.Cookies()
+	cookies := make([]engine.Cookie, len(cs))
+	for i, c := range cs {
+		cookies[i] = &Cookie{c}
+	}
+	return cookies
+}
+
+func (r *Request) reset(req *http.Request, h engine.Header, u engine.URL) {
+	r.request = req
 	r.header = h
 	r.url = u
 }

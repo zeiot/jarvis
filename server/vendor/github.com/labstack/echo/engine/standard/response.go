@@ -7,7 +7,7 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo/engine"
-	"github.com/labstack/gommon/log"
+	"github.com/labstack/echo/log"
 )
 
 type (
@@ -19,14 +19,24 @@ type (
 		size      int64
 		committed bool
 		writer    io.Writer
-		logger    *log.Logger
+		logger    log.Logger
 	}
 
 	responseAdapter struct {
 		http.ResponseWriter
-		Response *Response
+		response *Response
 	}
 )
+
+// NewResponse returns `Response` instance.
+func NewResponse(w http.ResponseWriter, l log.Logger) *Response {
+	return &Response{
+		ResponseWriter: w,
+		header:         &Header{Header: w.Header()},
+		writer:         w,
+		logger:         l,
+	}
+}
 
 // Header implements `engine.Response#Header` function.
 func (r *Response) Header() engine.Header {
@@ -46,9 +56,25 @@ func (r *Response) WriteHeader(code int) {
 
 // Write implements `engine.Response#Write` function.
 func (r *Response) Write(b []byte) (n int, err error) {
+	if !r.Committed() {
+		r.WriteHeader(http.StatusOK)
+	}
 	n, err = r.writer.Write(b)
 	r.size += int64(n)
 	return
+}
+
+// SetCookie implements `engine.Response#SetCookie` function.
+func (r *Response) SetCookie(c engine.Cookie) {
+	http.SetCookie(r.ResponseWriter, &http.Cookie{
+		Name:     c.Name(),
+		Value:    c.Value(),
+		Path:     c.Path(),
+		Domain:   c.Domain(),
+		Expires:  c.Expires(),
+		Secure:   c.Secure(),
+		HttpOnly: c.HTTPOnly(),
+	})
 }
 
 // Status implements `engine.Response#Status` function.
@@ -99,8 +125,8 @@ func (r *Response) CloseNotify() <-chan bool {
 	return r.ResponseWriter.(http.CloseNotifier).CloseNotify()
 }
 
-func (r *Response) reset(w http.ResponseWriter, h engine.Header) {
-	r.ResponseWriter = w
+func (r *Response) reset(w http.ResponseWriter, a *responseAdapter, h engine.Header) {
+	r.ResponseWriter = a
 	r.header = h
 	r.status = http.StatusOK
 	r.size = 0
@@ -108,22 +134,23 @@ func (r *Response) reset(w http.ResponseWriter, h engine.Header) {
 	r.writer = w
 }
 
-func (r *responseAdapter) WriteHeader(code int) {
-	r.Response.WriteHeader(code)
+func (a *responseAdapter) Write(b []byte) (n int, err error) {
+	return a.response.Write(b)
 }
 
-func (r *responseAdapter) Write(b []byte) (n int, err error) {
-	return r.Response.Write(b)
+func (a *responseAdapter) Flush() {
+	a.ResponseWriter.(http.Flusher).Flush()
 }
 
-func (r *responseAdapter) Flush() {
-	r.ResponseWriter.(http.Flusher).Flush()
+func (a *responseAdapter) Hijack() (net.Conn, *bufio.ReadWriter, error) {
+	return a.ResponseWriter.(http.Hijacker).Hijack()
 }
 
-func (r *responseAdapter) Hijack() (net.Conn, *bufio.ReadWriter, error) {
-	return r.ResponseWriter.(http.Hijacker).Hijack()
+func (a *responseAdapter) CloseNotify() <-chan bool {
+	return a.ResponseWriter.(http.CloseNotifier).CloseNotify()
 }
 
-func (r *responseAdapter) CloseNotify() <-chan bool {
-	return r.ResponseWriter.(http.CloseNotifier).CloseNotify()
+func (a *responseAdapter) reset(w http.ResponseWriter, r *Response) {
+	a.ResponseWriter = w
+	a.response = r
 }

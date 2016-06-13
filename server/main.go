@@ -25,7 +25,7 @@ import (
 	"github.com/zeiot/jarvis/server/api"
 	"github.com/zeiot/jarvis/server/config"
 	"github.com/zeiot/jarvis/server/logging"
-	"github.com/zeiot/jarvis/server/mqtt"
+	"github.com/zeiot/jarvis/server/messages"
 	"github.com/zeiot/jarvis/server/version"
 )
 
@@ -67,7 +67,7 @@ func main() {
 		return
 	}
 
-	mqttClient, err := mqtt.NewClient(conf.MqttBrokerURL)
+	mqttClient, err := messages.NewSubscriber(conf.MqttBrokerURL)
 	if err != nil {
 		log.Printf("[ERROR] [jarvis] Can't create the MQTT client: %v", err)
 		return

@@ -100,4 +100,5 @@ server-run: ## Run the Jarvis server
 
 .PHONY: server-exe
 server-exe: ## Create the Jarvis server executable
-	@cd server && make gox
+	@cd server && make binaries
+

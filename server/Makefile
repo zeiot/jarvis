@@ -78,7 +78,7 @@ init:
 .PHONY: deps
 deps:
 	@echo -e "$(OK_COLOR)[$(APP)] Update dependencies$(NO_COLOR)"
-	@glide up -v -s
+	@glide up -u -s -v
 
 .PHONY: build
 build:
@@ -124,4 +124,4 @@ binaries: gox
 # for goprojectile
 .PHONY: gopath
 gopath:
-	@echo GOPATH=`pwd`:`pwd`/vendor
+	@echo `pwd`:`pwd`/vendor

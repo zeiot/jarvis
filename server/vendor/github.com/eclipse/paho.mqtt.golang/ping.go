@@ -20,7 +20,7 @@ import (
 	"github.com/eclipse/paho.mqtt.golang/packets"
 )
 
-func keepalive(c *Client) {
+func keepalive(c *client) {
 	DEBUG.Println(PNG, "keepalive starting")
 
 	for {
@@ -36,6 +36,10 @@ func keepalive(c *Client) {
 			//will block until it it able to send the packet.
 			ping.Write(c.conn)
 			c.pingRespTimer.Reset(c.options.PingTimeout)
+		case <-c.pingResp:
+			DEBUG.Println(NET, "resetting ping timers")
+			c.pingRespTimer.Stop()
+			c.pingTimer.Reset(c.options.KeepAlive)
 		case <-c.pingRespTimer.C:
 			CRITICAL.Println(PNG, "pingresp not received, disconnecting")
 			c.workers.Done()

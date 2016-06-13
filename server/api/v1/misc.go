@@ -31,6 +31,18 @@ func (ws *WebService) Help() echo.HandlerFunc {
 	}
 }
 
+type Healthz struct {
+	Status string `json:"status"`
+}
+
+// Healthz send a status in JSON
+func (ws *WebService) Healthz() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		log.Printf("[INFO] [jarvis] Healthz handler")
+		return c.JSON(http.StatusOK, &Healthz{Status: "ok"})
+	}
+}
+
 // DisplayAPIVersion sends the API version in JSON format
 func (ws *WebService) DisplayAPIVersion() echo.HandlerFunc {
 	return func(c echo.Context) error {

@@ -14,23 +14,21 @@
 
 package mqtt
 
-import "fmt"
-import "time"
-import "bytes"
-
-import "io/ioutil"
-import "crypto/tls"
-import "crypto/x509"
-import "testing"
+import (
+	"bytes"
+	"crypto/tls"
+	"crypto/x509"
+	"fmt"
+	"io/ioutil"
+	"testing"
+	"time"
+)
 
 func Test_Start(t *testing.T) {
-	ops := NewClientOptions().SetClientID("Start").
-		AddBroker(FVTTCP).
-		SetStore(NewFileStore("/tmp/fvt/Start"))
+	ops := NewClientOptions().SetClientID("Start").AddBroker(FVTTCP)
 	c := NewClient(ops)
 
-	token := c.Connect()
-	if token.Wait() && token.Error() != nil {
+	if token := c.Connect(); token.Wait() && token.Error() != nil {
 		t.Fatalf("Error on Client.Connect(): %v", token.Error())
 	}
 
@@ -97,7 +95,6 @@ func Test_Publish_1(t *testing.T) {
 	ops := NewClientOptions()
 	ops.AddBroker(FVTTCP)
 	ops.SetClientID("Publish_1")
-	ops.SetStore(NewFileStore("/tmp/fvt/Publish_1"))
 
 	c := NewClient(ops)
 	token := c.Connect()
@@ -114,7 +111,6 @@ func Test_Publish_2(t *testing.T) {
 	ops := NewClientOptions()
 	ops.AddBroker(FVTTCP)
 	ops.SetClientID("Publish_2")
-	ops.SetStore(NewFileStore("/tmp/fvt/Publish_2"))
 
 	c := NewClient(ops)
 	token := c.Connect()
@@ -132,7 +128,6 @@ func Test_Publish_3(t *testing.T) {
 	ops := NewClientOptions()
 	ops.AddBroker(FVTTCP)
 	ops.SetClientID("Publish_3")
-	ops.SetStore(NewFileStore("/tmp/fvt/Publish_3"))
 
 	c := NewClient(ops)
 	token := c.Connect()
@@ -151,14 +146,12 @@ func Test_Subscribe(t *testing.T) {
 	pops := NewClientOptions()
 	pops.AddBroker(FVTTCP)
 	pops.SetClientID("Subscribe_tx")
-	pops.SetStore(NewFileStore("/tmp/fvt/Subscribe/p"))
 	p := NewClient(pops)
 
 	sops := NewClientOptions()
 	sops.AddBroker(FVTTCP)
 	sops.SetClientID("Subscribe_rx")
-	sops.SetStore(NewFileStore("/tmp/fvt/Subscribe/s"))
-	var f MessageHandler = func(client *Client, msg Message) {
+	var f MessageHandler = func(client Client, msg Message) {
 		fmt.Printf("TOPIC: %s\n", msg.Topic())
 		fmt.Printf("MSG: %s\n", msg.Payload())
 	}
@@ -184,50 +177,51 @@ func Test_Subscribe(t *testing.T) {
 }
 
 func Test_Will(t *testing.T) {
-	willmsgc := make(chan string)
+	willmsgc := make(chan string, 1)
 
 	sops := NewClientOptions().AddBroker(FVTTCP)
 	sops.SetClientID("will-giver")
 	sops.SetWill("/wills", "good-byte!", 0, false)
-	sops.SetConnectionLostHandler(func(client *Client, err error) {
+	sops.SetConnectionLostHandler(func(client Client, err error) {
 		fmt.Println("OnConnectionLost!")
 	})
-	c := NewClient(sops)
+	sops.SetAutoReconnect(false)
+	c := NewClient(sops).(*client)
 
 	wops := NewClientOptions()
 	wops.AddBroker(FVTTCP)
 	wops.SetClientID("will-subscriber")
-	wops.SetDefaultPublishHandler(func(client *Client, msg Message) {
+	wops.SetDefaultPublishHandler(func(client Client, msg Message) {
 		fmt.Printf("TOPIC: %s\n", msg.Topic())
 		fmt.Printf("MSG: %s\n", msg.Payload())
 		willmsgc <- string(msg.Payload())
 	})
+	wops.SetAutoReconnect(false)
 	wsub := NewClient(wops)
 
 	if wToken := wsub.Connect(); wToken.Wait() && wToken.Error() != nil {
 		t.Fatalf("Error on Client.Connect(): %v", wToken.Error())
 	}
 
-	wsub.Subscribe("/wills", 0, nil)
+	if wsubToken := wsub.Subscribe("/wills", 0, nil); wsubToken.Wait() && wsubToken.Error() != nil {
+		t.Fatalf("Error on Client.Subscribe(): %v", wsubToken.Error())
+	}
 
 	if token := c.Connect(); token.Wait() && token.Error() != nil {
 		t.Fatalf("Error on Client.Connect(): %v", token.Error())
 	}
-	time.Sleep(time.Duration(1) * time.Second)
 
 	c.forceDisconnect()
-
-	time.Sleep(time.Duration(2) * time.Second)
-
-	wsub.Disconnect(250)
 
 	if <-willmsgc != "good-byte!" {
 		t.Fatalf("will message did not have correct payload")
 	}
+
+	wsub.Disconnect(250)
 }
 
 func Test_Binary_Will(t *testing.T) {
-	willmsgc := make(chan []byte)
+	willmsgc := make(chan []byte, 1)
 	will := []byte{
 		0xDE,
 		0xAD,
@@ -238,42 +232,40 @@ func Test_Binary_Will(t *testing.T) {
 	sops := NewClientOptions().AddBroker(FVTTCP)
 	sops.SetClientID("will-giver")
 	sops.SetBinaryWill("/wills", will, 0, false)
-	sops.SetConnectionLostHandler(func(client *Client, err error) {
+	sops.SetConnectionLostHandler(func(client Client, err error) {
 	})
-	c := NewClient(sops)
+	sops.SetAutoReconnect(false)
+	c := NewClient(sops).(*client)
 
 	wops := NewClientOptions().AddBroker(FVTTCP)
 	wops.SetClientID("will-subscriber")
-	wops.SetStore(NewFileStore("/tmp/fvt/Binary_Will"))
-	wops.SetDefaultPublishHandler(func(client *Client, msg Message) {
+	wops.SetDefaultPublishHandler(func(client Client, msg Message) {
 		fmt.Printf("TOPIC: %s\n", msg.Topic())
 		fmt.Printf("MSG: %v\n", msg.Payload())
 		willmsgc <- msg.Payload()
 	})
+	wops.SetAutoReconnect(false)
 	wsub := NewClient(wops)
 
-	wToken := wsub.Connect()
-	if wToken.Wait() && wToken.Error() != nil {
+	if wToken := wsub.Connect(); wToken.Wait() && wToken.Error() != nil {
 		t.Fatalf("Error on Client.Connect(): %v", wToken.Error())
 	}
 
-	wsub.Subscribe("/wills", 0, nil)
+	if wsubToken := wsub.Subscribe("/wills", 0, nil); wsubToken.Wait() && wsubToken.Error() != nil {
+		t.Fatalf("Error on Client.Subscribe() %v", wsubToken.Error())
+	}
 
-	token := c.Connect()
-	if token.Wait() && token.Error() != nil {
+	if token := c.Connect(); token.Wait() && token.Error() != nil {
 		t.Fatalf("Error on Client.Connect(): %v", token.Error())
 	}
-	time.Sleep(time.Duration(1) * time.Second)
 
 	c.forceDisconnect()
-
-	time.Sleep(time.Duration(2) * time.Second)
-
-	wsub.Disconnect(250)
 
 	if !bytes.Equal(<-willmsgc, will) {
 		t.Fatalf("will message did not have correct payload")
 	}
+
+	wsub.Disconnect(250)
 }
 
 /**
@@ -295,21 +287,18 @@ func wait(c chan bool) {
 // Pub 0, Sub 0
 
 func Test_p0s0(t *testing.T) {
-	store := "/tmp/fvt/p0s0"
 	topic := "/test/p0s0"
 	choke := make(chan bool)
 
 	pops := NewClientOptions()
 	pops.AddBroker(FVTTCP)
 	pops.SetClientID("p0s0-pub")
-	pops.SetStore(NewFileStore(store + "/p"))
 	p := NewClient(pops)
 
 	sops := NewClientOptions()
 	sops.AddBroker(FVTTCP)
 	sops.SetClientID("p0s0-sub")
-	sops.SetStore(NewFileStore(store + "/s"))
-	var f MessageHandler = func(client *Client, msg Message) {
+	var f MessageHandler = func(client Client, msg Message) {
 		fmt.Printf("TOPIC: %s\n", msg.Topic())
 		fmt.Printf("MSG: %s\n", msg.Payload())
 		choke <- true
@@ -317,19 +306,17 @@ func Test_p0s0(t *testing.T) {
 	sops.SetDefaultPublishHandler(f)
 
 	s := NewClient(sops)
-	sToken := s.Connect()
-	if sToken.Wait() && sToken.Error() != nil {
-		t.Fatalf("Error on Client.Connect(): %v", sToken.Error())
+
+	if token := s.Connect(); token.Wait() && token.Error() != nil {
+		t.Fatalf("Error on Client.Connect(): %v", token.Error())
 	}
 
-	sToken = s.Subscribe(topic, 0, nil)
-	if sToken.Wait() && sToken.Error() != nil {
-		t.Fatalf("Error on Client.Subscribe(): %v", sToken.Error())
+	if token := s.Subscribe(topic, 0, nil); token.Wait() && token.Error() != nil {
+		t.Fatalf("Error on Client.Subscribe(): %v", token.Error())
 	}
 
-	pToken := p.Connect()
-	if pToken.Wait() && pToken.Error() != nil {
-		t.Fatalf("Error on Client.Connect(): %v", pToken.Error())
+	if token := p.Connect(); token.Wait() && token.Error() != nil {
+		t.Fatalf("Error on Client.Connect(): %v", token.Error())
 	}
 	p.Publish(topic, 0, false, "p0s0 payload 1")
 	p.Publish(topic, 0, false, "p0s0 payload 2")
@@ -342,29 +329,23 @@ func Test_p0s0(t *testing.T) {
 
 	p.Disconnect(250)
 	s.Disconnect(250)
-
-	chkcond(isemptydir(store + "/p"))
-	chkcond(isemptydir(store + "/s"))
 }
 
 // Pub 0, Sub 1
 
 func Test_p0s1(t *testing.T) {
-	store := "/tmp/fvt/p0s1"
 	topic := "/test/p0s1"
 	choke := make(chan bool)
 
 	pops := NewClientOptions()
 	pops.AddBroker(FVTTCP)
 	pops.SetClientID("p0s1-pub")
-	pops.SetStore(NewFileStore(store + "/p"))
 	p := NewClient(pops)
 
 	sops := NewClientOptions()
 	sops.AddBroker(FVTTCP)
 	sops.SetClientID("p0s1-sub")
-	sops.SetStore(NewFileStore(store + "/s"))
-	var f MessageHandler = func(client *Client, msg Message) {
+	var f MessageHandler = func(client Client, msg Message) {
 		fmt.Printf("TOPIC: %s\n", msg.Topic())
 		fmt.Printf("MSG: %s\n", msg.Payload())
 		choke <- true
@@ -372,19 +353,16 @@ func Test_p0s1(t *testing.T) {
 	sops.SetDefaultPublishHandler(f)
 
 	s := NewClient(sops)
-	sToken := s.Connect()
-	if sToken.Wait() && sToken.Error() != nil {
-		t.Fatalf("Error on Client.Connect(): %v", sToken.Error())
+	if token := s.Connect(); token.Wait() && token.Error() != nil {
+		t.Fatalf("Error on Client.Connect(): %v", token.Error())
 	}
 
-	sToken = s.Subscribe(topic, 1, nil)
-	if sToken.Wait() && sToken.Error() != nil {
-		t.Fatalf("Error on Client.Subscribe(): %v", sToken.Error())
+	if token := s.Subscribe(topic, 1, nil); token.Wait() && token.Error() != nil {
+		t.Fatalf("Error on Client.Subscribe(): %v", token.Error())
 	}
 
-	pToken := p.Connect()
-	if pToken.Wait() && pToken.Error() != nil {
-		t.Fatalf("Error on Client.Connect(): %v", pToken.Error())
+	if token := p.Connect(); token.Wait() && token.Error() != nil {
+		t.Fatalf("Error on Client.Connect(): %v", token.Error())
 	}
 	p.Publish(topic, 0, false, "p0s1 payload 1")
 	p.Publish(topic, 0, false, "p0s1 payload 2")
@@ -397,29 +375,23 @@ func Test_p0s1(t *testing.T) {
 
 	p.Disconnect(250)
 	s.Disconnect(250)
-
-	chkcond(isemptydir(store + "/p"))
-	chkcond(isemptydir(store + "/s"))
 }
 
 // Pub 0, Sub 2
 
 func Test_p0s2(t *testing.T) {
-	store := "/tmp/fvt/p0s2"
 	topic := "/test/p0s2"
 	choke := make(chan bool)
 
 	pops := NewClientOptions()
 	pops.AddBroker(FVTTCP)
 	pops.SetClientID("p0s2-pub")
-	pops.SetStore(NewFileStore(store + "/p"))
 	p := NewClient(pops)
 
 	sops := NewClientOptions()
 	sops.AddBroker(FVTTCP)
 	sops.SetClientID("p0s2-sub")
-	sops.SetStore(NewFileStore(store + "/s"))
-	var f MessageHandler = func(client *Client, msg Message) {
+	var f MessageHandler = func(client Client, msg Message) {
 		fmt.Printf("TOPIC: %s\n", msg.Topic())
 		fmt.Printf("MSG: %s\n", msg.Payload())
 		choke <- true
@@ -427,19 +399,16 @@ func Test_p0s2(t *testing.T) {
 	sops.SetDefaultPublishHandler(f)
 
 	s := NewClient(sops)
-	sToken := s.Connect()
-	if sToken.Wait() && sToken.Error() != nil {
-		t.Fatalf("Error on Client.Connect(): %v", sToken.Error())
+	if token := s.Connect(); token.Wait() && token.Error() != nil {
+		t.Fatalf("Error on Client.Connect(): %v", token.Error())
 	}
 
-	sToken = s.Subscribe(topic, 2, nil)
-	if sToken.Wait() && sToken.Error() != nil {
-		t.Fatalf("Error on Client.Subscribe(): %v", sToken.Error())
+	if token := s.Subscribe(topic, 2, nil); token.Wait() && token.Error() != nil {
+		t.Fatalf("Error on Client.Subscribe(): %v", token.Error())
 	}
 
-	pToken := p.Connect()
-	if pToken.Wait() && pToken.Error() != nil {
-		t.Fatalf("Error on Client.Connect(): %v", pToken.Error())
+	if token := p.Connect(); token.Wait() && token.Error() != nil {
+		t.Fatalf("Error on Client.Connect(): %v", token.Error())
 	}
 	p.Publish(topic, 0, false, "p0s2 payload 1")
 	p.Publish(topic, 0, false, "p0s2 payload 2")
@@ -453,29 +422,23 @@ func Test_p0s2(t *testing.T) {
 
 	p.Disconnect(250)
 	s.Disconnect(250)
-
-	chkcond(isemptydir(store + "/p"))
-	chkcond(isemptydir(store + "/s"))
 }
 
 // Pub 1, Sub 0
 
 func Test_p1s0(t *testing.T) {
-	store := "/tmp/fvt/p1s0"
 	topic := "/test/p1s0"
 	choke := make(chan bool)
 
 	pops := NewClientOptions()
 	pops.AddBroker(FVTTCP)
 	pops.SetClientID("p1s0-pub")
-	pops.SetStore(NewFileStore(store + "/p"))
 	p := NewClient(pops)
 
 	sops := NewClientOptions()
 	sops.AddBroker(FVTTCP)
 	sops.SetClientID("p1s0-sub")
-	sops.SetStore(NewFileStore(store + "/s"))
-	var f MessageHandler = func(client *Client, msg Message) {
+	var f MessageHandler = func(client Client, msg Message) {
 		fmt.Printf("TOPIC: %s\n", msg.Topic())
 		fmt.Printf("MSG: %s\n", msg.Payload())
 		choke <- true
@@ -483,19 +446,16 @@ func Test_p1s0(t *testing.T) {
 	sops.SetDefaultPublishHandler(f)
 
 	s := NewClient(sops)
-	sToken := s.Connect()
-	if sToken.Wait() && sToken.Error() != nil {
-		t.Fatalf("Error on Client.Connect(): %v", sToken.Error())
+	if token := s.Connect(); token.Wait() && token.Error() != nil {
+		t.Fatalf("Error on Client.Connect(): %v", token.Error())
 	}
 
-	sToken = s.Subscribe(topic, 0, nil)
-	if sToken.Wait() && sToken.Error() != nil {
-		t.Fatalf("Error on Client.Subscribe(): %v", sToken.Error())
+	if token := s.Subscribe(topic, 0, nil); token.Wait() && token.Error() != nil {
+		t.Fatalf("Error on Client.Subscribe(): %v", token.Error())
 	}
 
-	pToken := p.Connect()
-	if pToken.Wait() && pToken.Error() != nil {
-		t.Fatalf("Error on Client.Connect(): %v", pToken.Error())
+	if token := p.Connect(); token.Wait() && token.Error() != nil {
+		t.Fatalf("Error on Client.Connect(): %v", token.Error())
 	}
 	p.Publish(topic, 1, false, "p1s0 payload 1")
 	p.Publish(topic, 1, false, "p1s0 payload 2")
@@ -509,29 +469,23 @@ func Test_p1s0(t *testing.T) {
 
 	p.Disconnect(250)
 	s.Disconnect(250)
-
-	chkcond(isemptydir(store + "/p"))
-	chkcond(isemptydir(store + "/s"))
 }
 
 // Pub 1, Sub 1
 
 func Test_p1s1(t *testing.T) {
-	store := "/tmp/fvt/p1s1"
 	topic := "/test/p1s1"
 	choke := make(chan bool)
 
 	pops := NewClientOptions()
 	pops.AddBroker(FVTTCP)
 	pops.SetClientID("p1s1-pub")
-	pops.SetStore(NewFileStore(store + "/p"))
 	p := NewClient(pops)
 
 	sops := NewClientOptions()
 	sops.AddBroker(FVTTCP)
 	sops.SetClientID("p1s1-sub")
-	sops.SetStore(NewFileStore(store + "/s"))
-	var f MessageHandler = func(client *Client, msg Message) {
+	var f MessageHandler = func(client Client, msg Message) {
 		fmt.Printf("TOPIC: %s\n", msg.Topic())
 		fmt.Printf("MSG: %s\n", msg.Payload())
 		choke <- true
@@ -539,19 +493,16 @@ func Test_p1s1(t *testing.T) {
 	sops.SetDefaultPublishHandler(f)
 
 	s := NewClient(sops)
-	sToken := s.Connect()
-	if sToken.Wait() && sToken.Error() != nil {
-		t.Fatalf("Error on Client.Connect(): %v", sToken.Error())
+	if token := s.Connect(); token.Wait() && token.Error() != nil {
+		t.Fatalf("Error on Client.Connect(): %v", token.Error())
 	}
 
-	sToken = s.Subscribe(topic, 1, nil)
-	if sToken.Wait() && sToken.Error() != nil {
-		t.Fatalf("Error on Client.Subscribe(): %v", sToken.Error())
+	if token := s.Subscribe(topic, 1, nil); token.Wait() && token.Error() != nil {
+		t.Fatalf("Error on Client.Subscribe(): %v", token.Error())
 	}
 
-	pToken := p.Connect()
-	if pToken.Wait() && pToken.Error() != nil {
-		t.Fatalf("Error on Client.Connect(): %v", pToken.Error())
+	if token := p.Connect(); token.Wait() && token.Error() != nil {
+		t.Fatalf("Error on Client.Connect(): %v", token.Error())
 	}
 	p.Publish(topic, 1, false, "p1s1 payload 1")
 	p.Publish(topic, 1, false, "p1s1 payload 2")
@@ -564,29 +515,23 @@ func Test_p1s1(t *testing.T) {
 
 	p.Disconnect(250)
 	s.Disconnect(250)
-
-	chkcond(isemptydir(store + "/p"))
-	chkcond(isemptydir(store + "/s"))
 }
 
 // Pub 1, Sub 2
 
 func Test_p1s2(t *testing.T) {
-	store := "/tmp/fvt/p1s2"
 	topic := "/test/p1s2"
 	choke := make(chan bool)
 
 	pops := NewClientOptions()
 	pops.AddBroker(FVTTCP)
 	pops.SetClientID("p1s2-pub")
-	pops.SetStore(NewFileStore(store + "/p"))
 	p := NewClient(pops)
 
 	sops := NewClientOptions()
 	sops.AddBroker(FVTTCP)
 	sops.SetClientID("p1s2-sub")
-	sops.SetStore(NewFileStore(store + "/s"))
-	var f MessageHandler = func(client *Client, msg Message) {
+	var f MessageHandler = func(client Client, msg Message) {
 		fmt.Printf("TOPIC: %s\n", msg.Topic())
 		fmt.Printf("MSG: %s\n", msg.Payload())
 		choke <- true
@@ -594,19 +539,16 @@ func Test_p1s2(t *testing.T) {
 	sops.SetDefaultPublishHandler(f)
 
 	s := NewClient(sops)
-	sToken := s.Connect()
-	if sToken.Wait() && sToken.Error() != nil {
-		t.Fatalf("Error on Client.Connect(): %v", sToken.Error())
+	if token := s.Connect(); token.Wait() && token.Error() != nil {
+		t.Fatalf("Error on Client.Connect(): %v", token.Error())
 	}
 
-	sToken = s.Subscribe(topic, 2, nil)
-	if sToken.Wait() && sToken.Error() != nil {
-		t.Fatalf("Error on Client.Subscribe(): %v", sToken.Error())
+	if token := s.Subscribe(topic, 2, nil); token.Wait() && token.Error() != nil {
+		t.Fatalf("Error on Client.Subscribe(): %v", token.Error())
 	}
 
-	pToken := p.Connect()
-	if pToken.Wait() && pToken.Error() != nil {
-		t.Fatalf("Error on Client.Connect(): %v", pToken.Error())
+	if token := p.Connect(); token.Wait() && token.Error() != nil {
+		t.Fatalf("Error on Client.Connect(): %v", token.Error())
 	}
 	p.Publish(topic, 1, false, "p1s2 payload 1")
 	p.Publish(topic, 1, false, "p1s2 payload 2")
@@ -620,29 +562,23 @@ func Test_p1s2(t *testing.T) {
 
 	p.Disconnect(250)
 	s.Disconnect(250)
-
-	chkcond(isemptydir(store + "/p"))
-	chkcond(isemptydir(store + "/s"))
 }
 
 // Pub 2, Sub 0
 
 func Test_p2s0(t *testing.T) {
-	store := "/tmp/fvt/p2s0"
 	topic := "/test/p2s0"
 	choke := make(chan bool)
 
 	pops := NewClientOptions()
 	pops.AddBroker(FVTTCP)
 	pops.SetClientID("p2s0-pub")
-	pops.SetStore(NewFileStore(store + "/p"))
 	p := NewClient(pops)
 
 	sops := NewClientOptions()
 	sops.AddBroker(FVTTCP)
 	sops.SetClientID("p2s0-sub")
-	sops.SetStore(NewFileStore(store + "/s"))
-	var f MessageHandler = func(client *Client, msg Message) {
+	var f MessageHandler = func(client Client, msg Message) {
 		fmt.Printf("TOPIC: %s\n", msg.Topic())
 		fmt.Printf("MSG: %s\n", msg.Payload())
 		choke <- true
@@ -650,19 +586,16 @@ func Test_p2s0(t *testing.T) {
 	sops.SetDefaultPublishHandler(f)
 
 	s := NewClient(sops)
-	sToken := s.Connect()
-	if sToken.Wait() && sToken.Error() != nil {
-		t.Fatalf("Error on Client.Connect(): %v", sToken.Error())
+	if token := s.Connect(); token.Wait() && token.Error() != nil {
+		t.Fatalf("Error on Client.Connect(): %v", token.Error())
 	}
 
-	sToken = s.Subscribe(topic, 0, nil)
-	if sToken.Wait() && sToken.Error() != nil {
-		t.Fatalf("Error on Client.Subscribe(): %v", sToken.Error())
+	if token := s.Subscribe(topic, 0, nil); token.Wait() && token.Error() != nil {
+		t.Fatalf("Error on Client.Subscribe(): %v", token.Error())
 	}
 
-	pToken := p.Connect()
-	if pToken.Wait() && pToken.Error() != nil {
-		t.Fatalf("Error on Client.Connect(): %v", pToken.Error())
+	if token := p.Connect(); token.Wait() && token.Error() != nil {
+		t.Fatalf("Error on Client.Connect(): %v", token.Error())
 	}
 	p.Publish(topic, 2, false, "p2s0 payload 1")
 	p.Publish(topic, 2, false, "p2s0 payload 2")
@@ -674,29 +607,23 @@ func Test_p2s0(t *testing.T) {
 
 	p.Disconnect(250)
 	s.Disconnect(250)
-
-	chkcond(isemptydir(store + "/p"))
-	chkcond(isemptydir(store + "/s"))
 }
 
 // Pub 2, Sub 1
 
 func Test_p2s1(t *testing.T) {
-	store := "/tmp/fvt/p2s1"
 	topic := "/test/p2s1"
 	choke := make(chan bool)
 
 	pops := NewClientOptions()
 	pops.AddBroker(FVTTCP)
 	pops.SetClientID("p2s1-pub")
-	pops.SetStore(NewFileStore(store + "/p"))
 	p := NewClient(pops)
 
 	sops := NewClientOptions()
 	sops.AddBroker(FVTTCP)
 	sops.SetClientID("p2s1-sub")
-	sops.SetStore(NewFileStore(store + "/s"))
-	var f MessageHandler = func(client *Client, msg Message) {
+	var f MessageHandler = func(client Client, msg Message) {
 		fmt.Printf("TOPIC: %s\n", msg.Topic())
 		fmt.Printf("MSG: %s\n", msg.Payload())
 		choke <- true
@@ -704,19 +631,16 @@ func Test_p2s1(t *testing.T) {
 	sops.SetDefaultPublishHandler(f)
 
 	s := NewClient(sops)
-	sToken := s.Connect()
-	if sToken.Wait() && sToken.Error() != nil {
-		t.Fatalf("Error on Client.Connect(): %v", sToken.Error())
+	if token := s.Connect(); token.Wait() && token.Error() != nil {
+		t.Fatalf("Error on Client.Connect(): %v", token.Error())
 	}
 
-	sToken = s.Subscribe(topic, 1, nil)
-	if sToken.Wait() && sToken.Error() != nil {
-		t.Fatalf("Error on Client.Subscribe(): %v", sToken.Error())
+	if token := s.Subscribe(topic, 1, nil); token.Wait() && token.Error() != nil {
+		t.Fatalf("Error on Client.Subscribe(): %v", token.Error())
 	}
 
-	pToken := p.Connect()
-	if pToken.Wait() && pToken.Error() != nil {
-		t.Fatalf("Error on Client.Connect(): %v", pToken.Error())
+	if token := p.Connect(); token.Wait() && token.Error() != nil {
+		t.Fatalf("Error on Client.Connect(): %v", token.Error())
 	}
 	p.Publish(topic, 2, false, "p2s1 payload 1")
 	p.Publish(topic, 2, false, "p2s1 payload 2")
@@ -730,29 +654,23 @@ func Test_p2s1(t *testing.T) {
 
 	p.Disconnect(250)
 	s.Disconnect(250)
-
-	chkcond(isemptydir(store + "/p"))
-	chkcond(isemptydir(store + "/s"))
 }
 
 // Pub 2, Sub 2
 
 func Test_p2s2(t *testing.T) {
-	store := "/tmp/fvt/p2s2"
 	topic := "/test/p2s2"
 	choke := make(chan bool)
 
 	pops := NewClientOptions()
 	pops.AddBroker(FVTTCP)
 	pops.SetClientID("p2s2-pub")
-	pops.SetStore(NewFileStore(store + "/p"))
 	p := NewClient(pops)
 
 	sops := NewClientOptions()
 	sops.AddBroker(FVTTCP)
 	sops.SetClientID("p2s2-sub")
-	sops.SetStore(NewFileStore(store + "/s"))
-	var f MessageHandler = func(client *Client, msg Message) {
+	var f MessageHandler = func(client Client, msg Message) {
 		fmt.Printf("TOPIC: %s\n", msg.Topic())
 		fmt.Printf("MSG: %s\n", msg.Payload())
 		choke <- true
@@ -760,19 +678,16 @@ func Test_p2s2(t *testing.T) {
 	sops.SetDefaultPublishHandler(f)
 
 	s := NewClient(sops)
-	sToken := s.Connect()
-	if sToken.Wait() && sToken.Error() != nil {
-		t.Fatalf("Error on Client.Connect(): %v", sToken.Error())
+	if token := s.Connect(); token.Wait() && token.Error() != nil {
+		t.Fatalf("Error on Client.Connect(): %v", token.Error())
 	}
 
-	sToken = s.Subscribe(topic, 2, nil)
-	if sToken.Wait() && sToken.Error() != nil {
-		t.Fatalf("Error on Client.Subscribe(): %v", sToken.Error())
+	if token := s.Subscribe(topic, 2, nil); token.Wait() && token.Error() != nil {
+		t.Fatalf("Error on Client.Subscribe(): %v", token.Error())
 	}
 
-	pToken := p.Connect()
-	if pToken.Wait() && pToken.Error() != nil {
-		t.Fatalf("Error on Client.Connect(): %v", pToken.Error())
+	if token := p.Connect(); token.Wait() && token.Error() != nil {
+		t.Fatalf("Error on Client.Connect(): %v", token.Error())
 	}
 	p.Publish(topic, 2, false, "p2s2 payload 1")
 	p.Publish(topic, 2, false, "p2s2 payload 2")
@@ -786,27 +701,21 @@ func Test_p2s2(t *testing.T) {
 
 	p.Disconnect(250)
 	s.Disconnect(250)
-
-	chkcond(isemptydir(store + "/p"))
-	chkcond(isemptydir(store + "/s"))
 }
 
 func Test_PublishMessage(t *testing.T) {
-	store := "/tmp/fvt/PublishMessage"
 	topic := "/test/pubmsg"
 	choke := make(chan bool)
 
 	pops := NewClientOptions()
 	pops.AddBroker(FVTTCP)
 	pops.SetClientID("pubmsg-pub")
-	pops.SetStore(NewFileStore(store + "/p"))
 	p := NewClient(pops)
 
 	sops := NewClientOptions()
 	sops.AddBroker(FVTTCP)
 	sops.SetClientID("pubmsg-sub")
-	sops.SetStore(NewFileStore(store + "/s"))
-	var f MessageHandler = func(client *Client, msg Message) {
+	var f MessageHandler = func(client Client, msg Message) {
 		fmt.Printf("TOPIC: %s\n", msg.Topic())
 		fmt.Printf("MSG: %s\n", msg.Payload())
 		if string(msg.Payload()) != "pubmsg payload" {
@@ -818,19 +727,16 @@ func Test_PublishMessage(t *testing.T) {
 	sops.SetDefaultPublishHandler(f)
 
 	s := NewClient(sops)
-	sToken := s.Connect()
-	if sToken.Wait() && sToken.Error() != nil {
-		t.Fatalf("Error on Client.Connect(): %v", sToken.Error())
+	if token := s.Connect(); token.Wait() && token.Error() != nil {
+		t.Fatalf("Error on Client.Connect(): %v", token.Error())
 	}
 
-	sToken = s.Subscribe(topic, 2, nil)
-	if sToken.Wait() && sToken.Error() != nil {
-		t.Fatalf("Error on Client.Subscribe(): %v", sToken.Error())
+	if token := s.Subscribe(topic, 2, nil); token.Wait() && token.Error() != nil {
+		t.Fatalf("Error on Client.Subscribe(): %v", token.Error())
 	}
 
-	pToken := p.Connect()
-	if pToken.Wait() && pToken.Error() != nil {
-		t.Fatalf("Error on Client.Connect(): %v", pToken.Error())
+	if token := p.Connect(); token.Wait() && token.Error() != nil {
+		t.Fatalf("Error on Client.Connect(): %v", token.Error())
 	}
 
 	text := "pubmsg payload"
@@ -844,27 +750,21 @@ func Test_PublishMessage(t *testing.T) {
 
 	p.Disconnect(250)
 	s.Disconnect(250)
-
-	chkcond(isemptydir(store + "/p"))
-	chkcond(isemptydir(store + "/s"))
 }
 
 func Test_PublishEmptyMessage(t *testing.T) {
-	store := "/tmp/fvt/PublishEmptyMessage"
 	topic := "/test/pubmsgempty"
 	choke := make(chan bool)
 
 	pops := NewClientOptions()
 	pops.AddBroker(FVTTCP)
 	pops.SetClientID("pubmsgempty-pub")
-	pops.SetStore(NewFileStore(store + "/p"))
 	p := NewClient(pops)
 
 	sops := NewClientOptions()
 	sops.AddBroker(FVTTCP)
 	sops.SetClientID("pubmsgempty-sub")
-	sops.SetStore(NewFileStore(store + "/s"))
-	var f MessageHandler = func(client *Client, msg Message) {
+	var f MessageHandler = func(client Client, msg Message) {
 		fmt.Printf("TOPIC: %s\n", msg.Topic())
 		fmt.Printf("MSG: %s\n", msg.Payload())
 		if string(msg.Payload()) != "" {
@@ -875,18 +775,15 @@ func Test_PublishEmptyMessage(t *testing.T) {
 	sops.SetDefaultPublishHandler(f)
 
 	s := NewClient(sops)
-	sToken := s.Connect()
-	if sToken.Wait() && sToken.Error() != nil {
+	if sToken := s.Connect(); sToken.Wait() && sToken.Error() != nil {
 		t.Fatalf("Error on Client.Connect(): %v", sToken.Error())
 	}
 
-	sToken = s.Subscribe(topic, 2, nil)
-	if sToken.Wait() && sToken.Error() != nil {
+	if sToken := s.Subscribe(topic, 2, nil); sToken.Wait() && sToken.Error() != nil {
 		t.Fatalf("Error on Client.Subscribe(): %v", sToken.Error())
 	}
 
-	pToken := p.Connect()
-	if pToken.Wait() && pToken.Error() != nil {
+	if pToken := p.Connect(); pToken.Wait() && pToken.Error() != nil {
 		t.Fatalf("Error on Client.Connect(): %v", pToken.Error())
 	}
 
@@ -917,7 +814,7 @@ func Test_PublishEmptyMessage(t *testing.T) {
 // 	sops.SetClientID("cleanstore-sub")
 // 	sops.SetCleanSession(false)
 // 	sops.SetStore(NewFileStore(store + "/s"))
-// 	var f MessageHandler = func(client *Client, msg Message) {
+// 	var f MessageHandler = func(client Client, msg Message) {
 // 		fmt.Printf("TOPIC: %s\n", msg.Topic())
 // 		fmt.Printf("MSG: %s\n", msg.Payload())
 // 		// Close the connection after receiving
@@ -972,37 +869,36 @@ func Test_MultipleURLs(t *testing.T) {
 	ops := NewClientOptions()
 	ops.AddBroker("tcp://127.0.0.1:10000")
 	ops.AddBroker(FVTTCP)
-	ops.SetClientID("MutliURL")
-	ops.SetStore(NewFileStore("/tmp/fvt/MultiURL"))
+	ops.SetClientID("MultiURL")
 
 	c := NewClient(ops)
-	token := c.Connect()
-	if token.Wait() && token.Error() != nil {
+
+	if token := c.Connect(); token.Wait() && token.Error() != nil {
 		t.Fatalf("Error on Client.Connect(): %v", token.Error())
 	}
 
-	token = c.Publish("/test/MultiURL", 0, false, "Publish qo0")
-	token.Wait()
+	if pToken := c.Publish("/test/MultiURL", 0, false, "Publish qo0"); pToken.Wait() && pToken.Error() != nil {
+		t.Fatalf("Error on Client.Publish(): %v", pToken.Error())
+	}
 
 	c.Disconnect(250)
 }
 
-/*
 // A test to make sure ping mechanism is working
-// This test can be left commented out because it's annoying to wait for
-func Test_ping3_idle10(t *testing.T) {
+func Test_ping1_idle5(t *testing.T) {
 	ops := NewClientOptions()
 	ops.AddBroker(FVTTCP)
-	//ops.AddBroker("tcp://test.mosquitto.org:1883")
 	ops.SetClientID("p3i10")
-	ops.SetKeepAlive(4)
+	ops.SetConnectionLostHandler(func(c Client, err error) {
+		t.Fatalf("Connection-lost handler was called: %s", err)
+	})
+	ops.SetKeepAlive(2 * time.Second)
 
 	c := NewClient(ops)
-	token := c.Connect()
-	if token.Wait() && token.Error() != nil {
+
+	if token := c.Connect(); token.Wait() && token.Error() != nil {
 		t.Fatalf("Error on Client.Connect(): %v", token.Error())
 	}
-	time.Sleep(time.Duration(10) * time.Second)
+	time.Sleep(5 * time.Second)
 	c.Disconnect(250)
 }
-*/

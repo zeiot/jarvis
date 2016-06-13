@@ -2,34 +2,48 @@ package standard
 
 import (
 	"io"
+	"io/ioutil"
 	"mime/multipart"
 	"net/http"
+	"strings"
 
+	"github.com/labstack/echo"
 	"github.com/labstack/echo/engine"
-	"github.com/labstack/gommon/log"
+	"github.com/labstack/echo/log"
 )
 
 type (
 	// Request implements `engine.Request`.
 	Request struct {
 		*http.Request
-		url    engine.URL
 		header engine.Header
-		logger *log.Logger
+		url    engine.URL
+		logger log.Logger
 	}
 )
 
-// TLS implements `engine.Request#TLS` function.
-func (r *Request) TLS() bool {
+const (
+	defaultMemory = 32 << 20 // 32 MB
+)
+
+// NewRequest returns `Request` instance.
+func NewRequest(r *http.Request, l log.Logger) *Request {
+	return &Request{
+		Request: r,
+		url:     &URL{URL: r.URL},
+		header:  &Header{Header: r.Header},
+		logger:  l,
+	}
+}
+
+// IsTLS implements `engine.Request#TLS` function.
+func (r *Request) IsTLS() bool {
 	return r.Request.TLS != nil
 }
 
 // Scheme implements `engine.Request#Scheme` function.
 func (r *Request) Scheme() string {
-	if r.TLS() {
-		return "https"
-	}
-	return "http"
+	return r.Request.URL.Scheme
 }
 
 // Host implements `engine.Request#Host` function.
@@ -47,6 +61,11 @@ func (r *Request) Header() engine.Header {
 	return r.header
 }
 
+// Referer implements `engine.Request#Referer` function.
+func (r *Request) Referer() string {
+	return r.Request.Referer()
+}
+
 // func Proto() string {
 // 	return r.request.Proto()
 // }
@@ -58,6 +77,11 @@ func (r *Request) Header() engine.Header {
 // func ProtoMinor() int {
 // 	return r.request.ProtoMinor()
 // }
+
+// ContentLength implements `engine.Request#ContentLength` function.
+func (r *Request) ContentLength() int64 {
+	return r.Request.ContentLength
+}
 
 // UserAgent implements `engine.Request#UserAgent` function.
 func (r *Request) UserAgent() string {
@@ -84,9 +108,19 @@ func (r *Request) URI() string {
 	return r.RequestURI
 }
 
+// SetURI implements `engine.Request#SetURI` function.
+func (r *Request) SetURI(uri string) {
+	r.RequestURI = uri
+}
+
 // Body implements `engine.Request#Body` function.
 func (r *Request) Body() io.Reader {
 	return r.Request.Body
+}
+
+// SetBody implements `engine.Request#SetBody` function.
+func (r *Request) SetBody(reader io.Reader) {
+	r.Request.Body = ioutil.NopCloser(reader)
 }
 
 // FormValue implements `engine.Request#FormValue` function.
@@ -96,10 +130,16 @@ func (r *Request) FormValue(name string) string {
 
 // FormParams implements `engine.Request#FormParams` function.
 func (r *Request) FormParams() map[string][]string {
-	if err := r.ParseForm(); err != nil {
-		r.logger.Error(err)
+	if strings.HasPrefix(r.header.Get(echo.HeaderContentType), echo.MIMEMultipartForm) {
+		if err := r.ParseMultipartForm(defaultMemory); err != nil {
+			r.logger.Error(err)
+		}
+	} else {
+		if err := r.ParseForm(); err != nil {
+			r.logger.Error(err)
+		}
 	}
-	return map[string][]string(r.Request.PostForm)
+	return map[string][]string(r.Request.Form)
 }
 
 // FormFile implements `engine.Request#FormFile` function.
@@ -110,12 +150,31 @@ func (r *Request) FormFile(name string) (*multipart.FileHeader, error) {
 
 // MultipartForm implements `engine.Request#MultipartForm` function.
 func (r *Request) MultipartForm() (*multipart.Form, error) {
-	err := r.ParseMultipartForm(32 << 20) // 32 MB
+	err := r.ParseMultipartForm(defaultMemory)
 	return r.Request.MultipartForm, err
 }
 
-func (r *Request) reset(rq *http.Request, h engine.Header, u engine.URL) {
-	r.Request = rq
+// Cookie implements `engine.Request#Cookie` function.
+func (r *Request) Cookie(name string) (engine.Cookie, error) {
+	c, err := r.Request.Cookie(name)
+	if err != nil {
+		return nil, echo.ErrCookieNotFound
+	}
+	return &Cookie{c}, nil
+}
+
+// Cookies implements `engine.Request#Cookies` function.
+func (r *Request) Cookies() []engine.Cookie {
+	cs := r.Request.Cookies()
+	cookies := make([]engine.Cookie, len(cs))
+	for i, c := range cs {
+		cookies[i] = &Cookie{c}
+	}
+	return cookies
+}
+
+func (r *Request) reset(req *http.Request, h engine.Header, u engine.URL) {
+	r.Request = req
 	r.header = h
 	r.url = u
 }

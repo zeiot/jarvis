@@ -31,7 +31,7 @@ type Authentication struct {
 
 // GetWebService return a new gin.Engine
 func GetWebService(auth *Authentication) *echo.Echo {
-	log.Printf("[DEBUG] [jarvis] Creating web service")
+	log.Printf("[DEBUG] [jarvis] Setup web service")
 	ws := v1.NewWebService()
 	e := echo.New()
 	// Middleware
@@ -39,6 +39,7 @@ func GetWebService(auth *Authentication) *echo.Echo {
 	e.Use(middleware.Recover())
 	// Routes
 	e.Get("/", ws.Help())
+	e.Get("/healthz", ws.Healthz())
 	e.Get("/api/version", ws.DisplayAPIVersion())
 	v1 := e.Group("/api/v1")
 	if auth != nil {
