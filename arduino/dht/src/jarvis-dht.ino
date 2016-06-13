@@ -16,7 +16,11 @@
 
 #include <ESP8266wifi.h>
 #include <PubSubClient.h>
-#include "DHT.h"
+#include <DHT.h>
+
+#include <SPI.h>
+#include <WiFi.h>
+#include <WiFiClient.h>
 
 #define DHTPIN 2
 
@@ -35,6 +39,8 @@ const int mqtt_port = 8083;
 
 WiFiClient wifiClient;
 PubSubClient mqttClient;
+
+char message_buff[100];
 
 /* *********************** Wifi ***************************************/
 
