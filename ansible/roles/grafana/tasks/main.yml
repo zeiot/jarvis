@@ -1,8 +1,0 @@
-- name: Make Grafana directory
-  file: path={{ grafana_root_path }} state=directory recurse=yes
-
-- name: Download Grafana
-  get_url: dest=/tmp/grafana-{{ grafana_version }}.tar.gz url=http://grafanarel.s3.amazonaws.com/grafana-{{ grafana_version }}.tar.gz
-
-- name: Extract Grafana
-  unarchive: src=/tmp/grafana-{{ grafana_version }}.tar.gz dest={{ grafana_root_path }} copy=false creates={{ grafana_root_path }}/grafana-{{ grafana_version }}/README.md

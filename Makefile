@@ -37,22 +37,23 @@ clean: ## clean installation
 	platformio run -d arduino/teleinfo --target clean
 	@cd server && make clean
 
-.PHONY: init
-init: ## Initialize environment
-	virtualenv --python=/usr/bin/python2 venv && \
-		. venv/bin/activate && pip install platformio
 
 #
 # Raspberry PI
 #
 
 .PHONY: rasp-create
-rasp-install: ## Create the Raspberry PI SDCard (sdb=sdbXXX)
+rasp-create: ## Create the Raspberry PI SDCard (sdb=sdbXXX)
 	@raspberrypi/raspbian.sh $(sdb)
 
 #
 # Arduino
 #
+
+.PHONY: arduino-init
+arduino-init: ## Initialize Arduino environment
+	virtualenv --python=/usr/bin/python2 venv && \
+		. venv/bin/activate && pip install platformio
 
 .PHONY: arduino-ci
 arduino-ci: ## Launch unit tests
@@ -87,18 +88,20 @@ arduino-upload: ## Build and upload projects
 
 
 #
-# API Server
+# Development
 #
 
-.PHONY: server-build
-server-build:  ## Build the Jarvis Server
-	@cd server && make build
+.PHONY: k8s-deps
+k8s-deps:
+	curl -Lo minikube https://storage.googleapis.com/minikube/releases/v0.8.0/minikube-linux-amd64 && \
+		chmod +x minikube
+	curl -Lo kubectl http://storage.googleapis.com/kubernetes-release/release/v1.3.0/bin/linux/amd64/kubectl && \
+		chmod +x kubectl
 
-.PHONY: server-run
-server-run: ## Run the Jarvis server
-	@server/jarvis-server
+.PHONY: k8s-init
+k8s-init: ## Initialize development environment
+	./minikube --vm-driver=virtualbox start
 
-.PHONY: server-exe
-server-exe: ## Create the Jarvis server executable
-	@cd server && make binaries
-
+.PHONY: k8s-destroy
+k8s-destroy: ## Destroy the development environment
+	./minikube delete

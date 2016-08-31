@@ -1,13 +1,9 @@
-2016-02-26-raspbian-jessie-lite.*
-
 # Platform.io
 venv
 .pioenvs
 arduino/teleinfo/.pioenvs
 arduino/dht/.pioenvs
 
-# UI
-ui/node_modules/
-
-# Server
-server/jarvis-server
+# Kubernetes
+kubectl
+minikube
