@@ -1,18 +1,18 @@
 /*
- * Copyright (C) 2016  Nicolas Lamirault <nicolas.lamirault@gmail.com>
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+Copyright (C) 2016  Nicolas Lamirault <nicolas.lamirault@gmail.com>
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
 
 #include <ESP8266wifi.h>
 #include <PubSubClient.h>
@@ -27,7 +27,9 @@
 #define DHTTYPE DHT22
 
 
-/* ************************ Configuration *********************************/
+/*
+ * Configuration
+ */
 
 char ssid[] = "xxxxx";
 char password []= "xxxx";
@@ -35,14 +37,14 @@ char password []= "xxxx";
 const char* mqtt_server = "xx.xx.xx.xx";
 const int mqtt_port = 8083;
 
-/************************* End configuration *****************************/
-
 WiFiClient wifiClient;
 PubSubClient mqttClient;
 
 char message_buff[100];
 
-/* *********************** Wifi ***************************************/
+/*
+ * Wifi
+ */
 
 void setup_wifi() {
 
@@ -60,11 +62,9 @@ void setup_wifi() {
   Serial.println(WiFi.localIP());
 }
 
-
-/* *********************** End Wifi ***************************************/
-
-
-/* *********************** MQTT ***************************************/
+/*
+ * MQTT
+ */
 
 void callback(char* topic, byte* payload, unsigned int length) {
   Serial.println("[Jarvis] Message arrived:  topic: " + String(topic));
@@ -100,9 +100,6 @@ void setup_mqtt() {
   mqttClient = PubSubClient(mqtt_server, mqtt_port, callback, wifiClient);
   reconnect();
 }
-
-
-/* *********************** End MQTT ***************************************/
 
 
 
