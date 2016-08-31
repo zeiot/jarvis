@@ -24,7 +24,7 @@ Requirements:
 
 * [Kubernetes][]
 
-![Architecture](jarvis.png)
+![Architecture](jarvis.svg)
 
 ## Intallation
 
