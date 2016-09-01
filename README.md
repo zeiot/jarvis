@@ -30,12 +30,18 @@ Requirements:
 
 ### Raspberry PI
 
-Install the image into a SDCard:
+Install [Kubernetes][] with [HypriotOS][] onto the SDCard:
 
-    $ ./raspbian.sh sdbX
+    $ sdcard/jarvis.sh jarvis myssid mywifipassword rpi-2
+
+### DHT
+
+### Teleinfo
 
 
-### Arduino
+## Development
+
+## Arduino
 
 For *arduino* projects, you could :
 
@@ -47,22 +53,17 @@ For *arduino* projects, you could :
 
         $ make arduino-build project=arduino/dht
 
-#### DHT
+### Kubernetes
 
-#### Teleinfo
-
-
-## Kubernetes
-
-### Initialize
+#### Initialize
 
     $ make k8s-deps k8s-init
 
-### Dashboard
+#### Dashboard
 
     $ minikube dashboard
 
-### Grafana
+#### Grafana
 
     $ kubectl create -f k8s/grafana/grafana-deployment.yaml
     $ kubectl get deployment
@@ -90,7 +91,7 @@ For *arduino* projects, you could :
     $ minikube service grafana --url
     http://192.168.99.100:30001
 
-### Prometheus
+#### Prometheus
 
     $ kubectl create -f k8s/prometheus/prometheus-core-configmap.yaml
     configmap "prometheus-core" created
@@ -133,6 +134,37 @@ For *arduino* projects, you could :
     NAME                       DESIRED   CURRENT   NODE-SELECTOR   AGE
     prometheus-node-exporter   1         1         <none>          29s
 
+#### Traefik
+
+    $ kubectl create -f k8s/traefik/traefik-deployment.yaml
+    deployment "traefik-ingress-controller" created
+
+    $ kubectl get deployment --namespace=kube-system
+    NAME                         DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
+    traefik-ingress-controller   1         1         1            1           2m
+
+    $ kubectl create -f k8s/traefik/traefik-service.yaml
+    service "traefik-web-ui" created
+
+    $ kubectl get service --namespace=kube-system
+    NAME                   CLUSTER-IP   EXTERNAL-IP   PORT(S)         AGE
+    kube-dns               10.0.0.10    <none>        53/UDP,53/TCP   19h
+    kubernetes-dashboard   10.0.0.150   nodes         80/TCP          19h
+    traefik-web-ui         10.0.0.124   <none>        80/TCP          2m
+
+    $ kubectl create -f k8s/traefik/traefik-ingress.yaml
+    ingress "traefik-web-ui" created
+
+    $ kubectl get ingress --namespace=kube-system
+    NAME             RULE               BACKEND   ADDRESS   AGE
+    traefik-web-ui   -                                      2m
+    traefik-ui.local
+                       /                  traefik-web-ui:web
+
+    $ echo "$(minikube ip) traefik-ui.local" | sudo tee -a /etc/hosts
+
+We should now be able to visit *traefik-ui.local* in the browser and view the Traefik Web UI.
+
 #### Setup
 
 On Grafana UI
@@ -146,7 +178,7 @@ On Grafana UI
 * Import [Kubernetes Cluster Monitoring](https://grafana.net/dashboards/162)
 
 
-### Debug
+#### Debug
 
 * See Pods:
 
@@ -190,8 +222,9 @@ Nicolas Lamirault <nicolas.lamirault@gmail.com>
 [PlatformIO]: http://platformio.org/
 [Arduino]: https://www.arduino.cc/
 
-[Kubernetes]: http://kubernetes.io/
+[HypriotOS]: http://blog.hypriot.com/
 
+[Kubernetes]: http://kubernetes.io/
 [Mosquitto]: http://mosquitto.org/
 [Grafana]: http://grafana.org/
 [Prometheus]: https://prometheus.io/
