@@ -14,42 +14,40 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-. commons.sh
-
-hypriot_version="1.0.0"
-hypriot_img="v${hypriot_version}"
-
 hostname=$1
 ssid=$2
 wifipasswd=$3
+rpi=$4
+
+K8S_ARM_VERSION=0.7.0
 
 NO_COLOR="\033[0m"
 OK_COLOR="\033[32;01m"
 ERROR_COLOR="\033[31;01m"
 WARN_COLOR="\033[33;01m"
+DEBUG_COLOR="\033[34;01m"
 
-
-function get_os {
-    case "$OSTYPE" in
-        darwin*)  echo "Darwin" ;;
-        linux*)   echo "Linux" ;;
-        *)        echo "unknown: $OSTYPE" ;;
-    esac
-}
-
-echo -e "${OK_COLOR}== Hypriot ${hypriot_version} for Raspberry Pi 2 ==${NO_COLOR}"
-if [ $# -ne 3 ]; then
-  echo -e "${ERROR_COLOR}Usage: $0 hostname ssid wifipassword${NO_COLOR}"
+echo -e "${OK_COLOR}== Jarvis for Raspberry Pi 2 ==${NO_COLOR}"
+if [ $# -ne 4 ]; then
+  echo -e "${ERROR_COLOR}Usage: $0 hostname ssid wifipassword rpi-2|rpi-3${NO_COLOR}"
   exit 1
 fi
 
-if [ ! -f "flash" ]; then
-    os=$(get_os)
-    curl -LO  --progress-bar https://raw.githubusercontent.com/hypriot/flash/master/${os}/flash
-    chmod +x ./flash
-fi
+echo -e "${DEBUG_COLOR}Download kubernetes-on-arm${NO_COLOR}"
 
-echo -e "${OK_COLOR}== Install HypriotOS ${hypriot_version} ==${NO_COLOR}"
-./flash https://downloads.hypriot.com/hypriotos-rpi-v${hypriot_version}.img.zip
+# git clone https://github.com/luxas/kubernetes-on-arm
+curl -LO --progress-bar https://github.com/luxas/kubernetes-on-arm/archive/v${K8S_ARM_VERSION}.tar.gz
+tar zxvf v${K8S_ARM_VERSION}.tar.gz
+cd kubernetes-on-arm-${K8S_ARM_VERSION}
+
+echo -e "${DEBUG_COLOR}Install kubernetes${NO_COLOR}"
+# Display help:
+# sdcard/write.sh
+# sdcard/write.sh /dev/sdb ${rpi} hypriotos kube-systemd
+
+echo -e "${DEBUG_COLOR}Cleanup${NO_COLOR}"
+cd ..
+rm -r kubernetes-on-arm-${K8S_ARM_VERSION}
+rm v${K8S_ARM_VERSION}.tar.gz
 
 echo -e "${OK_COLOR}== Done ==${NO_COLOR}"
