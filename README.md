@@ -59,6 +59,15 @@ For *arduino* projects, you could :
 
     $ make k8s-deps k8s-init
 
+    $ kubectl version
+    Client Version: version.Info{Major:"1", Minor:"2", GitVersion:"v1.2.4", GitCommit:"3eed1e3be6848b877ff80a93da3785d9034d0a4f", GitTreeState:"clean"}
+    Server Version: version.Info{Major:"1", Minor:"3", GitVersion:"v1.3.5", GitCommit:"b0deb2eb8f4037421077f77cb163dbb4c0a2a9f5", GitTreeState:"clean"}
+
+    $ kubectl cluster-info
+    Kubernetes master is running at https://192.168.99.100:8443
+    kubernetes-dashboard is running at https://192.168.99.100:8443/api/v1/proxy/namespaces/kube-system/services/kubernetes-dashboard
+
+
 #### Dashboard
 
     $ minikube dashboard
