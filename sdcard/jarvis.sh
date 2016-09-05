@@ -19,7 +19,7 @@ ssid=$2
 wifipasswd=$3
 rpi=$4
 
-K8S_ARM_VERSION=0.7.0
+K8S_ARM_VERSION=0.8.0
 
 NO_COLOR="\033[0m"
 OK_COLOR="\033[32;01m"
