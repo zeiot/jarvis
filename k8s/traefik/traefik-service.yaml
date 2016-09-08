@@ -17,6 +17,8 @@ kind: Service
 metadata:
   name: traefik-web-ui
   namespace: kube-system
+  label:
+    environment: dev
 spec:
   selector:
     k8s-app: traefik-ingress-lb

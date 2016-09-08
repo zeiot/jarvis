@@ -23,6 +23,7 @@ metadata:
   labels:
     app: prometheus
     component: core
+    environment: dev
 data:
   prometheus.yml: |
     global:

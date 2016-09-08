@@ -17,6 +17,8 @@ kind: Ingress
 metadata:
   name: traefik-web-ui
   namespace: kube-system
+  labels:
+    environment: dev
 spec:
   rules:
   - host: traefik-ui.local

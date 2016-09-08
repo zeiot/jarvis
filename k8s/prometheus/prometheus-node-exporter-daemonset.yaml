@@ -19,6 +19,7 @@ metadata:
   labels:
     app: prometheus
     component: node-exporter
+    environment: dev
 spec:
   template:
     metadata:

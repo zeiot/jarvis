@@ -20,6 +20,7 @@ metadata:
   namespace: kube-system
   labels:
     k8s-app: traefik-ingress-lb
+    environment: dev
 spec:
   replicas: 1
   selector:
