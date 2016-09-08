@@ -224,7 +224,7 @@ On Grafana UI
 ** Url: http://prometheus:9090
 
 * Import [Prometheus Stats](https://grafana.net/dashboards/159)
-* Import [Kubernetes Cluster Monitoring](https://grafana.net/dashboards/162)
+* Import [Kubernetes Cluster Monitoring](https://grafana.net/dashboards/315)
 
 
 #### Debug
