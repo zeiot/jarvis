@@ -174,6 +174,46 @@ For *arduino* projects, you could :
 
 We should now be able to visit *traefik-ui.local* in the browser and view the Traefik Web UI.
 
+
+#### Mosquitto
+
+    $ kubectl create -f k8s/mosquitto/mosquitto-deployment.yaml
+    deployment "mosquitto" created
+
+    $ kubectl get deployment
+    NAME              DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
+    [...]
+    mosquitto         1         1         1            1           15m
+
+    $ kubectl create -f k8s/mosquitto/mosquitto-service.yaml
+    service "mosquitto" created
+
+    $ kubectl get service
+    NAME                       CLUSTER-IP   EXTERNAL-IP   PORT(S)    AGE
+    [...]
+    mosquitto                  10.0.0.31    nodes         1883/TCP   16m
+
+    $ minikube service mosquitto --url
+    http://192.168.99.100:30183
+
+You should now testing the Mosquitto server:
+In Terminal window 1 type:
+
+    $ mosquitto_sub -v -h 192.168.99.100 -p 30183 -t k8s/test
+
+In Terminal window 2 type:
+
+    $ mosquitto_pub -d -h 192.168.99.100 -p 30183 -t k8s/test -m "Hello Jarvis!"
+    Client mosqpub/14361-nlamiraul sending CONNECT
+    Client mosqpub/14361-nlamiraul received CONNACK
+    Client mosqpub/14361-nlamiraul sending PUBLISH (d0, q0, r0, m1, 'k8s/test', ... (13 bytes))
+    Client mosqpub/14361-nlamiraul sending DISCONNECT
+
+When you have done the second statement you should see this in the Terminal 1 window:
+
+    k8s/test Hello Jarvis!
+
+
 #### Setup
 
 On Grafana UI
