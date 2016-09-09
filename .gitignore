@@ -1,8 +1,12 @@
 # Platform.io
 venv
-.pioenvs
+arduino/teleinfo/.piolibdeps
 arduino/teleinfo/.pioenvs
+arduino/dht/.piolibdeps
 arduino/dht/.pioenvs
+arduino/photocell/.piolibdeps
+arduino/photocell/.pioenvs
+
 
 # Kubernetes
 kubectl

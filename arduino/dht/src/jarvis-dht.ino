@@ -49,7 +49,7 @@ char message_buff[100];
 void setup_wifi() {
 
   delay(10);
-  Serial.print("[Jarvis] Connecting to : ");
+  Serial.print("[Jarvis-DHT] Connecting to : ");
   Serial.println(ssid);
 
   WiFi.begin(ssid, password);
@@ -58,7 +58,7 @@ void setup_wifi() {
     Serial.print(".");
   }
 
-  Serial.print("[Jarvis] WiFi connected. IP: ");
+  Serial.print("[Jarvis-DHT] WiFi connected. IP: ");
   Serial.println(WiFi.localIP());
 }
 
@@ -67,27 +67,27 @@ void setup_wifi() {
  */
 
 void callback(char* topic, byte* payload, unsigned int length) {
-  Serial.println("[Jarvis] Message arrived:  topic: " + String(topic));
-  Serial.println("[Jarvis] Length: " + String(length,DEC));
+  Serial.println("[Jarvis-DHT] Message arrived:  topic: " + String(topic));
+  Serial.println("[Jarvis-DHT] Length: " + String(length,DEC));
   unsigned int i;
   for(i=0; i<length; i++) {
     message_buff[i] = payload[i];
   }
   message_buff[i] = '\0';
   String msgString = String(message_buff);
-  Serial.println("[Jarvis] Payload: " + msgString);
+  Serial.println("[Jarvis-DHT] Payload: " + msgString);
 }
 
 void reconnect() {
   while (!mqttClient.connected()) {
-    Serial.println("[Jarvis] Attempting MQTT connection...");
+    Serial.println("[Jarvis-DHT] Attempting MQTT connection...");
     // Attempt to connect
     if (mqttClient.connect("ESP8266Client")) {
-      Serial.println("[Jarvis] connected");
+      Serial.println("[Jarvis-DHT] connected");
       mqttClient.publish("/jarvis/ping", "hello world from teleinfo");
       // client.subscribe("");
     } else {
-      Serial.print("[Jarvis] failed, rc=");
+      Serial.print("[Jarvis-DHT] failed, rc=");
       Serial.print(mqttClient.state());
       Serial.println(" try again in 5 seconds");
       delay(5000);
@@ -96,7 +96,7 @@ void reconnect() {
 }
 
 void setup_mqtt() {
-  Serial.println("[Jarvis] Setup MQTT");
+  Serial.println("[Jarvis-DHT] Setup MQTT");
   mqttClient = PubSubClient(mqtt_server, mqtt_port, callback, wifiClient);
   reconnect();
 }
@@ -108,7 +108,7 @@ DHT dht(DHTPIN, DHTTYPE, 11); // 11 works fine for ESP8266
 
 void setup() {
   Serial.begin(9600);
-  Serial.println("[Jarvis] DHT");
+  Serial.println("[Jarvis-DHT] DHT");
   dht.begin();
 }
 
@@ -120,17 +120,18 @@ void loop() {
   // float temperature = dht.readTemperature(true);
 
   if (isnan(humidity) || isnan(temperature)) {
-    Serial.println("[Jarvis] Error reading data from DHT sensor");
+    Serial.println("[Jarvis-DHT] Error reading data from DHT sensor");
     return;
   }
 
-  Serial.print("Humidity: ");
+  Serial.print("\n[Jarvis-DHT] Humidity: ");
   Serial.print(humidity);
   Serial.print(" %\t");
   Serial.print("Temperature: ");
   Serial.print((int)temperature);
-  Serial.print(" *C ");
-  Serial.print(temperature);
+  Serial.print("°");
+  // Serial.print(temperature);
+  // Serial.print("°");
 
   // Wait 500 ms
   delay(500);

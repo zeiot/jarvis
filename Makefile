@@ -34,9 +34,8 @@ help:
 .PHONY: clean
 clean: ## clean installation
 	platformio run -d arduino/dht --target clean
+	platformio run -d arduino/photocell --target clean
 	platformio run -d arduino/teleinfo --target clean
-	@cd server && make clean
-
 
 #
 # Raspberry PI
@@ -53,7 +52,28 @@ rasp-create: ## Create the Raspberry PI SDCard (sdb=sdbXXX)
 .PHONY: arduino-init
 arduino-init: ## Initialize Arduino environment
 	virtualenv --python=/usr/bin/python2 venv && \
-		. venv/bin/activate && pip install platformio
+		. venv/bin/activate && pip install platformio==3.0.1
+	echo -e "$(OK_COLOR)Active your PlatformIO environment: $ . venv/bin/activate$(NO_COLOR)"
+
+.PHONY: arduino-list
+arduino-list: ## List serial ports
+	platformio device list
+
+.PHONY: arduino-monitor
+arduino-monitor: ## serial port monitor ('ctrl+]' to quit)
+	platformio device monitor
+
+.PHONY: arduino-build
+arduino-build: ## Build project (project=xxx)
+	platformio run -d $(project)
+
+.PHONY: arduino-test
+arduino-test: ## Test project (project=xxx)
+	platformio test -d $(project)
+
+.PHONY: arduino-upload
+arduino-upload: ## Build and upload project (project=xxx)
+	platformio run -d $(project) --target upload
 
 .PHONY: arduino-ci
 arduino-ci: ## Launch unit tests
@@ -68,27 +88,8 @@ arduino-ci: ## Launch unit tests
 		--lib=arduino/teleinfo/lib/LibTeleinfo_ID214 \
 		--board=uno
 
-.PHONY: arduino-run-all
-arduino-build-all: ## Build projects
-	platformio run -d arduino/dht
-	platformio run -d arduino/teleinfo
-
-.PHONY: arduino-upload-all
-arduino-upload-all: ## Build and upload projects
-	platformio run -d arduino/dht --target upload
-	platformio run -d arduino/teleinfo --target upload
-
-.PHONY: arduino-run
-arduino-build: ## Build projects
-	platformio run -d $(project)
-
-.PHONY: arduino-upload
-arduino-upload: ## Build and upload projects
-	platformio run -d $(project) --target upload
-
-
 #
-# Development
+# Kubernetes
 #
 
 .PHONY: k8s-deps
