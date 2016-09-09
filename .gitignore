@@ -6,6 +6,7 @@ arduino/dht/.piolibdeps
 arduino/dht/.pioenvs
 arduino/photocell/.piolibdeps
 arduino/photocell/.pioenvs
+config.h
 
 
 # Kubernetes

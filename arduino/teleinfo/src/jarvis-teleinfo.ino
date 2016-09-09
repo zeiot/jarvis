@@ -23,12 +23,14 @@
 #include <WiFi.h>
 #include <WiFiClient.h>
 
+#include "config.h"
+
 /* ************************ Configuration *********************************/
 
-char ssid[] = "xxxxx";
-char password []= "xxxx";
+/* char ssid[] = "xxxxx"; */
+/* char password []= "xxxx"; */
 
-const char* mqtt_server = "192.10.10.2";
+/* const char* mqtt_server = "192.10.10.2"; */
 const int mqtt_port = 8083;
 
 /* ************************ End configuration *****************************/

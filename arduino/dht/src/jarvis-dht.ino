@@ -22,6 +22,8 @@ limitations under the License.
 #include <WiFi.h>
 #include <WiFiClient.h>
 
+#include "config.h"
+
 #define DHTPIN 2
 
 #define DHTTYPE DHT22
@@ -31,10 +33,10 @@ limitations under the License.
  * Configuration
  */
 
-char ssid[] = "xxxxx";
-char password []= "xxxx";
+/* char ssid[] = "xxxxx"; */
+/* char password []= "xxxx"; */
 
-const char* mqtt_server = "xx.xx.xx.xx";
+/* const char* mqtt_server = "xx.xx.xx.xx"; */
 const int mqtt_port = 8083;
 
 WiFiClient wifiClient;
@@ -108,7 +110,8 @@ DHT dht(DHTPIN, DHTTYPE, 11); // 11 works fine for ESP8266
 
 void setup() {
   Serial.begin(9600);
-  Serial.println("[Jarvis-DHT] DHT");
+  setup_wifi();
+  setup_mqtt();
   dht.begin();
 }
 

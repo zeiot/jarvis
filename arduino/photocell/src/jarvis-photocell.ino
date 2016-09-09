@@ -23,16 +23,18 @@
 #include <WiFi.h>
 #include <WiFiClient.h>
 
+#include "config.h"
+
 #ifndef UNIT_TEST
 
 /*
  * Configuration
  */
 
-char ssid[] = "xxxxx";
-char password []= "xxxx";
+/* char ssid[] = "xxxxx"; */
+/* char password []= "xxxx"; */
 
-const char* mqtt_server = "xx.xx.xx.xx";
+/* const char* mqtt_server = "xx.xx.xx.xx"; */
 const int mqtt_port = 8083;
 
 WiFiClient wifiClient;
@@ -104,6 +106,8 @@ void setup_mqtt() {
 
 void setup(void) {
   Serial.begin(9600);
+  setup_wifi();
+  setup_mqtt();
 }
 
 void loop(void) {
