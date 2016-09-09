@@ -42,8 +42,8 @@ spec:
               memory: 100Mi
           volumeMounts:
             - name: grafana-persistent-storage
-              mountPath: /var
+              mountPath: /var/lib/grafana
       volumes:
         - hostPath:
-            path: /var
+            path: /var/lib/grafana
           name: grafana-persistent-storage
