@@ -29,7 +29,7 @@ MAKE_COLOR=\033[33;01m%-15s\033[0m
 .PHONY: help
 help:
 	@echo -e "$(OK_COLOR)==== $(APP) [$(VERSION)] ====$(NO_COLOR)"
-	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "$(MAKE_COLOR) : %s\n", $$1, $$2}'
+	@grep -E '^[a-zA-Z0-9_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "$(MAKE_COLOR) : %s\n", $$1, $$2}'
 
 .PHONY: clean
 clean: ## clean installation
@@ -93,7 +93,7 @@ arduino-ci: ## Launch unit tests
 #
 
 .PHONY: k8s-deps
-k8s-deps:
+k8s-deps: ## Retrieve Kubernetes dependencies
 	curl -Lo minikube https://storage.googleapis.com/minikube/releases/v0.8.0/minikube-linux-amd64 && \
 		chmod +x minikube
 	curl -Lo kubectl http://storage.googleapis.com/kubernetes-release/release/v1.3.0/bin/linux/amd64/kubectl && \
