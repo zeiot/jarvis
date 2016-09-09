@@ -33,24 +33,32 @@ Install [Kubernetes][] with [HypriotOS][] onto the SDCard:
 
     $ sdcard/jarvis.sh jarvis myssid mywifipassword rpi-2
 
-### DHT
+## Arduino
 
-### Teleinfo
+* For *arduino* projects, we use [PlatformIO][], initialize it:
+
+        $ make arduino-init
+
+* For project (here *dht*) setup arduino devices client configurations:
+
+        $ cp arduino/dht/src/config.sample.h arduino/dht/src/config.h
+        # edit config.h to customize your requirements
+
+* Build project (for example dht):
+
+        $ make arduino-build project=arduino/dht
+
+* Connect an Arduino, then upload it :
+
+        $ make arduino-upload project=arduino/dht
+
+
+## Synology
+
+Configure the SNMP on the Synology NAS. Go to the Control Panel, choose Terminal & SNMP and make the configuration on the SNMP tab (Choose SNMP v1).
 
 
 ## Development
-
-## Arduino
-
-For *arduino* projects, we use [PlatformIO][].
-
-* build all projects :
-
-        $ make arduino-build-all
-
-* build single project (for example dht):
-
-        $ make arduino-build project=arduino/dht
 
 ### Kubernetes
 
@@ -240,6 +248,20 @@ On Grafana UI
 
         $ eval $(minikube docker-env)
         $ docker ps
+
+### Arduino
+
+* Initialize [PlatformIO][]:
+
+        $ make arduino-init
+
+* Build project :
+
+        $ make arduino-build project=xxx
+
+* Upload project :
+
+        $ make arduino-upload project=xxx
 
 
 ## Contributing
