@@ -3,26 +3,25 @@
 [![License Apache 2][badge-license]](LICENSE)
 [![GitHub version](https://badge.fury.io/gh/zeiot%2Frasphome.svg)](https://badge.fury.io/gh/zeiot%2Frasphome)
 
-
-Master :
-* [![Circle CI](https://circleci.com/gh/zeiot/jarvis/tree/master.svg?style=svg)](https://circleci.com/gh/zeiot/jarvis/tree/master)
-
-Develop:
-* [![Circle CI](https://circleci.com/gh/zeiot/jarvis/tree/develop.svg?style=svg)](https://circleci.com/gh/zeiot/jarvis/tree/develop)
+* Master : [![Circle CI](https://circleci.com/gh/zeiot/jarvis/tree/master.svg?style=svg)](https://circleci.com/gh/zeiot/jarvis/tree/master)
+* Develop: [![Circle CI](https://circleci.com/gh/zeiot/jarvis/tree/develop.svg?style=svg)](https://circleci.com/gh/zeiot/jarvis/tree/develop)
 
 Features :
 
 * Extract the energy consumption information from an EDF meter ([ERDF Teleinfo][])
 * Analyze the indoor / outdoor temperature ([DHT22][])
+* Monitoring a Synology NAS using SNMP
+
+Tools :
+
+* Management of containerized applications using [Kubernetes][]
+* Monitoring solution with [Prometheus][]
+* Dashboards using [Grafana][]
 
 Requirements:
 
 * [RaspberryPI][]
-
 * [Arduino][]
-* [PlatformIO][]
-
-* [Kubernetes][]
 
 ![Architecture](jarvis.png)
 
@@ -43,7 +42,7 @@ Install [Kubernetes][] with [HypriotOS][] onto the SDCard:
 
 ## Arduino
 
-For *arduino* projects, you could :
+For *arduino* projects, we use [PlatformIO][].
 
 * build all projects :
 
@@ -273,8 +272,8 @@ Nicolas Lamirault <nicolas.lamirault@gmail.com>
 
 [HypriotOS]: http://blog.hypriot.com/
 
-[Kubernetes]: http://kubernetes.io/
-[Mosquitto]: http://mosquitto.org/
+[Kubernetes]: https://kubernetes.io/
+[Mosquitto]: https://mosquitto.org/
 [Grafana]: http://grafana.org/
 [Prometheus]: https://prometheus.io/
 
