@@ -17,6 +17,7 @@
 hostname=$1
 ssid=$2
 wifipassword=$3
+host=$4
 
 NO_COLOR="\033[0m"
 OK_COLOR="\033[32;01m"
@@ -27,13 +28,13 @@ DEBUG_COLOR="\033[34;01m"
 HYPRIOTOS_VERSION=1.0.0
 
 echo -e "${OK_COLOR}== Jarvis OS: Hypriot ${HYPRIOTOS_VERSION} ==${NO_COLOR}"
-if [ $# -ne 3 ]; then
-  echo -e "${ERROR_COLOR}Usage: $0 hostname ssid wifipassword${NO_COLOR}"
+if [ $# -ne 4 ]; then
+  echo -e "${ERROR_COLOR}Usage: $0 hostname ssid wifipassword Linux|Darwin${NO_COLOR}"
   exit 1
 fi
 
 echo -e "${DEBUG_COLOR}Download flash${NO_COLOR}"
-curl -LO --progress-bar https://raw.githubusercontent.com/hypriot/flash/master/Linux/flash
+curl -LO --progress-bar https://raw.githubusercontent.com/hypriot/flash/master/${host}/flash
 chmod +x flash
 ./flash --hostname ${hostname} --ssid ${ssid} --password ${wifipassword} https://downloads.hypriot.com/hypriotos-rpi-v${HYPRIOTOS_VERSION}.img.zip
 
