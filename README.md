@@ -31,7 +31,15 @@ Requirements:
 
 Install [Kubernetes][] with [HypriotOS][] onto the SDCard:
 
-    $ sdcard/jarvis.sh jarvis myssid mywifipassword rpi-2
+    $ sdcard/jarvis.sh jarvis myssid mywifipassword Linux
+
+Log into the OS:
+
+    $ ssh pirate@x.x.x.x
+    HypriotOS/armv7: pirate@jarvis in ~
+    $ curl -LO --progress-bar https://raw.githubusercontent.com/zeiot/jarvis/refactoring/sdcard/jarvis_k8s.sh
+    $ chmod +x jarvis_k8s.sh
+    $ ./jarvis_k8s.sh
 
 ## Arduino
 
