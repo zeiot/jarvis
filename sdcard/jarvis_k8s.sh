@@ -23,10 +23,6 @@ WARN_COLOR="\033[33;01m"
 DEBUG_COLOR="\033[34;01m"
 
 echo -e "${OK_COLOR}== Jarvis Kubernetes ${K8S_ARM_VERSION}==${NO_COLOR}"
-if [ $# -ne 4 ]; then
-  echo -e "${ERROR_COLOR}Usage: $0 hostname ssid wifipassword rpi-2|rpi-3${NO_COLOR}"
-  exit 1
-fi
 
 echo -e "${DEBUG_COLOR}Download kubernetes-on-arm${NO_COLOR}"
 curl -LO --progress-bar https://github.com/luxas/kubernetes-on-arm/releases/download/v${K8S_ARM_VERSION}/docker-multinode.deb
