@@ -20,6 +20,7 @@ metadata:
     app: grafana
     component: core
     environment: dev
+    version: 3.1.0
 spec:
   replicas: 1
   template:
@@ -28,6 +29,10 @@ spec:
         app: grafana
         component: core
     spec:
+      volumes:
+        - name: grafana-persistent-storage
+          persistentVolumeClaim:
+            claimName: grafana-volume-claim
       containers:
         - image: grafana/grafana:3.1.0
           name: grafana-core
@@ -43,7 +48,3 @@ spec:
           volumeMounts:
             - name: grafana-persistent-storage
               mountPath: /var/lib/grafana
-      volumes:
-        - hostPath:
-            path: /var/lib/grafana
-          name: grafana-persistent-storage
