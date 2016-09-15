@@ -41,10 +41,14 @@ clean: ## clean installation
 # Raspberry PI
 #
 
-.PHONY: rasp-create
-rasp-create: ## Create the Raspberry PI SDCard (sdb=sdbXXX)
+.PHONY: rpi-create
+rpi-create: ## Create the Raspberry PI SDCard (sdb=sdbXXX)
 	@raspberrypi/raspbian.sh $(sdb)
 
+.PHONY: rpi-k8s
+rpi-k8s: ## Initialize components on the Raspberry PI (master=x.x.x.x)
+	@./kubectl create -f k8s/config/namespace-jarvis.yaml -s 192.x.x.x
+	@echo -e"$(OK_COLOR)Go to : $(server)$(NO_COLOR)"
 #
 # Arduino
 #
