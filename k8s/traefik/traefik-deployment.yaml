@@ -21,6 +21,7 @@ metadata:
   labels:
     k8s-app: traefik-ingress-lb
     environment: dev
+    version: v1.0.0
 spec:
   replicas: 1
   selector:
