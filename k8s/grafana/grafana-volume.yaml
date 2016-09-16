@@ -25,7 +25,7 @@ spec:
  - ReadWriteOnce
  persistentVolumeReclaimPolicy: Retain
  hostPath:
-   path: /opt/jarvis/grafana
+   path: /data/grafana
  # nfs:
  #  path: /opt/jarvis/grafana
  #  server: 192.168.1.16
