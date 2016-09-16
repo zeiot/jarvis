@@ -1,22 +1,23 @@
 /*
-Copyright (C) 2016  Nicolas Lamirault <nicolas.lamirault@gmail.com>
+ * Copyright (C) 2016  Nicolas Lamirault <nicolas.lamirault@gmail.com>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-  http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+#include "Arduino.h"
 
 #include <ESP8266wifi.h>
 #include <PubSubClient.h>
-#include <DHT.h>
 
 #include <SPI.h>
 #include <WiFi.h>
@@ -24,10 +25,7 @@ limitations under the License.
 
 #include "config.h"
 
-#define DHTPIN 2
-
-#define DHTTYPE DHT22
-
+#ifndef UNIT_TEST
 
 /*
  * Configuration
@@ -44,6 +42,9 @@ PubSubClient mqttClient;
 
 char message_buff[100];
 
+int photocellPin = 0; // the cell and 10K pulldown are connected to a0
+int photocellReading; // the analog reading from the analog resistor divider
+
 /*
  * Wifi
  */
@@ -51,7 +52,7 @@ char message_buff[100];
 void setup_wifi() {
 
   delay(10);
-  Serial.print("[Jarvis-DHT] Connecting to : ");
+  Serial.print("[Jarvis-Photocell] Connecting to : ");
   Serial.println(ssid);
 
   WiFi.begin(ssid, password);
@@ -60,7 +61,7 @@ void setup_wifi() {
     Serial.print(".");
   }
 
-  Serial.print("[Jarvis-DHT] WiFi connected. IP: ");
+  Serial.print("[Jarvis-Photocell] WiFi connected. IP: ");
   Serial.println(WiFi.localIP());
 }
 
@@ -103,39 +104,28 @@ void setup_mqtt() {
   reconnect();
 }
 
-
-
-// Initialization of the DHT Sensor
-DHT dht(DHTPIN, DHTTYPE, 11); // 11 works fine for ESP8266
-
-void setup() {
+void setup(void) {
   Serial.begin(9600);
   setup_wifi();
   setup_mqtt();
-  dht.begin();
 }
 
-void loop() {
-  // Measure from DHT
-  float humidity = dht.readHumidity();
-  float temperature = dht.readTemperature();
-  // Read in Celsius but Fahrenheit is possible : (isFahrenheit = true)
-  // float temperature = dht.readTemperature(true);
-
-  if (isnan(humidity) || isnan(temperature)) {
-    Serial.println("[Jarvis-DHT] Error reading data from DHT sensor");
-    return;
+void loop(void) {
+  photocellReading = analogRead(photocellPin);
+  Serial.print("\n[Jarvis-Photocell] Reading = ");
+  Serial.print(photocellReading);
+  if (photocellReading < 10) {
+    Serial.print(" - Night");
+  } else if (photocellReading < 200) {
+    Serial.print(" - Dark");
+  } else if (photocellReading < 500) {
+    Serial.print(" - Light");
+  } else if (photocellReading < 800) {
+    Serial.print(" - Bright");
+  } else {
+    Serial.print(" - Very bright");
   }
-
-  Serial.print("\n[Jarvis-DHT] Humidity: ");
-  Serial.print(humidity);
-  Serial.print(" %\t");
-  Serial.print("Temperature: ");
-  Serial.print((int)temperature);
-  Serial.print("°");
-  // Serial.print(temperature);
-  // Serial.print("°");
-
-  // Wait 500 ms
-  delay(500);
+  delay(5000);
 }
+
+#endif

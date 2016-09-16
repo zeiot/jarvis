@@ -29,30 +29,55 @@ MAKE_COLOR=\033[33;01m%-15s\033[0m
 .PHONY: help
 help:
 	@echo -e "$(OK_COLOR)==== $(APP) [$(VERSION)] ====$(NO_COLOR)"
-	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "$(MAKE_COLOR) : %s\n", $$1, $$2}'
+	@grep -E '^[a-zA-Z0-9_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "$(MAKE_COLOR) : %s\n", $$1, $$2}'
 
 .PHONY: clean
 clean: ## clean installation
 	platformio run -d arduino/dht --target clean
+	platformio run -d arduino/photocell --target clean
 	platformio run -d arduino/teleinfo --target clean
-	@cd server && make clean
-
-.PHONY: init
-init: ## Initialize environment
-	virtualenv --python=/usr/bin/python2 venv && \
-		. venv/bin/activate && pip install platformio
 
 #
 # Raspberry PI
 #
 
-.PHONY: rasp-create
-rasp-install: ## Create the Raspberry PI SDCard (sdb=sdbXXX)
+.PHONY: rpi-create
+rpi-create: ## Create the Raspberry PI SDCard (sdb=sdbXXX)
 	@raspberrypi/raspbian.sh $(sdb)
 
+.PHONY: rpi-k8s
+rpi-k8s: ## Initialize components on the Raspberry PI (master=x.x.x.x)
+	@./kubectl create -f k8s/config/namespace-jarvis.yaml -s 192.x.x.x
+	@echo -e"$(OK_COLOR)Go to : $(server)$(NO_COLOR)"
 #
 # Arduino
 #
+
+.PHONY: arduino-init
+arduino-init: ## Initialize Arduino environment
+	virtualenv --python=/usr/bin/python2 venv && \
+		. venv/bin/activate && pip install platformio==3.0.1
+	echo -e "$(OK_COLOR)Active your PlatformIO environment: $ . venv/bin/activate$(NO_COLOR)"
+
+.PHONY: arduino-list
+arduino-list: ## List serial ports
+	platformio device list
+
+.PHONY: arduino-monitor
+arduino-monitor: ## serial port monitor ('ctrl+]' to quit)
+	platformio device monitor
+
+.PHONY: arduino-build
+arduino-build: ## Build project (project=xxx)
+	platformio run -d $(project)
+
+.PHONY: arduino-test
+arduino-test: ## Test project (project=xxx)
+	platformio test -d $(project)
+
+.PHONY: arduino-upload
+arduino-upload: ## Build and upload project (project=xxx)
+	platformio run -d $(project) --target upload
 
 .PHONY: arduino-ci
 arduino-ci: ## Launch unit tests
@@ -67,38 +92,21 @@ arduino-ci: ## Launch unit tests
 		--lib=arduino/teleinfo/lib/LibTeleinfo_ID214 \
 		--board=uno
 
-.PHONY: arduino-run-all
-arduino-build-all: ## Build projects
-	platformio run -d arduino/dht
-	platformio run -d arduino/teleinfo
-
-.PHONY: arduino-upload-all
-arduino-upload-all: ## Build and upload projects
-	platformio run -d arduino/dht --target upload
-	platformio run -d arduino/teleinfo --target upload
-
-.PHONY: arduino-run
-arduino-build: ## Build projects
-	platformio run -d $(project)
-
-.PHONY: arduino-upload
-arduino-upload: ## Build and upload projects
-	platformio run -d $(project) --target upload
-
-
 #
-# API Server
+# Kubernetes
 #
 
-.PHONY: server-build
-server-build:  ## Build the Jarvis Server
-	@cd server && make build
+.PHONY: k8s-deps
+k8s-deps: ## Retrieve Kubernetes dependencies
+	curl -Lo minikube https://storage.googleapis.com/minikube/releases/v0.8.0/minikube-linux-amd64 && \
+		chmod +x minikube
+	curl -Lo kubectl http://storage.googleapis.com/kubernetes-release/release/v1.3.0/bin/linux/amd64/kubectl && \
+		chmod +x kubectl
 
-.PHONY: server-run
-server-run: ## Run the Jarvis server
-	@server/jarvis-server
+.PHONY: k8s-init
+k8s-init: ## Initialize development environment
+	./minikube --vm-driver=virtualbox start
 
-.PHONY: server-exe
-server-exe: ## Create the Jarvis server executable
-	@cd server && make binaries
-
+.PHONY: k8s-destroy
+k8s-destroy: ## Destroy the development environment
+	./minikube delete
