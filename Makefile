@@ -98,7 +98,7 @@ arduino-ci: ## Launch unit tests
 
 .PHONY: k8s-deps
 k8s-deps: ## Retrieve Kubernetes dependencies
-	curl -Lo minikube https://storage.googleapis.com/minikube/releases/v0.8.0/minikube-linux-amd64 && \
+	curl -Lo minikube https://storage.googleapis.com/minikube/releases/v0.10.0/minikube-linux-amd64 && \
 		chmod +x minikube
 	curl -Lo kubectl http://storage.googleapis.com/kubernetes-release/release/v1.3.0/bin/linux/amd64/kubectl && \
 		chmod +x kubectl
