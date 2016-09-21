@@ -15,8 +15,8 @@
  */
 
 /************** ESP8266 related **************/
-#define ssid "YOUR SSDID "
-#define password "YOUR SSID password"
+#define WIFI_SSID "YOUR SSDID "
+#define WIFI_PASSWORD "YOUR SSID password"
 
 /************** MQTT related **************/
-#define mqtt_server = "MQTT SERVER IP"
+#define NATS_SERVER "MQTT SERVER IP"
