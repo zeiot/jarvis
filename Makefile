@@ -56,7 +56,7 @@ rpi-k8s: ## Initialize components on the Raspberry PI (master=x.x.x.x)
 .PHONY: arduino-init
 arduino-init: ## Initialize Arduino environment
 	virtualenv --python=/usr/bin/python2 venv && \
-		. venv/bin/activate && pip install platformio==3.0.1
+		. venv/bin/activate && pip install platformio==3.1.0
 	echo -e "$(OK_COLOR)Active your PlatformIO environment: $ . venv/bin/activate$(NO_COLOR)"
 
 .PHONY: arduino-list
