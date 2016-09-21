@@ -46,6 +46,13 @@ void setup_wifi() {
   Serial.print("[Jarvis-DHT] Connecting to : ");
   Serial.println(WIFI_SSID);
 
+  // check for the presence of the shield:
+  if (WiFi.status() == WL_NO_SHIELD) {
+    Serial.println("[Jarvis-DHT] WiFi shield not present");
+    // don't continue:
+    while(true);
+  }
+
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
