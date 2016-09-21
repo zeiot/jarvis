@@ -5,7 +5,9 @@ arduino/teleinfo/.pioenvs
 arduino/temperature/.piolibdeps
 arduino/temperature/.pioenvs
 arduino/photocell/.piolibdeps
-arduino/photocell/.pioenvs
+arduino/photocell/.pioenvs/
+arduino/airquality/.pioenvs
+arduino/airquality/.piolibdeps
 config.h
 
 
