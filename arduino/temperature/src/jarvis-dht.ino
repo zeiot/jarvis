@@ -40,6 +40,23 @@ NATS nats(
  * Wifi
  */
 
+void print_wifi_status() {
+  // print the SSID of the network you're attached to:
+  Serial.print("[Jarvis-DHT] SSID: ");
+  Serial.println(WiFi.SSID());
+
+  // print your WiFi shield's IP address:
+  IPAddress ip = WiFi.localIP();
+  Serial.print("[Jarvis-DHT] IP Address: ");
+  Serial.println(ip);
+
+  // print the received signal strength:
+  long rssi = WiFi.RSSI();
+  Serial.print("[Jarvis-DHT] Signal strength (RSSI):");
+  Serial.print(rssi);
+  Serial.println(" dBm");
+}
+
 void setup_wifi() {
 
   delay(10);
@@ -60,7 +77,7 @@ void setup_wifi() {
   }
 
   Serial.print("[Jarvis-DHT] WiFi connected. IP: ");
-  Serial.println(WiFi.localIP());
+  print_wifi_status();
 }
 
 /*
