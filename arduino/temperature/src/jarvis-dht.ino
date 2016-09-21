@@ -14,10 +14,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+#include <Arduino.h>
 #include <ESP8266wifi.h>
-#include <PubSubClient.h>
+#include <ArduinoNATS.h>
 #include <DHT.h>
-
 #include <SPI.h>
 #include <WiFi.h>
 #include <WiFiClient.h>
@@ -29,20 +29,12 @@ limitations under the License.
 #define DHTTYPE DHT22
 
 
-/*
- * Configuration
- */
-
-/* char ssid[] = "xxxxx"; */
-/* char password []= "xxxx"; */
-
-/* const char* mqtt_server = "xx.xx.xx.xx"; */
-const int mqtt_port = 8083;
-
 WiFiClient wifiClient;
-PubSubClient mqttClient;
-
-char message_buff[100];
+NATS nats(
+	&wifiClient,
+	NATS_SERVER,
+        NATS_DEFAULT_PORT
+);
 
 /*
  * Wifi
@@ -52,9 +44,9 @@ void setup_wifi() {
 
   delay(10);
   Serial.print("[Jarvis-DHT] Connecting to : ");
-  Serial.println(ssid);
+  Serial.println(WIFI_SSID);
 
-  WiFi.begin(ssid, password);
+  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
     Serial.print(".");
@@ -65,45 +57,25 @@ void setup_wifi() {
 }
 
 /*
- * MQTT
+ * NATS
  */
 
-void callback(char* topic, byte* payload, unsigned int length) {
-  Serial.println("[Jarvis-DHT] Message arrived:  topic: " + String(topic));
-  Serial.println("[Jarvis-DHT] Length: " + String(length,DEC));
-  unsigned int i;
-  for(i=0; i<length; i++) {
-    message_buff[i] = payload[i];
-  }
-  message_buff[i] = '\0';
-  String msgString = String(message_buff);
-  Serial.println("[Jarvis-DHT] Payload: " + msgString);
+void nats_echo_handler(NATS::msg msg) {
+  Serial.println("[Jarvis-DHT] NATS Message subject: " + String(msg.subject));
+  Serial.println("[Jarvis-DHT] NATS Message reply: " + String(msg.reply));
+  Serial.println("[Jarvis-DHT] NATS Message data: " + String(msg.data));
+  nats.publish(msg.reply, msg.data);
 }
 
-void reconnect() {
-  while (!mqttClient.connected()) {
-    Serial.println("[Jarvis-DHT] Attempting MQTT connection...");
-    // Attempt to connect
-    if (mqttClient.connect("ESP8266Client")) {
-      Serial.println("[Jarvis-DHT] connected");
-      mqttClient.publish("/jarvis/ping", "hello world from teleinfo");
-      // client.subscribe("");
-    } else {
-      Serial.print("[Jarvis-DHT] failed, rc=");
-      Serial.print(mqttClient.state());
-      Serial.println(" try again in 5 seconds");
-      delay(5000);
-    }
-  }
+void nats_on_connect() {
+  nats.subscribe("echo", nats_echo_handler);
 }
 
-void setup_mqtt() {
-  Serial.println("[Jarvis-DHT] Setup MQTT");
-  mqttClient = PubSubClient(mqtt_server, mqtt_port, callback, wifiClient);
-  reconnect();
+void setup_nats() {
+  Serial.println("[Jarvis-DHT] Setup NATS");
+  nats.on_connect = nats_on_connect;
+  nats.connect();
 }
-
-
 
 // Initialization of the DHT Sensor
 DHT dht(DHTPIN, DHTTYPE, 11); // 11 works fine for ESP8266
@@ -111,11 +83,16 @@ DHT dht(DHTPIN, DHTTYPE, 11); // 11 works fine for ESP8266
 void setup() {
   Serial.begin(9600);
   setup_wifi();
-  setup_mqtt();
-  dht.begin();
+  setup_nats();
 }
 
 void loop() {
+  if (WiFi.status() != WL_CONNECTED) {
+    setup_wifi();
+  }
+  dht.begin();
+  nats.process();
+
   // Measure from DHT
   float humidity = dht.readHumidity();
   float temperature = dht.readTemperature();
