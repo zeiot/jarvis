@@ -10,6 +10,7 @@ Features :
 
 * Extract the energy consumption information from an EDF meter ([ERDF Teleinfo][])
 * Analyze the indoor / outdoor temperature ([DHT22][])
+* Measure air quality ([MQ135][])
 * Monitoring a Synology NAS using SNMP
 
 Tools :
@@ -115,3 +116,5 @@ Nicolas Lamirault <nicolas.lamirault@gmail.com>
 
 [ERDF Teleinfo]: http://www.erdf.fr/sites/default/files/ERDF-NOI-CPT_02E.pdf
 [DHT22]: https://www.adafruit.com/products/385
+[MQ135]: https://www.olimex.com/Products/Components/Sensors/SNS-MQ135/
+
