@@ -15,39 +15,36 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: prometheus-core
-  labels:
-    app: prometheus
-    component: core
-    environment: dev
-    version: 1.0.2
+  name: prometheus
+  component: core
+  environment: jarvis
+  version: 1.1.3
 spec:
   replicas: 1
-  selector:
-    matchLabels:
-      app: prometheus
-      component: core
   template:
     metadata:
-      name: prometheus-main
       labels:
         app: prometheus
         component: core
     spec:
       containers:
-        - name: prometheus
-          image: prom/prometheus:v1.0.2
-          args:
-            - '-storage.local.retention=6h'
-            - '-storage.local.memory-chunks=500000'
-            - '-config.file=/etc/prometheus/prometheus.yml'
-          ports:
-            - name: webui
-              containerPort: 9090
-          volumeMounts:
-            - name: config-volume
-              mountPath: /etc/prometheus
+      - name: prometheus
+        image: zeiot/rpi-prometheus:1.1.3
+        ports:
+        - name: prometheus-port
+          containerPort: 9090
+        volumeMounts:
+        - mountPath: /prometheus
+          name: database-volume
+        - mountPath: /etc/prometheus
+          name: prometheus-config
       volumes:
-        - name: config-volume
-          configMap:
-            name: prometheus-core
+      - name: database-volume
+        persistentVolumeClaim:
+          claimName: prometheus-database-claim
+      - name: prometheus-config
+        configMap:
+          name: prometheus
+          items:
+          - key: prometheus-config.yml
+            path: prometheus.yml
