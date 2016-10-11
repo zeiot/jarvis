@@ -42,6 +42,31 @@ Log into the OS:
     $ chmod +x jarvis_k8s.sh
     $ ./jarvis_k8s.sh
 
+Setup Kubernetes:
+
+    $ sudo kube-config install
+    Which board is this running on? Options: [bananapro, cubietruck, generic, odroid-c2, parallella, pine64, rpi-2, rpi-3, rpi]. rpi-3
+    Which OS do you have? Options: [archlinux, debian, hypriotos]. hypriotos
+    [...]
+    What hostname do you want? Defaults to kubepi. Which timezone should be set? Defaults to Europe/Helsinki. Europe/Paris
+    Which storage driver do you want? Defaults to overlay.
+    Do you want to create an 1GB swapfile (required for compiling)? N is default [y/N] N
+    Doing some custom work specific to this board
+    Doing some custom work specific to this OS
+    Do you want to reboot now? A reboot is required for Docker to function. Y is default. [Y/n] Y
+
+After a few minutes, check the installation:
+
+    $ kubectl cluster-info
+    Kubernetes master is running at http://localhost:8080
+    KubeDNS is running at http://localhost:8080/api/v1/proxy/namespaces/kube-system/services/kube-dns
+    kubernetes-dashboard is running at http://localhost:8080/api/v1/proxy/namespaces/kube-system/services/kubernetes-dashboard
+
+    $ kubectl get nodes
+    NAME           STATUS    AGE
+    192.168.1.23   Ready     27m
+
+
 Create the Jarvis namespace into Kubernetes:
 
     $ kubectl create -f k8s/config/namespace-jarvis.yaml -s 192.x.x.x
@@ -117,4 +142,3 @@ Nicolas Lamirault <nicolas.lamirault@gmail.com>
 [ERDF Teleinfo]: http://www.erdf.fr/sites/default/files/ERDF-NOI-CPT_02E.pdf
 [DHT22]: https://www.adafruit.com/products/385
 [MQ135]: https://www.olimex.com/Products/Components/Sensors/SNS-MQ135/
-
