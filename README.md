@@ -55,6 +55,10 @@ Setup Kubernetes:
     Doing some custom work specific to this OS
     Do you want to reboot now? A reboot is required for Docker to function. Y is default. [Y/n] Y
 
+Enable master:
+
+    $ sudo kube-config enable master
+
 After a few minutes, check the installation:
 
     $ kubectl cluster-info
@@ -70,6 +74,15 @@ After a few minutes, check the installation:
 Create the Jarvis namespace into Kubernetes:
 
     $ kubectl create -f k8s/config/namespace-jarvis.yaml -s 192.x.x.x
+
+Configure the Jarvis context:
+
+    $ kubectl config set-context jarvis --namespace=jarvis
+    context "jarvis" set.
+    $ kubectl config use-context jarvis
+    switched to context "jarvis".
+    $ kubectl config current-context
+    jarvis
 
 
 ## Arduino
