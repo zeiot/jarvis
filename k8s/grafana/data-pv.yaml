@@ -19,5 +19,7 @@ metadata:
 spec:
   accessModes:
   - ReadWriteMany
+  capacity:
+    storage: 5Gi
   hostPath:
     path: "/opt/jarvis/grafana/data"
