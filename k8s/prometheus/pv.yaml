@@ -20,6 +20,8 @@ spec:
   accessModes:
   - ReadWriteMany
   # Local
+  capacity:
+    storage: 8Gi
   hostPath:
     path: "/opt/jarvis/prometheus/"
   # NFS server
