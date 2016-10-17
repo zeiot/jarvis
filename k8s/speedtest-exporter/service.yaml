@@ -25,8 +25,8 @@ metadata:
 spec:
   ports:
   - name: scrape
-    port: 9112
+    port: 9111
     protocol: TCP
-    targetPort: 9112
+    targetPort: 9111
   selector:
     app: speedtest-exporter
