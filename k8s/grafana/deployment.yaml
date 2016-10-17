@@ -43,8 +43,6 @@ spec:
         - mountPath: /var/lib/grafana
           name: data
       dnsPolicy: ClusterFirst
-      nodeSelector:
-        arch: arm
       restartPolicy: Always
       securityContext: {}
       terminationGracePeriodSeconds: 30
