@@ -1,0 +1,61 @@
+# Copyright 2016 Nicolas Lamirault <nicolas.lamirault@gmail.com>
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: prometheus
+  name: prometheus
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: prometheus
+  template:
+    metadata:
+      labels:
+        app: prometheus
+    spec:
+      containers:
+      - command:
+        - /bin/prometheus
+        - -config.file=/etc/prometheus/prometheus.yml
+        - -storage.local.path=/prometheus
+        - -web.console.libraries=/etc/prometheus/console_libraries
+        - -web.console.templates=/etc/prometheus/consoles
+        - -storage.local.memory-chunks=120000
+        image: zeiot/rpi-prometheus:1.2.1
+        imagePullPolicy: Always
+        name: prometheus
+        ports:
+        - containerPort: 9090
+          name: prometheus
+          protocol: TCP
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        volumeMounts:
+        - mountPath: /etc/prometheus
+          name: config
+        - mountPath: /prometheus
+          name: data
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 180
+      volumes:
+      - configMap:
+          name: prometheus
+        name: config
+      - name: data
+        persistentVolumeClaim:
+          claimName: prometheus-data
