@@ -10,10 +10,5 @@ arduino/airquality/.pioenvs
 arduino/airquality/.piolibdeps
 config.h
 
-
-# Kubernetes
-kubectl
-minikube
-
 # HypriotOS
 flash
