@@ -37,7 +37,7 @@ spec:
         name: speedtest-exporter
         ports:
         - containerPort: 9111
-          hostPort: 9112
+          hostPort: 9111
           name: scrape
           protocol: TCP
       hostNetwork: true
