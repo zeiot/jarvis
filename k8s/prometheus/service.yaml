@@ -22,6 +22,6 @@ spec:
   type: NodePort
   ports:
     - port: 9090
-      nodePort: 9090
+      nodePort: 30090
   selector:
     app: prometheus
