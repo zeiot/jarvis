@@ -36,7 +36,8 @@ fi
 echo -e "${DEBUG_COLOR}Download flash${NO_COLOR}"
 curl -LO --progress-bar https://raw.githubusercontent.com/hypriot/flash/master/${host}/flash
 chmod +x flash
-./flash --hostname ${hostname} --ssid ${ssid} --password ${wifipassword} https://downloads.hypriot.com/hypriotos-rpi-v${HYPRIOTOS_VERSION}.img.zip
+# ./flash --hostname ${hostname} --ssid ${ssid} --password ${wifipassword} https://downloads.hypriot.com/hypriotos-rpi-v${HYPRIOTOS_VERSION}.img.zip
+./flash --hostname ${hostname} --ssid ${ssid} --password ${wifipassword} https://github.com/hypriot/image-builder-rpi/releases/download/v${HYPRIOTOS_VERSION}/hypriotos-rpi-v${HYPRIOTOS_VERSION}.img.zip
 
 echo -e "${DEBUG_COLOR}Cleanup${NO_COLOR}"
 rm ./flash
