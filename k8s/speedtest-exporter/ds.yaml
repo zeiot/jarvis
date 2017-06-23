@@ -36,8 +36,8 @@ spec:
         imagePullPolicy: Always
         name: speedtest-exporter
         ports:
-        - containerPort: 9111
-          hostPort: 9111
+        - containerPort: 9112
+          hostPort: 9112
           name: scrape
           protocol: TCP
       hostNetwork: true
