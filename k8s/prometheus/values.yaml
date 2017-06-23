@@ -132,8 +132,10 @@ configmapReload:
   ## configmap-reload container image
   ##
   image:
-    repository: jimmidyson/configmap-reload
-    tag: v0.1
+    #repository: jimmidyson/configmap-reload
+    #tag: v0.1
+    repository: willies/configmap-reload
+    tag: latest-arm
     pullPolicy: IfNotPresent
 
   ## configmap-reload resource requests and limits
@@ -144,7 +146,7 @@ configmapReload:
 kubeStateMetrics:
   ## If false, kube-state-metrics will not be installed
   ##
-  enabled: false 
+  enabled: true
 
   ## kube-state-metrics container name
   ##
@@ -153,8 +155,8 @@ kubeStateMetrics:
   ## kube-state-metrics container image
   ##
   image:
-    repository: gcr.io/google_containers/kube-state-metrics
-    tag: v0.4.1
+    repository: zeiot/rpi-kube-state-metrics
+    tag: 0.5.0
     pullPolicy: IfNotPresent
 
   ## Node labels for kube-state-metrics pod assignment
