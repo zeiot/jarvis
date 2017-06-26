@@ -1,0 +1,25 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: alertmanager-pvc-claim
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 3Gi
+  storageClassName: ""
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: prometheus-pvc-claim
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 3Gi
+  storageClassName: ""

@@ -68,7 +68,7 @@ alertmanager:
     ## alertmanager data Persistent Volume existing claim name
     ## Requires alertmanager.persistentVolume.enabled: true
     ## If defined, PVC must be created manually before volume will be bound
-    existingClaim: ""
+    existingClaim: "alertmanager-pvc-claim"
 
     ## alertmanager data Persistent Volume mount root path
     ##
@@ -341,7 +341,7 @@ server:
     ## Prometheus server data Persistent Volume existing claim name
     ## Requires server.persistentVolume.enabled: true
     ## If defined, PVC must be created manually before volume will be bound
-    existingClaim: ""
+    existingClaim: "prometheus-pvc-claim"
 
     ## Prometheus server data Persistent Volume mount root path
     ##
@@ -349,7 +349,7 @@ server:
 
     ## Prometheus server data Persistent Volume size
     ##
-    size: 8Gi
+    size: 6Gi
 
     ## Prometheus server data Persistent Volume Storage Class
     ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
