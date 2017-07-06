@@ -19,7 +19,7 @@ SESSION="jarvis"
 
 function tmux-jarvis {
     tmux start-server
-    tmux new-session -s $SESSION -n Jarvis-d
+    tmux new-session -s $SESSION -n Jarvis -d
     tmux new-window -n "Jarvis"
     tmux send-keys -t $SESSION "cd ${HOME}/Perso/Zeiot/jarvis" C-m
     tmux new-window -n "Ctop"
