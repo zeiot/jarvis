@@ -17,7 +17,7 @@
 
 SESSION="jarvis"
 
-function tmux {
+function tmux-jarvis {
     tmux start-server
     tmux new-session -s $SESSION -n Jarvis-d
     tmux new-window -n "Jarvis"
@@ -29,4 +29,4 @@ function tmux {
     tmux attach-session -t $SESSION
 }
 
-tmux
+tmux-jarvis
