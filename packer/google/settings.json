@@ -1,0 +1,8 @@
+{
+    "account_file": "/etc/gcloud/account.json",
+    "project_id": "xxxxxxx",
+    "ssh_user": "xxxxxx",
+    "source_image": "debian-9-stretch-v20170619",
+    "zone": "us-central1-a",
+    "machine_type": "n1-standard-1"
+}
