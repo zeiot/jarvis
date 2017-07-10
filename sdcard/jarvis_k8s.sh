@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Copyright (C) 2016 Nicolas Lamirault <nicolas.lamirault@gmail.com>
+# Copyright (C) 2016, 2017 Nicolas Lamirault <nicolas.lamirault@gmail.com>
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -20,7 +20,8 @@ ERROR_COLOR="\033[31;01m"
 WARN_COLOR="\033[33;01m"
 DEBUG_COLOR="\033[34;01m"
 
-K8S_VERSION="v1.4.4"
+K8S_VERSION="1.6.5-00"
+CNI_VERSION="0.5.1-00"
 
 if [ $# -eq 0 ]; then
     echo -e "${ERROR_COLOR}Usage: $0 <MASTER_IP>${NO_COLOR}"
@@ -35,8 +36,8 @@ curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
 cat <<EOF > /etc/apt/sources.list.d/kubernetes.list
 deb http://apt.kubernetes.io/ kubernetes-xenial main
 EOF
-apt-get update
-apt-get -y kubelet kubeadm kubectl kubernetes-cni
+apt update
+apt install  kubelet=${K8S_VERSION} kubelet=${K8S_VERSION} kubeadm=${K8S_VERSION} kubernetes-cni=${CNI_VERSION}
 
 echo -e "${OK_COLOR} == Start Kubelet ==${NO_COLOR}"
 sudo systemctl enable kubelet && sudo systemctl start kubelet
