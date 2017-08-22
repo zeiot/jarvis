@@ -32,7 +32,7 @@ Requirements:
 
 Install [Kubernetes][] with [HypriotOS][] onto the SDCard:
 
-    $ sdcard/jarvis.sh jarvis myssid mywifipassword Linux
+    $ sdcard/jarvis_os_2.sh jarvis myssid mywifipassword Linux
 
 Log into the OS:
 
@@ -40,24 +40,33 @@ Log into the OS:
     HypriotOS/armv7: pirate@jarvis in ~
     $ curl -LO --progress-bar https://raw.githubusercontent.com/zeiot/jarvis/refactoring/sdcard/jarvis_k8s.sh
     $ chmod +x jarvis_k8s.sh
-    $ ./jarvis_k8s.sh
+    $ export MASTER_IP=192.168.1.23
+    $ sudo ./jarvis_k8s.sh
 
-Setup Kubernetes:
+Extract the *token* from line :
 
-    $ sudo kube-config install
-    Which board is this running on? Options: [bananapro, cubietruck, generic, odroid-c2, parallella, pine64, rpi-2, rpi-3, rpi]. rpi-3
-    Which OS do you have? Options: [archlinux, debian, hypriotos]. hypriotos
-    [...]
-    What hostname do you want? Defaults to kubepi. Which timezone should be set? Defaults to Europe/Helsinki. Europe/Paris
-    Which storage driver do you want? Defaults to overlay.
-    Do you want to create an 1GB swapfile (required for compiling)? N is default [y/N] N
-    Doing some custom work specific to this board
-    Doing some custom work specific to this OS
-    Do you want to reboot now? A reboot is required for Docker to function. Y is default. [Y/n] Y
+    kubeadm join --token xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
-Enable master:
+Setup installation :
 
-    $ sudo kube-config enable master
+    $ sudo cp /etc/kubernetes/admin.conf $HOME/
+    $ sudo chown $(id -u):$(id -g) $HOME/admin.conf
+    $ export KUBECONFIG=$HOME/admin.conf
+
+Install *weave-net* :
+
+    $ kubectl apply -f https://git.io/weave-kube-1.6
+    clusterrole "weave-net" created
+    serviceaccount "weave-net" created
+    clusterrolebinding "weave-net" created
+    daemonset "weave-net" created
+
+Install the dashboard :
+
+    $ wget https://rawgit.com/kubernetes/dashboard/master/src/deploy/kubernetes-dashboard.yaml
+    $ sed -i "s/amd64/arm/g" kubernetes-dashboard.yaml
+    $ kubectl create -f  kubernetes-dashboard.yaml
+    $  kubectl describe services kubernetes-dashboard --namespace=kube-system`
 
 After a few minutes, check the installation:
 
@@ -70,6 +79,54 @@ After a few minutes, check the installation:
     NAME           STATUS    AGE
     192.168.1.23   Ready     27m
 
+Before to add a new node, generate a new machineid, see : https://github.com/hypriot/image-builder-rpi/issues/167
+
+Then add a new node :
+
+    $ sudo kubeadm join --token ${TOKEN} ${MASTER_IP}:6443
+
+Check status of nodes a few minutes later :
+
+    $ kubectl get nodes
+    NAME           STATUS    AGE       VERSION
+    jarvis         Ready     23h       v1.6.5
+    jarvis-node1   Ready     5m        v1.6.5
+
+Install Heapster :
+
+    $ kubectl create -f k8s/heapster/
+    serviceaccount "heapster" created
+    clusterrolebinding "heapster" created
+    deployment "heapster" created
+    service "heapster" created
+
+    $ kubectl get svc --namespace=kube-system
+    NAME                   CLUSTER-IP       EXTERNAL-IP   PORT(S)         AGE
+    heapster               10.105.246.100   <none>        80/TCP          8m
+    kube-dns               10.96.0.10       <none>        53/UDP,53/TCP   11d
+    kubernetes-dashboard   10.111.120.27    <none>        80/TCP          11d
+
+    $ kubectl get pods --namespace=kube-system
+    NAME                                    READY     STATUS    RESTARTS   AGE
+    etcd-jarvis                             1/1       Running   1          11d
+    heapster-1289448017-s6qmt               1/1       Running   0          8m
+    kube-apiserver-jarvis                   1/1       Running   2          11d
+    kube-controller-manager-jarvis          1/1       Running   1          11d
+    kube-dns-1351932519-x7s3h               3/3       Running   0          11d
+    kube-proxy-1vl3p                        1/1       Running   1          11d
+    kube-proxy-20mnd                        1/1       Running   0          11d
+    kube-scheduler-jarvis                   1/1       Running   1          11d
+    kubernetes-dashboard-1656946765-zv5z9   1/1       Running   0          11d
+    tiller-deploy-2149868908-l848t          1/1       Running   0          3d
+    weave-net-3zc8d                         2/2       Running   1          11d
+    weave-net-mn9jc                         2/2       Running   0          11d
+
+Check nodes states :
+
+    $ kubectl top nodes
+    NAME           CPU(cores)   CPU%      MEMORY(bytes)   MEMORY%
+    jarvis         695m         17%       610Mi           80%
+    jarvis-node1   1532m        38%       470Mi           61%
 
 Create the Jarvis namespace into Kubernetes:
 
@@ -83,6 +140,21 @@ Configure the Jarvis context:
     switched to context "jarvis".
     $ kubectl config current-context
     jarvis
+
+### Cloud
+
+You could use [Packer](https://packer.io) to create cloud image with Kubernetes installed.
+See :
+
+| Provider       | Support      | Version     |
+| -------------- | -----------  | ------------|
+| GCE            | [x]          | 1.6.5       |
+| EC2            | [x]          | 1.6.5       |
+| DigitalOcean   | [x]          | 1.6.5       |
+| Azure          | [ ]          |             |
+
+You could use [Terraform](https://terraform.io) to deploy some nodes.
+
 
 
 ## Arduino
