@@ -49,4 +49,4 @@ spec:
       volumes:
         - name: export-volume
           hostPath:
-            path: /srv/nfs-provisionner
+            path: /srv/nfs-provisioner
