@@ -1,0 +1,14 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: hypriot-ingress
+spec:
+  rules:
+  - host: hypriot.jarvis
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: hypriot
+          servicePort: 80
+
