@@ -8,16 +8,17 @@
 
 Features :
 
-* Extract the energy consumption information from an EDF meter ([ERDF Teleinfo][])
-* Analyze the indoor / outdoor temperature ([DHT22][])
-* Measure air quality ([MQ135][])
-* Monitoring a Synology NAS using SNMP
+* [ ] Extract the energy consumption information from an EDF meter ([ERDF Teleinfo][])
+* [ ] Analyze the indoor / outdoor temperature ([DHT22][])
+* [ ] Measure air quality ([MQ135][])
 
 Tools :
 
-* Management of containerized applications using [Kubernetes][]
-* Monitoring solution with [Prometheus][]
-* Dashboards using [Grafana][]
+* [x] Management of containerized applications using [Kubernetes][]
+* [ ] Monitoring solution with [Prometheus][] in the Kubernetes cluster
+* [ ] Dashboards using [Grafana][] in the Kubernetes cluster
+* [x] Custom DNS using [CoreDNS][] (using docker-compose)
+* [x] Home automation using [Home Assistant]() (using docker-compose)
 
 Requirements:
 
@@ -250,6 +251,8 @@ Nicolas Lamirault <nicolas.lamirault@gmail.com>
 [Mosquitto]: https://mosquitto.org/
 [Grafana]: http://grafana.org/
 [Prometheus]: https://prometheus.io/
+[CoreDNS]: https://coredns.io
+[Home Assistant]: https://home-assistant.io/
 
 [Ansible]: https://www.ansible.com/
 
