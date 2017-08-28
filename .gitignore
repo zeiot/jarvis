@@ -12,3 +12,6 @@ config.h
 
 # HypriotOS
 flash
+
+dns/jarvis_hosts
+

@@ -1,0 +1,10 @@
+: {
+    hosts /config/jarvis_hosts jarvis.bgoth {
+        fallthrough
+    }
+    proxy . 8.8.8.8:53
+    prometheus 0.0.0.0:9153
+    errors stdout
+    log stdout
+    health 0.0.0.0:8781
+}
