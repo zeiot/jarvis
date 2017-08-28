@@ -43,19 +43,48 @@ Log into the OS:
     $ export MASTER_IP=192.168.1.23
     $ sudo ./jarvis_k8s.sh
 
+Use *overlay2* storage driver for Docker. Edit '''/etc/docker/daemon.json''' file: 
+
+    ```json
+    {
+      "storage-driver": "overlay2"
+    }
+    ```
+
+    $ sudo systemctl daemon-reload 
+    $ sudo systemctl start docker
+    $ docker info|grep "Storage Driver"
+    Storage Driver: overlay2
+
+Install Kubernetes components :
+
+    $ sudo apt update && sudo apt install -y apt-transport-https
+    $ curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+    $ sudo cat <<EOF >/etc/apt/sources.list.d/kubernetes.list
+    deb http://apt.kubernetes.io/ kubernetes-xenial main
+    EOF
+    $ sudo apt update
+    # Install docker if you don't have it already.
+    $ sudo apt install kubectl=1.7.4-00 kubeadm=1.7.4-00 kubelet=1.7.4-00 kubernetes-cni=0.5.1-00
+
+Initialize the master : 
+
+    $ sudo kubeadm init --kubernetes-version v1.7.4 --apiserver-advertise-address=192.168.1.23 --pod-network-cidr=10.244.0.0/16 --skip-preflight-checks 
+
+
 Extract the *token* from line :
 
-    kubeadm join --token xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+    $ kubeadm join --token xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
 Setup installation :
 
-    $ sudo cp /etc/kubernetes/admin.conf $HOME/
-    $ sudo chown $(id -u):$(id -g) $HOME/admin.conf
-    $ export KUBECONFIG=$HOME/admin.conf
+    $ mkdir -p $HOME/.kube
+    $ sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+    $ sudo chown $(id -u):$(id -g) $HOME/.kube/config
 
 Install *weave-net* :
 
-    $ kubectl apply -f https://git.io/weave-kube-1.6
+    $ kubectl apply -n kube-system -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
     clusterrole "weave-net" created
     serviceaccount "weave-net" created
     clusterrolebinding "weave-net" created
