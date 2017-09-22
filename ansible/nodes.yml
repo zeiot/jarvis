@@ -1,0 +1,7 @@
+- name: Kubernetes nodes configuration
+  hosts: nodes
+  remote_user: pirate
+  become: true
+
+  roles:
+    - nodes

@@ -101,8 +101,8 @@ Test :
 	192.168.1.20               : ok=13   changed=2    unreachable=0    failed=0   
 	192.168.1.26               : ok=12   changed=2    unreachable=0    failed=0   
 	local                      : ok=13   changed=2    unreachable=0    failed=0 
-	
-		
+
+
 ### Update
 
 	$ ansible-playbook -i inventory update.yml --check

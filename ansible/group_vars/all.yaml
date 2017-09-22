@@ -1,9 +1,16 @@
 ---
 
-timezone: "Europe/Berlin"
+timezone: "Europe/Paris"
+arch: arm
+
+api_server_ip: 192.168.1.23
+cidr: 10.244.0.0/16
 
 docker_version: "1.12*"
 
+k8s_release: "v1.7.5"
 k8s_version: "1.7.5-00"
 k8s_cni_version: "0.5.1-00"
 
+# uuidgen | sed -e 's/-//g' -e 's/\(.\{6\}\)\(.\{16\}\).*/\1\.\2/g'
+token: "51e53c.1cc667492ca435eb"

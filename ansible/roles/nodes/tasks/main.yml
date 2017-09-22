@@ -1,0 +1,9 @@
+- name: Reset Kubernetes installation
+  shell: "kubeadm reset"
+  when: "reset==true"
+
+- name: Adding node to cluster
+  shell: "kubeadm join --token {{ token }} {{ master }}"
+  register: out
+
+- debug: var=out.stdout_lines

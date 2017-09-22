@@ -1,0 +1,7 @@
+- name: Kubernetes master configuration
+  hosts: master
+  remote_user: pirate
+  become: true
+
+  roles:
+    - master
