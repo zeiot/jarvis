@@ -1,0 +1,18 @@
+- name: Setup Docker to version {{ docker_version }} (the latest supported by Kubernetes)
+  template: src=docker-apt-pin.txt dest=/etc/apt/preferences.d/docker
+
+- name: Downgrade docker
+  apt:
+    state: present
+    name: docker-engine={{ docker_version }}
+    autoremove: yes
+    force: yes
+
+- name: Creates Docker systemd configuration directory
+  action: file path=/etc/systemd/system/docker.service.d state=directory owner=root group=root recurse=yes
+
+- name: Install Docker customization
+  copy: src=overlay.conf dest=/etc/systemd/system/docker.service.d/overlay.conf
+  notify:
+    - reload systemd
+

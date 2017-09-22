@@ -1,0 +1,14 @@
+- name: Install Kubernetes components
+  apt: name={{item}} state=present
+  with_items:
+    - kubeadm={{ k8s_version }}
+    - kubectl={{ k8s_version }}
+    - kubelet={{ k8s_version }}
+    - kubernetes-cni={{ k8s_cni_version }}
+
+- stat: path=/etc/bash_completion.d/kubectl
+  register: kubernetes_completion
+
+- shell: kubectl completion bash > /etc/bash_completion.d/kubectl
+  when: not kubernetes_completion.stat.exists
+

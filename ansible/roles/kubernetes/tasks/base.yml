@@ -1,0 +1,10 @@
+---
+- name: Update cache
+  apt: update_cache=yes cache_valid_time=86400
+
+- name: Install necessary tools
+  apt: name={{item}}
+  with_items:
+    - apt-transport-https
+    - bash-completion
+    - jq

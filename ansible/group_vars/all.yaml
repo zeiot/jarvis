@@ -1,0 +1,9 @@
+---
+
+timezone: "Europe/Berlin"
+
+docker_version: "1.12*"
+
+k8s_version: "1.7.5-00"
+k8s_cni_version: "0.5.1-00"
+

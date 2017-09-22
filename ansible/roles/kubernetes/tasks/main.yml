@@ -1,0 +1,13 @@
+---
+- name: Install base
+  include: base.yml
+
+- name: Configure Docker
+  include: docker.yml
+
+- name: Add kubernetes repository
+  include: kubernetes_repo.yml
+
+- name: Install kubernetes tools
+  include: kubernetes_tools.yml
+
