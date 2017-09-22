@@ -4,7 +4,7 @@
 - name: Add Kubernetes Repo
   apt_repository: repo='deb http://apt.kubernetes.io/ kubernetes-xenial main' state=present
 
-- name: Update APT package cache and upgrade
+- name: Update APT package cache 
   apt:
     update_cache: yes
     # autoremove: yes

@@ -2,6 +2,9 @@
 - name: Install base
   include: base.yml
 
+- name: Configure system
+  include: system.yml
+
 - name: Configure Docker
   include: docker.yml
 
