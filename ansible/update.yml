@@ -1,0 +1,9 @@
+- name: Update HypriotOS and Kubernetes components
+  hosts: all
+  gather_facts: yes
+  remote_user: pirate
+  become: true
+  become_method: sudo
+
+  roles:
+    - update
