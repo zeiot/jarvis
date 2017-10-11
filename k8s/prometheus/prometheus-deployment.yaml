@@ -1,0 +1,49 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations: {}
+  labels:
+    provider: jarvis
+  name: prometheus
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: prometheus
+  template:
+    metadata:
+      labels:
+        app: prometheus
+    spec:
+      containers:
+      - args:
+        - -config.file=/config/prometheus.yml
+        - -storage.local.path=/prometheus
+        - -web.console.libraries=/etc/prometheus/console_libraries
+        - -web.console.templates=/etc/prometheus/consoles
+        - -storage.local.memory-chunks=120000
+        - -alertmanager.url=http://alertmanager
+        - -web.external-url=http://prometheus.sf-prp.620nm.net
+        image: zeiot/rpi-prometheus:v1.8.0
+        imagePullPolicy: Always
+        name: prometheus
+        ports:
+        - containerPort: 9090
+          protocol: TCP
+        resources:
+          limits:
+            cpu: '1'
+            memory: 512Mi
+          requests:
+            cpu: 100m
+            memory: 128Mi
+        restartPolicy: "Never"
+        serviceAccount: prometheus-operator
+        serviceAccountName: prometheus-operator
+        volumeMounts:
+          - name: nfs-pvc
+            mountPath: "/mnt"
+        volumes:
+          - name: nfs-pvc
+            persistentVolumeClaim:
+              claimName: prometheus-pvc-claim

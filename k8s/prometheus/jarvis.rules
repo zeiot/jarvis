@@ -1,0 +1,84 @@
+ALERT instance_down
+IF up!=1
+FOR 4m
+LABELS {
+severity = 'major',
+scope= 'system',
+service = 'prometheus-exporter'
+}
+ANNOTATIONS {
+summary = "Prometheus instance not available : {{ $labels.instance }}",
+summary_grouped = "Many Prometheus instances are unavailable",
+description = "<strong>Job :</strong> {{ $labels.job }}<br/>"
+}
+
+ALERT K8S_InsufficientNode
+IF count(kube_node_info) < 2
+LABELS {
+severity = "major",
+scope= "system",
+service = "kubernetes"
+}
+ANNOTATIONS {
+summary = "Kubernetes Cluster Too Small",
+description = "Kubernetes nodes down ({{ $value }} / 3) ?\n\rCheck Kubernetes master !"
+}
+
+ALERT Disk_Space_Check
+IF 100.0 - 100 * (node_filesystem_free{instance=~'10.200.37.*',device !~'tmpfs',device!~'by-uuid'} / node_filesystem_size{instance=~'10.200.37.*',device !~'tmpfs',device!~'by-uuid'}) > 60
+LABELS {
+severity = "major",
+scope = "system",
+service = "kube-node"
+}
+ANNOTATIONS {
+summary = "Warning about the disk usage !",
+description = "Instance {{ $labels.instance }}, partition _{{ $labels.mountpoint }}_ à *{{ $value }}%*"
+}
+
+ALERT Node_Load_Check
+IF node_load1{kubernetes_name="node-exporter"} > 0
+LABELS {
+severity = "major",
+service = "kube-node"
+}
+ANNOTATIONS {
+summary = "Warning about load !",
+description = "{{ $labels.instance }} = *{{ $value }}*"
+}
+
+ALERT Node_Memory_Check
+IF node_memory_MemFree{kubernetes_name="node-exporter"}/1000000000 < 1
+LABELS {
+severity = "major",
+scope = "system",
+service = "kube-node"
+}
+ANNOTATIONS {
+summary = "Warning about memory !",
+description = "Check memory for instance {{ $labels.instance }} !"
+}
+
+ALERT K8S_Weave
+IF count(kube_pod_info{pod=~"weave-net.*"}) != count(kube_node_status_ready{condition="true"})
+LABELS {
+severity = "major",
+scope = "system",
+service = "kubernetes"
+}
+ANNOTATIONS {
+summary = "Weave HS ?",
+description = "Il n'y a que {{ $value }} pod Weave. Normal ?"
+}
+
+ALERT Etcd_Has_Leader
+IF max(etcd_server_has_leader) != 1
+LABELS {
+severity = "major",
+scope = "system",
+service = "etcd"
+}
+ANNOTATIONS {
+summary = "Cluster Etcd down ?",
+description = "Check Etcd leader !"
+}
