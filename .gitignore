@@ -15,3 +15,5 @@ flash
 
 dns/jarvis_hosts
 
+# Ansible
+ansible/inventory
