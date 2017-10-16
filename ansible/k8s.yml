@@ -1,0 +1,11 @@
+---
+- name: Setup Jarvis / Raspberry Pi Kubernetes cluster
+  hosts:
+    - master
+    - nodes
+  remote_user: pirate
+  become: true
+  become_method: sudo
+
+  roles:
+    - role: base
