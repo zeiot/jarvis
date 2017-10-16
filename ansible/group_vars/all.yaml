@@ -3,6 +3,10 @@
 timezone: "Europe/Paris"
 arch: arm
 
+#
+# Kubernetes
+#
+
 api_server_ip: 192.168.1.23
 cidr: 10.244.0.0/16
 
@@ -14,3 +18,13 @@ k8s_cni_version: "0.5.1-00"
 
 # uuidgen | sed -e 's/-//g' -e 's/\(.\{6\}\)\(.\{16\}\).*/\1\.\2/g'
 token: "51e53c.1cc667492ca435eb"
+
+#
+# Home Assistant
+#
+
+ha_version: "0.53.1"
+ha_user: pirate
+ha_group: pirate
+ha_daemon_path: "/home/pirate/bin/ha.sh"
+ha_configuration: "/home/pirate/Projects/home-assistant-configuration"
