@@ -1,4 +1,7 @@
-# Platform.io
+# Ansible
+ansible/inventory
+
+# # Platform.io
 venv
 arduino/teleinfo/.piolibdeps
 arduino/teleinfo/.pioenvs
