@@ -18,7 +18,7 @@
 - name: Downgrade docker
   apt:
     state: present
-    name: docker-engine={{ docker_version }}
+    name: docker-ce={{ docker_version }}
     autoremove: yes
     force: yes
 
@@ -29,3 +29,10 @@
   copy: src=overlay.conf dest=/etc/systemd/system/docker.service.d/overlay.conf
   notify:
     - reload systemd
+
+- name: Enable and restart Docker engine
+  systemd:
+    name: docker
+    daemon_reload: yes
+    state: restarted
+    enabled: yes

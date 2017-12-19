@@ -12,23 +12,53 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+- name: Reset Kubernetes
+  command: /usr/bin/kubeadm reset
+
+- name: Check kubelet state
+  systemd:
+    name: kubelet
+    daemon_reload: yes
+    state: started
+
 - name: Generate cluster token
   command: /usr/bin/kubeadm token generate
   register: kubeadm_token_generate
   when: kubeadm_token is not defined
 
+- debug:
+    msg: "Kubernetes token: {{ kubeadm_token_generate.stdout }}"
+
 - set_fact: kubeadm_token={{ kubeadm_token_generate.stdout }}
   when: kubeadm_token is not defined
 
 - name: Initialize cluster
-  command: /usr/bin/kubeadm init --kubernetes-version {{k8s_release}} --apiserver-advertise-address={{api_server_ip}} --token {{ kubeadm_token }} --pod-network-cidr={{cidr}} --skip-preflight-checks
+  shell: /usr/bin/kubeadm init --kubernetes-version {{ k8s_release }} --apiserver-advertise-address={{ groups['master'][0] }} --token {{ kubeadm_token }} --pod-network-cidr={{ cidr }} --skip-preflight-checks
+  register: k8s_init_output
 
-- name: Install Networking Weave
-  command: kubectl apply -n kube-system -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
-  register: out
+- debug:
+    msg: "Kubernetes init: {{ k8s_init_output.stdout }}"
 
-- name: Install Kubernetes Dashboard
-  shell: curl -sSL 'https://rawgit.com/kubernetes/dashboard/master/src/deploy/kubernetes-dashboard.yaml' | sed 's/amd64/{{arch}}/g' | kubectl create -f -
+- name: Wait for admin pods are started
+  pause:
+    minutes: 3
 
-- name: Wait 1 minute for images pulls and cluster services to start
-  pause: minutes=1
+- name: Retrieve Kubernetes version
+  shell: "kubectl version | base64 | tr -d '\n'"
+  register: kubernetes_version
+  environment:
+    KUBECONFIG: /etc/kubernetes/admin.conf
+
+- debug:
+    msg: "Kubernetes version: {{ kubernetes_version.stdout }}"
+
+- name: Install Weavenet network add-on
+  shell: "kubectl apply -f \"https://cloud.weave.works/k8s/net?k8s-version={{ kubernetes_version.stdout }}\" --validate=false"
+  environment:
+    KUBECONFIG: /etc/kubernetes/admin.conf
+
+# - name: Install Weavenet network add-on
+#   shell: "KUBECONFIG=/etc/kubernetes/admin.conf kubectl apply -n kube-system -f \"https://cloud.weave.works/k8s/net?k8s-version=$(KUBECONFIG=/etc/kubernetes/admin.conf kubectl version | base64 | tr -d '\n')\""
+#   register: k8s_weave_output
+#   # environment:
+#   #   KUBECONFIG: /etc/kubernetes/admin.conf

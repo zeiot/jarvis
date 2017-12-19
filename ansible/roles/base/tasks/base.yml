@@ -13,13 +13,23 @@
 # limitations under the License.
 
 ---
+
+- name: Create a file to force apt-get to use IPv4 only
+  copy:
+    content: "Acquire::ForceIPv4 true;"
+    dest: "/etc/apt/apt.conf.d/1000-force-ipv4-transport"
+
 - name: Update cache
-  apt: update_cache=yes cache_valid_time=86400
+  apt:
+    update_cache: yes
+    cache_valid_time: 86400
 
 - name: Install necessary tools
-  apt: name={{ item }}
+  apt:
+    name: "{{ item }}"
+    update_cache: yes
   with_items:
-    - apt-transport-https
-    - bash-completion
-    - jq
-    - nfs-common
+    - "apt-transport-https"
+    - "bash-completion"
+    - "jq"
+    - "nfs-common"

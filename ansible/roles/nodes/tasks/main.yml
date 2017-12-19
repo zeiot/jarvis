@@ -12,8 +12,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-- name: Adding node to cluster
-  shell: "kubeadm join --token {{ kubeadm_token }} {{ master }}"
-  register: out
+- name: Reset Kubernetes
+  command: /usr/bin/kubeadm reset
 
-- debug: var=out.stdout_lines
+- name: Check kubelet state
+  systemd:
+    name: kubelet
+    daemon_reload: yes
+    state: started
+
+- name: Adding node to cluster
+  shell: "kubeadm join --token {{ kubeadm_token }} {{ groups['master'][0] }}:6443 --skip-preflight-checks"
+  register: k8s_join_output
+
+- debug: msg="{{ k8s_join_output.stdout }}"

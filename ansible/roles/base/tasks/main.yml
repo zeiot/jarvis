@@ -22,8 +22,5 @@
 - name: Configure Docker
   include_tasks: docker.yml
 
-- name: Add kubernetes repository
-  include_tasks: kubernetes_repo.yml
-
-- name: Install kubernetes tools
-  include_tasks: kubernetes_tools.yml
+- name: Configure Kubernetes
+  include_tasks: kubernetes.yml

@@ -19,10 +19,9 @@ arch: arm
 # Kubernetes
 #
 
-api_server_ip: 192.168.1.23
 cidr: 10.244.0.0/16
 
-docker_version: "1.12*"
+docker_version: "17.07.0~ce-0~raspbian"
 
 k8s_release: "v1.8.5"
 k8s_version: "1.8.5-00"
@@ -31,4 +30,3 @@ k8s_cfssl_version: "R1.2"
 
 # uuidgen | sed -e 's/-//g' -e 's/\(.\{6\}\)\(.\{16\}\).*/\1\.\2/g'
 token: "51e53c.1cc667492ca435eb"
-
