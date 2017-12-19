@@ -12,18 +12,26 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-- name: Update APT package
-  apt: update_cache=yes
+- name: Kubernetes setup
+  hosts: all
+  remote_user: pirate
+  become: true
 
-- name: Upgrade APT package
-  apt: upgrade=yes
+  roles:
+    - base
 
-#- name: Reboot
-#  shell: sleep 2 && reboot
-#  async: 1
-#  poll: 0
-#  ignore_errors: true
+- name: Kubernetes master configuration
+  hosts: master
+  remote_user: pirate
+  become: true
 
-#- name: Waiting for servers
-#  local_action: wait_for host={{ inventory_hostname }} state=started delay=10 timeout=60
-#  sudo: no
+  roles:
+    - master
+
+- name: Kubernetes nodes configuration
+  hosts: nodes
+  remote_user: pirate
+  become: true
+
+  roles:
+    - nodes
