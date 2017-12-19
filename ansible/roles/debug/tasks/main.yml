@@ -1,0 +1,14 @@
+---
+- name: OS informations
+  debug:
+    msg: "System: {{ inventory_hostname }}, OS: {{ ansible_distribution }}"
+
+- name: OS Release
+  debug: var=item
+  with_file:
+     - "/etc/os-release"
+
+- name: Display all variables/facts known for a host
+  debug:
+    var: hostvars[inventory_hostname]
+    verbosity: 4
