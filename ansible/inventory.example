@@ -1,5 +1,5 @@
 [master]
-local		ansible_connection=local
+192.168.1.9	ansible_connection=ssh	ansible_user=pirate
 
 [nodes]
 192.168.1.2	ansible_connection=ssh	ansible_user=pirate
