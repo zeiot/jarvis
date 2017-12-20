@@ -6,4 +6,4 @@ set -x
 
 cp /tmp/motd /etc/motd
 apt-get update
-apt install -y apt-transport-https
+apt install -y apt-transport-https curl

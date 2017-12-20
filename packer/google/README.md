@@ -19,7 +19,7 @@ The available variables that can be configured are:
 * **region**: The region to operate under (default us-central1)
 * **zone**: The zone that the machines should be created in (default us-central1-a)
 * **source_image**: The name of the image to base the launched instances (default `debian-9-stretch-v20170619`)
-* **machine_type**: The machine type to use for the Hyperion instance (default `n1-standard-1`)
+* **machine_type**: The machine type to use for the Jarvis instance (default `n1-standard-1`)
 
 Edit *settings.json* and setup your data.
 
