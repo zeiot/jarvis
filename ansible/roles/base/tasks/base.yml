@@ -33,3 +33,4 @@
     - "bash-completion"
     - "jq"
     - "nfs-common"
+    - "dnsutils"
