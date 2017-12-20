@@ -21,7 +21,7 @@ metadata:
     k8s-addon: kube-dns.addons.k8s.io
     k8s-app: kube-dns
     kubernetes.io/cluster-service: "true"
-    kubernetes.io/name: KubeDNS
+    kubernetes.io/name: "KubeDNS"
 spec:
   selector:
     k8s-app: kube-dns
