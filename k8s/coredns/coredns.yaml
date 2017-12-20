@@ -94,7 +94,7 @@ spec:
       serviceAccountName: coredns
       containers:
       - name: coredns
-        image: coredns/coredns:latest
+        image: coredns/coredns:1.0.1
         imagePullPolicy: Always
         args: [ "-conf", "/etc/coredns/Corefile" ]
         volumeMounts:
