@@ -15,6 +15,9 @@
 - name: Reset Kubernetes
   command: /usr/bin/kubeadm reset
 
+- name: Copy kubeadm.yaml file
+  template: src=kubeadm.yaml.j2  dest=/etc/kubernetes/kubeadm.yaml
+
 - name: Check for existing kubelet configuration
   stat:
     path: /etc/kubernetes/kubelet.conf
@@ -44,21 +47,13 @@
 - debug:
     msg: "Kubernetes token: {{ kubeadm_token }}"
 
-# - name: Generate cluster token
-#   command: /usr/bin/kubeadm token generate
-#   register: kubeadm_token_generate
-#   when:
-#     - inventory_hostname == groups["master"][0]
-#     - kubeadm_token is not defined
-
-# - set_fact: kubeadm_token={{ kubeadm_token_generate.stdout }}
-#   when:
-#     - inventory_hostname == groups["master"][0]
-#     - kubeadm_token is not defined
-
 - name: Initialize cluster
   shell: /usr/bin/kubeadm init --kubernetes-version {{ k8s_release }} --apiserver-advertise-address={{ groups['master'][0] }} --token {{ kubeadm_token }} --pod-network-cidr={{ cidr }} --skip-preflight-checks
   register: k8s_init_output
+
+# - name: Initialize cluster
+#   shell: /usr/bin/kubeadm init --config=/etc/kubernetes/kubeadm.yaml --skip-preflight-checks
+#   register: k8s_init_output
 
 - debug:
     msg: "Kubernetes init: {{ k8s_init_output.stdout }}"
