@@ -17,8 +17,7 @@ Tools :
 * [x] Management of containerized applications using [Kubernetes][]
 * [ ] Monitoring solution with [Prometheus][] in the Kubernetes cluster
 * [ ] Dashboards using [Grafana][] in the Kubernetes cluster
-* [x] Custom DNS using [CoreDNS][] (using docker-compose)
-* [x] Home automation using [Home Assistant]() (using docker-compose)
+* [x] Custom DNS using [CoreDNS][] (See [k8s/coredns/README.md]())
 
 Requirements:
 

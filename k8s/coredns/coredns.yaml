@@ -64,8 +64,8 @@ data:
         errors
         log
         health
-        prometheus
-        kubernetes cluster.local 10.244.0.0/16
+        prometheus :9153
+        kubernetes cluster.local
         proxy . /etc/resolv.conf
         cache 30
     }
