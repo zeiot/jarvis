@@ -64,7 +64,7 @@ data:
         errors
         log stdout
         health
-        kubernetes cluster.local 100.64.0.0/13
+        kubernetes cluster.local 10.244.0.0/16
         proxy . /etc/resolv.conf
         cache 30
     }
