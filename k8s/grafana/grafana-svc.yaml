@@ -7,9 +7,8 @@ metadata:
 spec:
   ports:
   - name: grafana
-    port: 443
+    port: 80
     protocol: TCP
     targetPort: 3000
   selector:
     app: grafana
-  type: ClusterIP
