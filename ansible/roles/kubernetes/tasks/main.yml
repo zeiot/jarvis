@@ -15,27 +15,30 @@
 ---
 - name: Version
   command: kubectl version
-  register: kubernetes_cluster_version
+  register: kubernetes_version
   environment:
     KUBECONFIG: /etc/kubernetes/admin.conf
 
-- debug:
-    msg: "Kubernetes cluster version: {{ kubernetes_cluster_version.stdout }}"
+- name: Display version
+  debug:
+    var: kubernetes_version.stdout_lines
 
-- name: Cluster info
-  command: kubectl cluster-info
-  register: kubernetes_cluster_infos
-  environment:
-    KUBECONFIG: /etc/kubernetes/admin.conf
-
-- debug:
-    msg: "Kubernetes cluster info: {{ kubernetes_cluster_infos.stdout }}"
-
-- name: Nodes
+- name: Get nodes
   command: kubectl get nodes
-  register: kubernetes_cluster_nodes
+  register: kubernetes_nodes
   environment:
     KUBECONFIG: /etc/kubernetes/admin.conf
 
-- debug:
-    msg: "Kubernetes cluster nodes: {{ kubernetes_cluster_nodes.stdout }}"
+- name: Display nodes
+  debug:
+    var: kubernetes_nodes.stdout_lines
+
+- name: Get cluster info
+  command: kubectl cluster-info
+  register: kubernetes_clusterinfo
+  environment:
+    KUBECONFIG: /etc/kubernetes/admin.conf
+
+- name: Display cluster info
+  debug:
+    var: kubernetes_clusterinfo.stdout_lines
