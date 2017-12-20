@@ -1,8 +1,11 @@
 # Kubernetes installation with Ansible
 
-Ansible is used to setup:
+Ansible is used to setup *Kubernetes*.
 
-* [Kubernetes](Kubernetes.md)
+Runtime: 
+* [x] Docker
+* [ ] cri-containerd
+* [ ] cri-o
 
 Prerequisite:
 
