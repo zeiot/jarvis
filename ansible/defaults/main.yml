@@ -1,5 +1,0 @@
----
-grafana_version: 2.6.0
-grafana_root_path: /usr/share/grafana
-
-influxdb_version: 0.10.3

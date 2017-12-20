@@ -1,0 +1,7 @@
+{
+  "type": "digitalocean",
+  "api_token": "YOUR API KEY",
+  "image": "debian-9-x64",
+  "region": "nyc1",
+  "size": "512mb"
+}

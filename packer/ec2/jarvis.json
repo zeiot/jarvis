@@ -1,0 +1,58 @@
+{
+  "variables": {
+    "access_key": "",
+    "secret_key": "",
+    "account_id": "",
+    "key_name": "",
+    "ssh_public_key": "",
+    "ssh_private_key_file": "",
+    "ssh_user": "",
+    "source_ami": "ami-e79f8781",
+    "instance_type": "t2.micro",
+    "region": "eu-west-1",
+    "ec2_version": "1.5.7",
+    "k8s_version": "1.6.5-00",
+    "cni_version": "0.5.1-00",
+    "ami_name": "jarvis-0-1-0-v20170710",
+    "ami_description": "Base Image for Jarvis"
+  },
+  "builders": [
+    {
+      "type": "amazon-ebs",
+      "access_key": "{{user `access_key`}}",
+      "secret_key": "{{user `secret_key`}}",
+      "ami_users": ["{{user `account_id`}}"],
+      "region": "{{user `region`}}",
+      "source_ami": "{{user `source_ami`}}",
+      "instance_type": "{{user `instance_type`}}",
+      "ssh_username": "{{user `ssh_user`}}",
+      "ami_name": "{{user `ami_name`}}",
+      "ami_description": "{{user `ami_description`}}"
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "file",
+      "source": "../files/motd",
+      "destination": "/tmp/motd"
+    },
+    {
+      "type": "shell",
+      "execute_command": "echo 'vagrant' | {{.Vars}} sudo -S -E bash '{{.Path}}'",
+      "script": "setup.sh"
+    },
+    {
+      "type": "shell",
+      "execute_command": "echo 'vagrant' | {{.Vars}} sudo -S -E bash '{{.Path}}'",
+      "scripts": [
+        "../scripts/install.sh",
+        "../scripts/k8s.sh",
+        "../scripts/cleanup.sh"
+      ],
+      "environment_vars": [
+        "K8S_VERSION={{ user `k8s_version` }}",
+        "CNI_VERSION={{ user `cni_version` }}"
+      ]
+    }
+  ]
+}

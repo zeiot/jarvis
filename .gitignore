@@ -1,7 +1,22 @@
-2016-02-26-raspbian-jessie-lite.*
+# Ansible
+ansible/inventory
 
-# Platform.io
+# # Platform.io
 venv
-.pioenvs
+arduino/teleinfo/.piolibdeps
 arduino/teleinfo/.pioenvs
-arduino/dht/.pioenvs
+arduino/temperature/.piolibdeps
+arduino/temperature/.pioenvs
+arduino/photocell/.piolibdeps
+arduino/photocell/.pioenvs/
+arduino/airquality/.pioenvs
+arduino/airquality/.piolibdeps
+config.h
+
+# HypriotOS
+flash
+
+dns/jarvis_hosts
+
+# Ansible
+ansible/inventory

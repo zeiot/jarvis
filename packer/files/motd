@@ -1,0 +1,12 @@
+#!/bin/sh
+
+ip=`ip addr show scope global | grep inet | cut -d' ' -f6 | cut -d/ -f1|tr '\n', ' '`
+uptime=`uptime | awk -F"up " '{print $2}' | awk -F"," '{print $1}'`
+# used=`df -h | grep 'dev/' | awk '{print $1 " " $3}'`
+# available=`df -h | grep 'dev' | awk '{print $4}'`
+disk=`df -h`
+
+echo -e "> Jarvis"
+echo -e "\033[0;31mIP: \033[0;32m$ip \033[0;31m"
+echo -e "\033[0;31mUptime: \033[0;32m$uptime \033[0;31m"
+echo -e "\033[0;31mDisk: \n\033[0;32m$disk \033[0;31m"

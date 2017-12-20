@@ -1,0 +1,56 @@
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  annotations: {}
+  labels:
+    provider: jarvis
+  labels:
+    app: node-exporter
+  name: node-exporter
+spec:
+  selector:
+    matchLabels:
+      app: node-exporter
+  template:
+    metadata:
+      labels:
+        app: node-exporter
+    spec:
+      containers:
+      - image: zeiot/rpi-node_exporter:v0.15.0
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /
+            port: 9100
+            scheme: HTTP
+          initialDelaySeconds: 60
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 10
+        name: node-exporter
+        ports:
+        - containerPort: 9100
+          hostPort: 9100
+          protocol: TCP
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /
+            port: 9100
+            scheme: HTTP
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 10
+        resources:
+          limits:
+            cpu: 500m
+            memory: 128Mi
+          requests:
+            cpu: 500m
+            memory: 128Mi
+      hostNetwork: true
+      tolerations:
+      - effect: NoSchedule
+        operator: Exists

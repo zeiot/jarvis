@@ -1,0 +1,12 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: prometheus-pvc-claim
+  annotations:
+    volume.beta.kubernetes.io/storage-class: "jarvis-nfs-client"
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 8Gi

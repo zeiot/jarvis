@@ -1,0 +1,32 @@
+{
+    "name": "LibTeleinfo", 
+    "repository": {
+        "url": "https://github.com/hallard/LibTeleinfo.git", 
+        "type": "git"
+    }, 
+    "platforms": [
+        "atmelavr"
+    ], 
+    "frameworks": [
+        "arduino"
+    ], 
+    "version": "a8126052a4", 
+    "authors": [
+        {
+            "url": "http://hallard.me", 
+            "maintainer": false, 
+            "email": null, 
+            "name": "Charles-Henri Hallard"
+        }
+    ], 
+    "keywords": [
+        "teleinfo", 
+        "french", 
+        "meter", 
+        "power", 
+        "erdf", 
+        "linky"
+    ], 
+    "id": 214, 
+    "description": "Teleinfo French power meter reader and decoding"
+}

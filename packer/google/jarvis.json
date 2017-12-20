@@ -1,0 +1,49 @@
+{
+  "variables": {
+    "account_file": "",
+    "project_id": "",
+    "ssh_user": "",
+    "zone": "",
+    "source_image": "",
+    "machine_type": "",
+    "cluster_name": "",
+    "k8s_version": "1.6.5-00",
+    "cni_version": "0.5.1-00",
+    "image_name": "jarvis-0-1-0-v20170710",
+    "image_description": "Base image for Jarvis"
+  },
+  "builders": [
+    {
+      "type": "googlecompute",
+      "account_file": "{{user `account_file`}}",
+      "project_id": "{{user `project_id`}}",
+      "source_image": "{{user `source_image`}}",
+      "zone": "{{user `zone`}}",
+      "disk_size": 20,
+      "image_name": "{{user `image_name`}}",
+      "image_description": "{{user `image_description`}}",
+      "machine_type": "{{user `machine_type`}}",
+      "ssh_username": "{{user `ssh_user`}}"
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "file",
+      "source": "../files/motd",
+      "destination": "/tmp/motd"
+    },
+    {
+      "type": "shell",
+      "execute_command": "echo 'vagrant' | {{.Vars}} sudo -S -E bash '{{.Path}}'",
+      "scripts": [
+        "../scripts/install.sh",
+        "../scripts/k8s.sh",
+        "../scripts/cleanup.sh"
+      ],
+      "environment_vars": [
+        "K8S_VERSION={{ user `k8s_version` }}",
+        "CNI_VERSION={{ user `cni_version` }}"
+      ]
+    }
+  ]
+}
