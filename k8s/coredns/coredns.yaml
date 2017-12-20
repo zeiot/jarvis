@@ -62,8 +62,9 @@ data:
   Corefile: |
     .:53 {
         errors
-        log stdout
+        log
         health
+        prometheus
         kubernetes cluster.local 10.244.0.0/16
         proxy . /etc/resolv.conf
         cache 30
