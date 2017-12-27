@@ -17,7 +17,7 @@ spec:
         k8s-app: kube-state-metrics
     spec:
       containers:
-      - image: zeiot/rpi-kube-state-metrics:v1.0.1
+      - image: zeiot/rpi-kube-state-metrics:v1.1.0
         imagePullPolicy: IfNotPresent
         name: kube-state-metrics
         ports:
