@@ -29,6 +29,8 @@ spec:
       labels:
         app: prometheus
     spec:
+      serviceAccount: prometheus-operator
+      serviceAccountName: prometheus-operator
       containers:
         - name: prometheus
           image: zeiot/rpi-prometheus:v2.8.1
@@ -51,8 +53,6 @@ spec:
             requests:
               cpu: 100m
               memory: 128Mi
-          serviceAccount: prometheus-operator
-          serviceAccountName: prometheus-operator
           volumeMounts:
             - name: prometheus-data
               mountPath: "/mnt"
