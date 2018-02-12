@@ -1,3 +1,17 @@
+# Copyright 2016-2018 Nicolas Lamirault <nicolas.lamirault@gmail.com>
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
@@ -24,7 +38,7 @@ spec:
         - -storage.local.memory-chunks=120000
         - -alertmanager.url=http://alertmanager
         - -web.external-url=http://prometheus.sf-prp.620nm.net
-        image: zeiot/rpi-prometheus:v1.8.0
+        image: zeiot/rpi-prometheus:v2.8.1
         imagePullPolicy: Always
         name: prometheus
         ports:
@@ -41,9 +55,14 @@ spec:
         serviceAccount: prometheus-operator
         serviceAccountName: prometheus-operator
         volumeMounts:
-          - name: nfs-pvc
+          - name: prometheus-data
             mountPath: "/mnt"
+          - name: prometheus-config
+            mountPath: "/config"
         volumes:
-          - name: nfs-pvc
+          - name: prometheus-data
             persistentVolumeClaim:
-              claimName: prometheus-pvc-claim
+              claimName: prometheus-data
+          - name: prometheus-config
+            persistentVolumeClaim:
+              claimName: prometheus-config
