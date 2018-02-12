@@ -55,12 +55,12 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: prometheus-operator
-  namespace: prometheus
+  # namespace: prometheus
 ---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: prometheus-operator
-  namespace: prometheus
+  # namespace: prometheus
   labels:
     provider: jarvis
