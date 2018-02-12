@@ -33,7 +33,7 @@ spec:
       serviceAccountName: prometheus-operator
       containers:
         - name: prometheus
-          image: zeiot/rpi-prometheus:v2.8.1
+          image: zeiot/rpi-prometheus:v2.1.0
           imagePullPolicy: Always
           args:
             - -config.file=/config/prometheus.yml
