@@ -51,7 +51,6 @@ spec:
           requests:
             cpu: 100m
             memory: 128Mi
-        restartPolicy: "Never"
         serviceAccount: prometheus-operator
         serviceAccountName: prometheus-operator
         volumeMounts:
