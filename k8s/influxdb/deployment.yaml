@@ -27,10 +27,10 @@ spec:
     spec:
       containers:
       - name: influxdb
-        image: zeiot/rpi-influxdb:v1.3.4
+        image: zeiot/rpi-influxdb:v1.4.3
         ports:
         - containerPort: 8086
-        - containerPort: 8083
+        # - containerPort: 8083
         volumeMounts:
         - mountPath: /data
           name: influxdb-data
