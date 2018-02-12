@@ -29,8 +29,8 @@ spec:
       labels:
         app: prometheus
     spec:
-      serviceAccount: prometheus-operator
-      serviceAccountName: prometheus-operator
+      serviceAccount: prometheus
+      serviceAccountName: prometheus
       containers:
         - name: prometheus
           image: zeiot/rpi-prometheus:v2.1.0
