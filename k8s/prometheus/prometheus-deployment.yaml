@@ -58,10 +58,10 @@ spec:
               mountPath: "/mnt"
             - name: prometheus-config
               mountPath: "/config"
-          volumes:
-            - name: prometheus-data
-              persistentVolumeClaim:
-                claimName: prometheus-data
-            - name: prometheus-config
-              persistentVolumeClaim:
-                claimName: prometheus-config
+      volumes:
+        - name: prometheus-data
+          persistentVolumeClaim:
+            claimName: prometheus-data
+        - name: prometheus-config
+          persistentVolumeClaim:
+            claimName: prometheus-config
