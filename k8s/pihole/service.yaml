@@ -15,10 +15,12 @@
 apiVersion: "v1"
 kind: "Service"
 metadata:
+  labels:
+    k8s-app: "pi-hole"
   name: "pi-hole"
 spec:
   selector:
-    app: "pi-hole"
+    k8s-app: "pi-hole"
     component: "pi-hole"
   ports:
   - name: http

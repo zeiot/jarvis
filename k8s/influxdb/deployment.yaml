@@ -17,13 +17,13 @@ kind: Deployment
 metadata:
   name: influxdb
   labels:
-    app: influxdb
+    k8s-app: influxdb
 spec:
   replicas: 1
   template:
     metadata:
       labels:
-        app: influxdb
+        k8s-app: influxdb
     spec:
       containers:
       - name: influxdb

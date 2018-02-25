@@ -18,7 +18,7 @@ metadata:
   name: prometheus
   namespace: monitoring
   labels:
-    app: prometheus
+    k8s-app: prometheus
     provider: jarvis
 spec:
   rules:

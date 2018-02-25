@@ -17,17 +17,18 @@ kind: Deployment
 metadata:
   annotations: {}
   labels:
+    k8s-app: grafana
     provider: jarvis
   name: grafana
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: grafana
+      k8s-app: grafana
   template:
     metadata:
       labels:
-        app: grafana
+        k8s-app: grafana
     spec:
       containers:
       - image: zeiot/rpi-grafana:v4.6.0

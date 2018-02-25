@@ -15,6 +15,8 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
+  labels:
+    k8s-app: "grafana"
   name: grafana-data
   annotations:
     volume.beta.kubernetes.io/storage-class: "jarvis-nfs-client"
@@ -28,6 +30,8 @@ spec:
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
+  labels:
+    k8s-app: "grafana"
   name: grafana-config
   annotations:
     volume.beta.kubernetes.io/storage-class: "jarvis-nfs-client"
