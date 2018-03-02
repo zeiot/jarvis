@@ -41,12 +41,37 @@ Install the dashboard :
     $ kubectl apply -f k8s/dashboard --record
     $ kubectl describe services kubernetes-dashboard --namespace=kube-system
 
+Install CoreDNS (see *k8s/coredns/README.md*) as the internal Kubernetes DNS :
+
+    $ kubectl apply -f k8s/coredns --record
+    $ kubectl describe services kube-dns --namespace=kube-system
+    Name:              kube-dns
+    Namespace:         kube-system
+    Labels:            k8s-app=coredns
+                       kubernetes.io/cluster-service=true
+                       kubernetes.io/name=CoreDNS
+    Annotations:       kubectl.kubernetes.io/last-applied-configuration={"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"labels":{"k8s-app":"coredns","kubernetes.io/cluster-service":"true","kubernetes.io/na...
+    Selector:          k8s-app=coredns
+    Type:              ClusterIP
+    IP:                10.96.0.10
+    Port:              dns  53/UDP
+    TargetPort:        53/UDP
+    Endpoints:         10.36.0.5:53,10.44.0.2:53
+    Port:              dns-tcp  53/TCP
+    TargetPort:        53/TCP
+    Endpoints:         10.36.0.5:53,10.44.0.2:53
+    Port:              metrics  9153/TCP
+    TargetPort:        9153/TCP
+    Endpoints:         10.36.0.5:9153,10.44.0.2:9153
+    Session Affinity:  None
+    Events:            <none>
+
 After a few minutes, check the installation:
 
     $ kubectl cluster-info
     Kubernetes master is running at https://192.168.1.36:6443
     Heapster is running at https://192.168.1.36:6443/api/v1/namespaces/kube-system/services/heapster/proxy
-    KubeDNS is running at https://192.168.1.36:6443/api/v1/namespaces/kube-system/services/kube-dns/proxy
+    CoreDNS is running at https://192.168.1.36:6443/api/v1/namespaces/kube-system/services/kube-dns/proxy
 
     $ kubectl get nodes
     NAME            STATUS    ROLES     AGE       VERSION
@@ -94,30 +119,6 @@ See :
 You could use [Terraform](https://terraform.io) to deploy some nodes.
 
 
-
-## Arduino
-
-* For *arduino* projects, we use [PlatformIO][], initialize it:
-
-        $ make arduino-init
-
-* For project (here *dht*) setup arduino devices client configurations:
-
-        $ cp arduino/dht/src/config.sample.h arduino/dht/src/config.h
-        # edit config.h to customize your requirements
-
-* Build project (for example dht):
-
-        $ make arduino-build project=arduino/dht
-
-* Connect an Arduino, then upload it :
-
-        $ make arduino-upload project=arduino/dht
-
-
-## Synology
-
-Configure the SNMP on the Synology NAS. Go to the Control Panel, choose Terminal & SNMP and make the configuration on the SNMP tab (Choose SNMP v1).
 
 
 ## Development

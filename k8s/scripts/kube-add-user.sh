@@ -23,14 +23,46 @@ SCRIPTPATH=$(dirname "$SCRIPT")
 . ${SCRIPTPATH}/certs.sh
 
 
-if [ $# -ne 3 ]; then
-    echo -e "${ERROR_COLOR}Usage: $0 <master ip> <username> <namespace>${NO_COLOR}"
+
+function usage {
+    echo -e "${OK_COLOR}Usage${NO_COLOR} : $0 -s <master ip> -u <username> [ -n <namespace> ]"
+}
+
+address=""
+username=""
+namespace=""
+
+while getopts s:u:n:h option; do
+    case "${option}"
+    in
+        s) address=${OPTARG};;
+        u) username=${OPTARG};;
+        n) namespace=${OPTARG};;
+        h)
+            usage
+            exit 0
+            ;;
+        *)
+            usage
+            exit 1
+            ;;
+    esac
+done
+
+# DEBUG
+# echo "Kubernetes: ${address}"
+# echo "Username: ${username}"
+# echo "Namespace: ${namespace}"
+# exit 0
+
+if [ -z "${address}" ]; then
+    usage
     exit 1
 fi
-
-address=$1
-username=$2
-namespace=$3
+if [ -z "${username}" ]; then
+    usage
+    exit 1
+fi
 
 echo -e "${INFO_COLOR}Kubernetes master: ${address}${NO_COLOR}"
 
@@ -44,13 +76,15 @@ KUBECONFIG=${KUBECONFIG} kubectl config set-cluster admin \
   --embed-certs=true
 
 KUBECONFIG=${KUBECONFIG} kubectl config set-credentials ${username} \
-  --client-certificate=/tmp/${username}.crt \
-  --client-key=/tmp/${username}.key \
-  --embed-certs=true
+          --client-certificate=/tmp/${username}.crt \
+          --client-key=/tmp/${username}.key \
+          --embed-certs=true
 
-KUBECONFIG=${KUBECONFIG} kubectl config set-context ${username} \
-  --cluster=admin \
-  --namespace=${namespace} \
-  --user=${username}
+if [ -n "${namespace}" ]; then
+    KUBECONFIG=${KUBECONFIG} kubectl config set-context ${username} \
+              --cluster=admin \
+              --namespace=${namespace} \
+              --user=${username}
+fi
 
 KUBECONFIG=${KUBECONFIG} kubectl config use-context ${username}
