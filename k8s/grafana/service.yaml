@@ -16,6 +16,7 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
+    k8s-app: grafana
     provider: jarvis
   name: grafana
 spec:
@@ -25,4 +26,4 @@ spec:
     protocol: TCP
     targetPort: 3000
   selector:
-    app: grafana
+    k8s-app: grafana

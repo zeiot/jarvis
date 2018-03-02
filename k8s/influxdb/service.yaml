@@ -26,4 +26,4 @@ spec:
   # - name: influxdb-non-admin
   #   port: 8083
   selector:
-    app: influxdb
+    k8s-app: influxdb

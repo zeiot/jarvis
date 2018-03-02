@@ -15,13 +15,15 @@
 apiVersion: "apps/v1beta1"
 kind: "Deployment"
 metadata:
+  labels:
+    k8s-app: "pi-hole"
   name: "pi-hole"
 spec:
   replicas: 1
   template:
     metadata:
       labels:
-        app: "pi-hole"
+        k8s-app: "pi-hole"
         component: "pi-hole"
     spec:
       nodeSelector:

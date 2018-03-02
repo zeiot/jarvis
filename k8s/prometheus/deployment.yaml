@@ -17,17 +17,19 @@ kind: Deployment
 metadata:
   annotations: {}
   labels:
+    k8s-app: prometheus
     provider: jarvis
   name: prometheus
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: prometheus
+      k8s-app: prometheus
   template:
     metadata:
       labels:
-        app: prometheus
+        k8s-app: prometheus
+        provider: jarvis
     spec:
       serviceAccount: prometheus
       serviceAccountName: prometheus
