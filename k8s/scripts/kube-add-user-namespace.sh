@@ -44,8 +44,5 @@ KUBECONFIG=${KUBECONFIG} kubectl config set-context ${username} \
   --namespace=${namespace} \
   --user=${username}
 
-kubectl create rolebinding hypriot-admin --clusterrole=admin --user=${username} -n ${namespace}
-kubectl label rolebinding hypriot-admin user=${username} -n ${namespace}
-
 KUBECONFIG=${KUBECONFIG} kubectl config use-context ${username}
 
