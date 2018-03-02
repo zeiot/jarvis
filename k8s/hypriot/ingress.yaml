@@ -15,7 +15,7 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: hypriot-ingress
+  name: hypriot
 spec:
   rules:
   - host: hypriot.jarvis

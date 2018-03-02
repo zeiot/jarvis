@@ -12,27 +12,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-apiVersion: extensions/v1beta1
-kind: Deployment
+apiVersion: v1
+kind: Service
 metadata:
   labels:
-    k8s-app: hypriot
+    k8s-app: hypriot 
+    provider: jarvis
   name: hypriot
-  namespace: hypriot
 spec:
-  replicas: 1
+  ports:
+  - name: hypriot
+    port: 80
+    protocol: TCP
+    targetPort: 80
   selector:
-    matchLabels:
-      k8s-app: hypriot
-  template:
-    metadata:
-      labels:
-        k8s-app: hypriot
-    spec:
-      containers:
-      - image: hypriot/rpi-busybox-httpd
-        imagePullPolicy: Always
-        name: hypriot
-        ports:
-        - containerPort: 80
-          protocol: TCP
+    k8s-app: hypriot
