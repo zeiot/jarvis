@@ -3,7 +3,7 @@
 Launch a busybox pod :
 
 ```bash
-$ kubectl apply -f coredns/busybox.yaml
+$ kubectl apply -f busybox.yaml
 pod "busybox" created
 ```
 
@@ -31,7 +31,7 @@ kube-dns   ClusterIP   10.96.0.10   <none>        53/UDP,53/TCP   4h
 Setup CoreDNS :
 
 ```bash
-$ kubectl apply -f coredns/coredns.yaml
+$ kubectl apply -f coredns.yaml
 serviceaccount "coredns" created
 clusterrole "system:coredns" created
 clusterrolebinding "system:coredns" created
@@ -63,7 +63,7 @@ linux/arm, go1.9.2, 99e163c3
 Switch to CoreDNS for Service Discovery:
 
 ```bash
-$ kubectl create -f coredns/coredns-service.yaml
+$ kubectl create -f coredns-service.yaml
 kubectl created
 service "kube-dns" configured
 
@@ -98,7 +98,7 @@ coredns-56bd994f66-z64fq   1/1       Running   0          49m       10.36.0.5   
 You could switch back to KubeDNS :
 
 ```bash
-$ kubectl apply -f k8s/coredns/kubedns-service.yaml
+$ kubectl apply -f kubedns-service.yaml
 ```
 
 Try with **google.com** :
