@@ -20,27 +20,32 @@ if [ $# -ne 3 ]; then
 fi
 
 address=$1
-user=$2
+username=$2
 namespace=$3
 
 echo "Kubernetes master: ${address}"
 
-openssl genrsa -out ${username}.key 2048
-openssl req -new -key ${username}.key -out ${username}.csr -subj "/CN=${username}/O=jarvis"
-openssl x509 -req -in ${username}.csr -CA /etc/kubernetes/pki/ca.crt -CAkey /etc/kubernetes/pki/ca.key -CAcreateserial -out ${username}.crt
+openssl genrsa -out /tmp/${username}.key 2048
+openssl req -new -key /tmp/${username}.key -out /tmp/${username}.csr -subj "/CN=${username}/O=jarvis"
+sudo openssl x509 -req -in /tmp/${username}.csr -CA /etc/kubernetes/pki/ca.crt -CAkey /etc/kubernetes/pki/ca.key -CAcreateserial -out /tmp/${username}.crt
 
-kubectl config set-cluster admin \
+KUBECONFIG=/tmp/${username}-config
+
+KUBECONFIG=${KUBECONFIG} kubectl config set-cluster admin \
   --server=https://${address}:6443 \
   --certificate-authority=/etc/kubernetes/pki/ca.crt \
   --embed-certs=true
-kubectl config set-credentials ${username} \
-  --client-certificate=${username}.crt
-  --client-key=${username}.key  
+KUBECONFIG=${KUBECONFIG} kubectl config set-credentials ${username} \
+  --client-certificate=/tmp/${username}.crt \
+  --client-key=/tmp/${username}.key \
   --embed-certs=true
-kubectl config set-context ${username} \
+KUBECONFIG=${KUBECONFIG} kubectl config set-context ${username} \
   --cluster=admin \
   --namespace=${namespace} \
   --user=${username}
-kubectl config use-context ${username}
 
-cat ~/.kube/config >> /tmp/${user}-config
+kubectl create rolebinding hypriot-admin --clusterrole=admin --user=${username} -n ${namespace}
+kubectl label rolebinding hypriot-admin user=${username} -n ${namespace}
+
+KUBECONFIG=${KUBECONFIG} kubectl config use-context ${username}
+
