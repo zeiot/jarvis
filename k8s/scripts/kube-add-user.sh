@@ -14,24 +14,33 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-if [ $# -ne 1 ]; then
-    echo "Usage: $0 <master ip>"
+if [ $# -ne 3 ]; then
+    echo "Usage: $0 <master ip> <username> <namespace>"
     exit 1
 fi
 
 address=$1
+user=$2
+namespace=$3
+
 echo "Kubernetes master: ${address}"
+
+openssl genrsa -out ${username}.key 2048
+openssl req -new -key ${username}.key -out ${username}.csr -subj "/CN=${username}/O=jarvis"
+openssl x509 -req -in ${username}.csr -CA /etc/kubernetes/pki/ca.crt -CAkey /etc/kubernetes/pki/ca.key -CAcreateserial -out ${username}.crt
+
 kubectl config set-cluster admin \
-  --server=https://$address:6443 \
+  --server=https://${address}:6443 \
   --certificate-authority=/etc/kubernetes/pki/ca.crt \
   --embed-certs=true
-kubectl config set-credentials admin \
-  --client-certificate=/etc/kubernetes/pki/apiserver-kubelet-client.crt \
-  --client-key=/etc/kubernetes/pki/apiserver-kubelet-client.key \
+kubectl config set-credentials ${username} \
+  --client-certificate=${username}.crt
+  --client-key=${username}.key  
   --embed-certs=true
-kubectl config set-context admin \
+kubectl config set-context ${username} \
   --cluster=admin \
-  --user=admin
-kubectl config use-context admin
+  --namespace=${namespace} \
+  --user=${username}
+kubectl config use-context ${username}
 
-cat ~/.kube/config >> /tmp/config
+cat ~/.kube/config >> /tmp/${user}-config
