@@ -85,6 +85,10 @@ if [ -n "${namespace}" ]; then
               --cluster=admin \
               --namespace=${namespace} \
               --user=${username}
+else
+    KUBECONFIG=${KUBECONFIG} kubectl config set-context ${username} \
+              --cluster=admin \
+              --user=${username}
 fi
 
 KUBECONFIG=${KUBECONFIG} kubectl config use-context ${username}
