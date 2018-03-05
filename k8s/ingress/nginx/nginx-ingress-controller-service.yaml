@@ -15,15 +15,13 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: nginx-ingress
-  namespace: kube-system
+  name: nginx-ingress-lb
+  namespace: ingress-system
 spec:
-# Can also use LoadBalancer type
-  type: NodePort
+  type: LoadBalancer
   ports:
   - name: http
-    port: 8080
-    nodePort: 30080
+    port: 80
     targetPort: 80
     protocol: TCP
   selector:

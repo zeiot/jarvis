@@ -16,6 +16,10 @@ apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: hypriot
+  labels:
+    k8s-app: hypriot
+    provider: jarvis
+  namespace: hypriot
 spec:
   rules:
   - host: hypriot.jarvis
