@@ -17,18 +17,19 @@ kind: Deployment
 metadata:
   annotations: {}
   labels:
-    k8s-app: kube-state-metrics
+    app: kube-state-metrics
     provider: jarvis
   name: kube-state-metrics
+  namespace: monitoring
 spec:
   replicas: 1
   selector:
     matchLabels:
-      k8s-app: kube-state-metrics
+      app: kube-state-metrics
   template:
     metadata:
       labels:
-        k8s-app: kube-state-metrics
+        app: kube-state-metrics
     spec:
       containers:
       - image: zeiot/rpi-kube-state-metrics:v1.2.0

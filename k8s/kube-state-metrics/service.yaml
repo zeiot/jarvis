@@ -18,9 +18,10 @@ metadata:
   annotations:
     prometheus.io/scrape: 'true'
   labels:
-    k8s-app: kube-state-metrics
+    app: kube-state-metrics
     provider: jarvis
   name: kube-state-metrics
+  namespace: monitoring
 spec:
   ports:
   - name: http-metrics
@@ -28,4 +29,4 @@ spec:
     protocol: TCP
     targetPort: http-metrics
   selector:
-    k8s-app: kube-state-metrics
+    app: kube-state-metrics
