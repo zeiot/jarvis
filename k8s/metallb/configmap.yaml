@@ -25,5 +25,6 @@ data:
     address-pools:
     - name: default
       protocol: arp
+      arp-network: 192.168.1.0/24
       cidr:
-      - 192.168.2.224/27
+      - 192.168.1.224/27
