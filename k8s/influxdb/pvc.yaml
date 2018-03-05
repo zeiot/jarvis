@@ -18,7 +18,7 @@ metadata:
   name: influxdb-data
   namespace: metrics
   labels:
-    k8s-app: influxdb
+    app: influxdb
     provider: jarvis
   annotations:
     volume.beta.kubernetes.io/storage-class: "jarvis-nfs-client"

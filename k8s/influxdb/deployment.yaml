@@ -18,13 +18,13 @@ metadata:
   name: influxdb
   namespace: metrics
   labels:
-    k8s-app: influxdb
+    app: influxdb
 spec:
   replicas: 1
   template:
     metadata:
       labels:
-        k8s-app: influxdb
+        app: influxdb
     spec:
       containers:
       - name: influxdb

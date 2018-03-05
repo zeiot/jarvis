@@ -18,7 +18,7 @@ metadata:
   name: influxdb
   namespace: metrics
   labels:
-    k8s-app: influxdb
+    app: influxdb
     provider: jarvis
 spec:
   ports:
@@ -27,4 +27,4 @@ spec:
   # - name: influxdb-non-admin
   #   port: 8083
   selector:
-    k8s-app: influxdb
+    app: influxdb
