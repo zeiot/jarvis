@@ -16,6 +16,7 @@ kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
   name: influxdb-data
+  namespace: metrics
   labels:
     k8s-app: influxdb
     provider: jarvis

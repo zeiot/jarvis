@@ -16,6 +16,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: influxdb
+  namespace: metrics
   labels:
     k8s-app: influxdb
     provider: jarvis
