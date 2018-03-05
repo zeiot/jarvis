@@ -12,18 +12,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-kind: PersistentVolumeClaim
 apiVersion: v1
+kind: ConfigMap
 metadata:
+  namespace: metallb-system
+  name: config
   labels:
-    k8s-app: pi-hole
     provider: jarvis
-  name: pihole-config
-  annotations:
-    volume.beta.kubernetes.io/storage-class: "jarvis-nfs-client"
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 200Mi
+    k8s-app: metallb
+data:
+  config: |
+    address-pools:
+    - name: default
+      protocol: arp
+      cidr:
+      - 192.168.1.0/24
+
