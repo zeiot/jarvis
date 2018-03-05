@@ -16,7 +16,7 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   labels:
-    k8s-app: grafana
+    app: grafana
     provider: jarvis
   name: grafana
   namespace: tools
@@ -24,11 +24,11 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      k8s-app: grafana
+      app: grafana
   template:
     metadata:
       labels:
-        k8s-app: grafana
+        app: grafana
     spec:
       containers:
       - image: zeiot/rpi-grafana:v4.6.0

@@ -16,7 +16,7 @@ kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
   labels:
-    k8s-app: "grafana"
+    app: grafana
   name: grafana-data
   namespace: tools
   annotations:
@@ -32,7 +32,7 @@ kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
   labels:
-    k8s-app: "grafana"
+    app: grafana
   name: grafana-config
   namespace: tools
   annotations:
