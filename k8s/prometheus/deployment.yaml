@@ -20,6 +20,7 @@ metadata:
     k8s-app: prometheus
     provider: jarvis
   name: prometheus
+  namespace: monitoring
 spec:
   replicas: 1
   selector:
