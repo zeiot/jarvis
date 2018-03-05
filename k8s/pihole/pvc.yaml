@@ -16,7 +16,8 @@ kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
   labels:
-    k8s-app: "pi-hole"
+    k8s-app: pi-hole
+    provider: jarvis
   name: pihole-config
   annotations:
     volume.beta.kubernetes.io/storage-class: "jarvis-nfs-client"

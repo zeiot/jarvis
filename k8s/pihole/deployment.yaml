@@ -12,33 +12,29 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-apiVersion: "apps/v1beta1"
-kind: "Deployment"
+apiVersion: apps/v1beta1
+kind: Deployment
 metadata:
   labels:
-    k8s-app: "pi-hole"
-  name: "pi-hole"
+    k8s-app: pi-hole
+    provider: jarvis
+  name: pi-hole
 spec:
   replicas: 1
   template:
     metadata:
       labels:
-        k8s-app: "pi-hole"
-        component: "pi-hole"
+        k8s-app: pi-hole
     spec:
-      nodeSelector:
-        pi-hole: "true"
-      hostNetwork: true
-      env:
-      - name: POD_IP
-        valueFrom:
-          fieldRef:
-            fieldPath: status.podIP
       containers:
         - name: "pi-hole"
           image: "diginc/pi-hole-multiarch:v3.2.1_debian_armhf"
           imagePullPolicy: IfNotPresent
           env:
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
             - name: "ServerIP"
               value: "127.0.0.1"
             - name: "WEBPASSWORD"
@@ -55,22 +51,19 @@ spec:
           ports:
             - name: "dns-tcp"
               containerPort: 53
-              hostPort: 53
               protocol: "TCP"
             - name: "dns-udp"
               containerPort: 53
-              hostPort: 53
               protocol: "UDP"
             - name: "http"
               containerPort: 80
-              hostPort: 80
           securityContext:
             capabilities:
               add:
                 - "NET_ADMIN"
           volumeMounts:
             - name: pihole-config
-              mountPath: /etc/pihole
+              mountPath: "/etc/pihole"
       volumes:
         - name: pihole-config
           persistentVolumeClaim:
