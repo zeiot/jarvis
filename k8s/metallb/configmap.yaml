@@ -19,7 +19,7 @@ metadata:
   name: config
   labels:
     provider: jarvis
-    k8s-app: metallb
+    app: metallb
 data:
   config: |
     address-pools:
@@ -27,4 +27,3 @@ data:
       protocol: arp
       cidr:
       - 192.168.1.0/24
-
