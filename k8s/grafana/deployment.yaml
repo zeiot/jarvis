@@ -15,7 +15,6 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  annotations: {}
   labels:
     k8s-app: grafana
     provider: jarvis
