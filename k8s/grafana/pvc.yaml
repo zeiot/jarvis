@@ -18,6 +18,7 @@ metadata:
   labels:
     k8s-app: "grafana"
   name: grafana-data
+  namespace: tools
   annotations:
     volume.beta.kubernetes.io/storage-class: "jarvis-nfs-client"
 spec:
@@ -33,6 +34,7 @@ metadata:
   labels:
     k8s-app: "grafana"
   name: grafana-config
+  namespace: tools
   annotations:
     volume.beta.kubernetes.io/storage-class: "jarvis-nfs-client"
 spec:

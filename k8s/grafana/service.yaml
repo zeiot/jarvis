@@ -19,6 +19,7 @@ metadata:
     k8s-app: grafana
     provider: jarvis
   name: grafana
+  namespace: tools
 spec:
   ports:
   - name: grafana
