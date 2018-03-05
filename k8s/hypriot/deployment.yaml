@@ -16,18 +16,18 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   labels:
-    k8s-app: hypriot
+    app: hypriot
   name: hypriot
   namespace: hypriot
 spec:
   replicas: 1
   selector:
     matchLabels:
-      k8s-app: hypriot
+      app: hypriot
   template:
     metadata:
       labels:
-        k8s-app: hypriot
+        app: hypriot
     spec:
       containers:
       - image: hypriot/rpi-busybox-httpd

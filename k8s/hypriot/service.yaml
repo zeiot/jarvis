@@ -16,7 +16,7 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    k8s-app: hypriot 
+    app: hypriot
     provider: jarvis
   name: hypriot
   namespace: hypriot
@@ -27,6 +27,5 @@ spec:
     protocol: TCP
     targetPort: 80
   selector:
-    k8s-app: hypriot
+    app: hypriot
   type: LoadBalancer
-

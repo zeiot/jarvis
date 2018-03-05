@@ -17,7 +17,7 @@ kind: Ingress
 metadata:
   name: hypriot
   labels:
-    k8s-app: hypriot
+    app: hypriot
     provider: jarvis
   namespace: hypriot
 spec:
