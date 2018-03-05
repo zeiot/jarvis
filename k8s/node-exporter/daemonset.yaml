@@ -17,20 +17,20 @@ kind: DaemonSet
 metadata:
   annotations: {}
   labels:
-    k8s-app: node-exporter
+    app: node-exporter
     provider: jarvis
   labels:
-    k8s-app: node-exporter
+    app: node-exporter
   name: node-exporter
   namespace: monitoring
 spec:
   selector:
     matchLabels:
-      k8s-app: node-exporter
+      app: node-exporter
   template:
     metadata:
       labels:
-        k8s-app: node-exporter
+        app: node-exporter
     spec:
       containers:
       - image: zeiot/rpi-node_exporter:v0.15.2
