@@ -16,15 +16,17 @@ apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
   labels:
-    k8s-app: pi-hole
+    app: pi-hole
     provider: jarvis
   name: pi-hole
+  namespace: tools
 spec:
   replicas: 1
   template:
     metadata:
       labels:
-        k8s-app: pi-hole
+        app: pi-hole
+        provider: jarvis
     spec:
       containers:
         - name: "pi-hole"

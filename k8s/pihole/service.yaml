@@ -12,16 +12,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-apiVersion: "v1"
-kind: "Service"
+apiVersion: v1
+kind: Service
 metadata:
   labels:
-    k8s-app: pi-hole
+    app: pi-hole
     provider: jarvis
-  name: "pi-hole"
+  name: pi-hole
+  namespace: tools
 spec:
   selector:
-    k8s-app: pi-hole
+    app: pi-hole
   ports:
   - name: http
     protocol: TCP
