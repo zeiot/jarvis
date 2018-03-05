@@ -31,7 +31,7 @@ spec:
         app: grafana
     spec:
       containers:
-      - image: zeiot/rpi-grafana:v4.6.0
+      - image: zeiot/rpi-grafana:v5.0.0
         imagePullPolicy: Always
         name: grafana
         ports:
