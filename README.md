@@ -26,6 +26,8 @@ Requirements:
 
 ![Architecture](jarvis.png)
 
+![Dashboard](dashboard.png)
+
 ## Intallation
 
 ### Raspberry PI
