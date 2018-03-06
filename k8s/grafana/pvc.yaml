@@ -27,19 +27,19 @@ spec:
   resources:
     requests:
       storage: 1Gi
----
-kind: PersistentVolumeClaim
-apiVersion: v1
-metadata:
-  labels:
-    app: grafana
-  name: grafana-config
-  namespace: tools
-  annotations:
-    volume.beta.kubernetes.io/storage-class: "jarvis-nfs-client"
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 100Mi
+# ---
+# kind: PersistentVolumeClaim
+# apiVersion: v1
+# metadata:
+#   labels:
+#     app: grafana
+#   name: grafana-config
+#   namespace: tools
+#   annotations:
+#     volume.beta.kubernetes.io/storage-class: "jarvis-nfs-client"
+# spec:
+#   accessModes:
+#     - ReadWriteOnce
+#   resources:
+#     requests:
+#       storage: 100Mi

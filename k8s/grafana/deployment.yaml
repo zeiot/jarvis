@@ -50,9 +50,15 @@ spec:
           - name: grafana-data
             mountPath: "/var/lib/grafana"
       volumes:
-        - name: grafana-config
-          persistentVolumeClaim:
-            claimName: grafana-config
+        # - name: grafana-config
+        #   persistentVolumeClaim:
+        #     claimName: grafana-config
         - name: grafana-data
           persistentVolumeClaim:
             claimName: grafana-data
+        - name: grafana-config
+          configMap:
+            name: grafana
+            items:
+              - key: grafana.ini
+                path: grafana.ini
