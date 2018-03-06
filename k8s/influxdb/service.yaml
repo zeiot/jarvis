@@ -21,6 +21,7 @@ metadata:
     app: influxdb
     provider: jarvis
 spec:
+  type: LoadBalancer
   ports:
   - name: influxdb-admin
     port: 8086

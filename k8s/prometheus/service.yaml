@@ -21,6 +21,7 @@ metadata:
   name: prometheus
   namespace: monitoring
 spec:
+  type: LoadBalancer
   ports:
   - name: prometheus
     port: 80

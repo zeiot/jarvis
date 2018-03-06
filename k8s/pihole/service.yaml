@@ -21,6 +21,7 @@ metadata:
   name: pi-hole
   namespace: tools
 spec:
+  type: LoadBalancer
   selector:
     app: pi-hole
   ports:
