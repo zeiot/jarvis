@@ -63,5 +63,9 @@ spec:
           persistentVolumeClaim:
             claimName: prometheus-data
         - name: prometheus-config
-          persistentVolumeClaim:
-            claimName: prometheus-config
+          configMap:
+            name: prometheus
+            items:
+              - key: prometheus.yml
+                path: prometheus.yml
+
