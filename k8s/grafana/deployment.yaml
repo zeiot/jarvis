@@ -49,10 +49,10 @@ spec:
             mountPath: "/etc/grafana"
           - name: grafana-data
             mountPath: "/var/lib/grafana"
-        volumes:
-          - name: grafana-config
-            persistentVolumeClaim:
-              claimName: grafana-config
-          - name: grafana-data
-            persistentVolumeClaim:
-              claimName: grafana-data
+      volumes:
+        - name: grafana-config
+          persistentVolumeClaim:
+            claimName: grafana-config
+        - name: grafana-data
+          persistentVolumeClaim:
+            claimName: grafana-data
