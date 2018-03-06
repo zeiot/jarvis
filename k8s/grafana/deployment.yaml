@@ -29,6 +29,7 @@ spec:
     metadata:
       labels:
         app: grafana
+        provider: jarvis
     spec:
       containers:
       - image: zeiot/rpi-grafana:v5.0.0
