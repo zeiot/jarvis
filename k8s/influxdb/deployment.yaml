@@ -19,16 +19,22 @@ metadata:
   namespace: metrics
   labels:
     app: influxdb
+    provider: jarvis
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      app: influxdb
   template:
     metadata:
       labels:
         app: influxdb
+        provider: jarvis
     spec:
       containers:
       - name: influxdb
         image: zeiot/rpi-influxdb:v1.4.3
+        imagePullPolicy: Always
         ports:
         - containerPort: 8086
         # - containerPort: 8083

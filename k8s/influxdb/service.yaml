@@ -25,6 +25,8 @@ spec:
   ports:
   - name: influxdb-admin
     port: 8086
+    protocol: TCP
+    targetPort: 8086
   # - name: influxdb-non-admin
   #   port: 8083
   selector:
