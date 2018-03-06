@@ -18,7 +18,7 @@ metadata:
   labels:
     app: pi-hole
     provider: jarvis
-  name: pi-hole
+  name: pi-hole-ui
   namespace: tools
 spec:
   type: LoadBalancer
@@ -29,6 +29,19 @@ spec:
     protocol: TCP
     port: 8000
     targetPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: pi-hole
+    provider: jarvis
+  name: pi-hole-dns
+  namespace: tools
+spec:
+  selector:
+    app: pi-hole
+  ports:
   - name: dns-tcp
     protocol: TCP
     port: 53
