@@ -1,0 +1,238 @@
+=== Operating System ===
+
+Install https://github.com/hypriot/image-builder-rpi/releases[HypriotOS] onto the sdcard:
+
+----
+$ sdcard/jarvis_os_2.sh jarvis myssid mywifipassword Linux
+----
+
+Generate a new machineid on each host, see : https://github.com/hypriot/image-builder-rpi/issues/167
+
+
+=== Cluster ===
+
+https://www.ansible.com/[Ansible] is used to configure the cluster.
+
+Go into the *ansible* directory to manage the cluster.
+
+==== Creation ====
+
+Create an *inventory* file like that:
+
+----
+[master]
+<master_ip_address>         ansible_connection=ssh        ansible_user=pirate
+
+[nodes]
+<node1_ip_address>          ansible_connection=ssh        ansible_user=pirate
+<node2_ip_address>          ansible_connection=ssh        ansible_user=pirate
+<node3_ip_address>          ansible_connection=ssh        ansible_user=pirate
+----
+
+You could now check communications with hosts:
+
+----
+$ ansible all -m ping -i inventory
+----
+
+Display some informations :
+
+----
+$ ansible-playbook -i inventory debug.yml
+----
+
+Initialize hosts
+
+----
+$ ansible-playbook -i inventory bootstrap.yml
+----
+
+Then setup the cluster :
+
+----
+$ ansible-playbook -i inventory site.yml
+----
+
+After that, you could check Kubernetes cluster status :
+
+----
+$ ansible-playbook -i inventory k8s.yml
+----
+
+==== Update ====
+
+----
+$ ansible-playbook -i inventory update.yml
+----
+
+==== Destruction ====
+
+----
+$ ansible-playbook -i inventory destroy.yml
+----
+
+=== Components ===
+
+==== Kubernetes Dashboard ====
+
+You could install the official Kubernetes Dashboard :
+
+----
+$ kubectl apply -f k8s/dashboard --record
+$ kubectl describe services kubernetes-dashboard --namespace=kube-system
+----
+
+==== DNS ====
+
+You could replace the kube-dns default installation with https://coredns.io/[CoreDNS] :
+
+----
+$ kubectl apply -f k8s/coredns --record
+$ kubectl describe services kube-dns --namespace=kube-system
+Name:             kube-dns
+Namespace:        kube-system
+Labels:           k8s-app=coredns
+                       kubernetes.io/cluster-service=true
+                       kubernetes.io/name=CoreDNS
+Annotations:      kubectl.kubernetes.io/last-applied-configuration={"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"labels":{"k8s-app":"coredns","kubernetes.io/cluster-service":"true","kubernetes.io/na...
+Selector:          k8s-app=coredns
+Type:              ClusterIP
+IP:                10.96.0.10
+Port:              dns  53/UDP
+TargetPort:        53/UDP
+Endpoints:         10.36.0.5:53,10.44.0.2:53
+Port:              dns-tcp  53/TCP
+TargetPort:        53/TCP
+Endpoints:         10.36.0.5:53,10.44.0.2:53
+Port:              metrics  9153/TCP
+TargetPort:        9153/TCP
+Endpoints:         10.36.0.5:9153,10.44.0.2:9153
+Session Affinity:  None
+Events:            <none>
+----
+
+==== Heapster ====
+
+Heapster enables Container Cluster Monitoring and Performance Analysis for Kubernetes :
+
+----
+$ kubectl apply -f k8s/heapster --record
+----
+
+==== Ingress Controllers ====
+
+Nginx is used as the default Ingress Controller :
+
+----
+$ kubectl apply  -f ingress/default-backend.yaml --record
+$ kubectl apply  -f ingress/nginx/ --record
+----
+
+
+==== MetalLB ====
+
+https://metallb.universe.tf/[MetalLB] is used as a load-balancer for services. We’ll assume the cluster is set up on a network using **192.168.2.224/27**
+
+----
+$ kubectl apply -f k8s/metallb/metallb.yaml
+namespace "metallb-system" created
+clusterrole "metallb-system:controller" created
+clusterrole "metallb-system:speaker" created
+role "leader-election" created
+role "config-watcher" created
+serviceaccount "controller" created
+serviceaccount "speaker" created
+clusterrolebinding "metallb-system:controller" created
+clusterrolebinding "metallb-system:speaker" created
+rolebinding "config-watcher" created
+rolebinding "leader-election" created
+deployment "controller" created
+daemonset "speaker" created
+
+$ kubectl apply -f k8s/metallb/configmap.yaml
+configmap "config" created
+----
+
+You could check that an IP is setup for the Nginx service :
+
+----
+$ kubectl get svc --all-namespaces -l app=nginx-ingress-lb
+NAMESPACE        NAME               TYPE           CLUSTER-IP       EXTERNAL-IP     PORT(S)        AGE
+ingress-system   nginx-ingress-lb   LoadBalancer   10.102.221.227   192.168.1.224   80:32510/TCP   1h
+----
+
+And check response :
+
+----
+$ curl -vs -i 192.168.1.224:80/healthz | head -n 1
+* Hostname was NOT found in DNS cache
+*   Trying 192.168.1.224...
+* Connected to 192.168.1.224 (192.168.1.224) port 80 (#0)
+> GET /healthz HTTP/1.1
+> User-Agent: curl/7.38.0
+> Host: 192.168.1.224
+> Accept: */*
+>
+< HTTP/1.1 200 OK
+* Server nginx/1.13.9 is not blacklisted
+< Server: nginx/1.13.9
+< Date: Mon, 05 Mar 2018 15:59:22 GMT
+< Content-Type: text/html
+< Content-Length: 0
+< Connection: keep-alive
+< Strict-Transport-Security: max-age=15724800; includeSubDomains;
+<
+* Connection #0 to host 192.168.1.224 left intact
+HTTP/1.1 200 OK
+----
+
+
+==== Status ====
+
+After a few minutes, check the cluster informations :
+
+----
+$ kubectl cluster-info
+Kubernetes master is running at https://192.168.1.36:6443
+Heapster is running at https://192.168.1.36:6443/api/v1/namespaces/kube-system/services/heapster/proxy
+CoreDNS is running at https://192.168.1.36:6443/api/v1/namespaces/kube-system/services/kube-dns/proxy
+----
+
+How cluster's nodes are :
+
+----
+$ kubectl get nodes
+NAME            STATUS    ROLES     AGE       VERSION
+jarvis-master   Ready     master    3h        v1.8.5
+jarvis-node1    Ready     <none>    3h        v1.8.5
+jarvis-node2    Ready     <none>    3h        v1.8.5
+----
+
+You could see also nodes metrics (with heapster) :
+
+----
+$ kubectl top nodes
+NAME            CPU(cores)   CPU%      MEMORY(bytes)   MEMORY%
+jarvis-master   631m         15%       639Mi           83%
+jarvis-node2    216m         5%        485Mi           63%
+jarvis-node1    254m         6%        531Mi           69%
+----
+
+
+=== Administration ===
+
+==== Security ====
+
+**TODO**
+
+==== Quotas ====
+
+**TODO**
+
+==== Backup ====
+
+**TODO**
+
+==== Validation ====
+
+**TODO**

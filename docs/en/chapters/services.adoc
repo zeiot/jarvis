@@ -1,0 +1,182 @@
+=== Namespaces ===
+
+Create the necessary namespaces :
+
+----
+$ $ kubectl apply -f k8s/namespaces/ --record
+namespace "logs" created
+namespace "metrics" created
+namespace "monitoring" created
+namespace "hypriot" created
+$ kubectl get ns
+NAME          STATUS    AGE
+default       Active    54d
+hypriot       Active    54d
+kube-public   Active    54d
+kube-system   Active    54d
+logs          Active    48s
+metrics       Active    47s
+monitoring    Active    47s
+----
+
+=== Storage ===
+
+We use a NFS server for storage. So we will use the NFS client provisionner :
+
+----
+$ kubectl create -f k8s/nfs-client-provisioner/
+----
+
+After that, creates a POD to check the NFS access :
+
+----
+$ kubectl create -f k8s/nfs-client-provisioner/nfs-pvc-test.yaml
+$ kubectl create -f k8s/nfs-client-provisioner/nfs-pod-test.yaml
+$ kubectl get pods
+NAME                                      READY     STATUS              RESTARTS   AGE
+hypriot-2682716425-bldnh                  1/1       Running             0          28d
+nfs-client-provisioner-3721834868-6phzj   1/1       Running             0          1h
+test-pod                                  0/1       ContainerCreating   0          4s
+
+$ kubectl describe pod test-pod
+Name:           test-pod
+Namespace:      default
+Node:           jarvis-node2/192.168.1.26
+Start Time:     Sat, 23 Sep 2017 13:28:09 +0200
+Labels:         <none>
+Annotations:    <none>
+Status:         Succeeded
+IP:             10.36.0.2
+Containers:
+  test-pod:
+    Container ID:       docker://351a925cad33164929975010fc128f5a2590f7d941849170caef0ffa6f56ef7c
+    Image:              hypriot/armhf-busybox:1.24
+    Image ID:           docker-pullable://hypriot/armhf-busybox@sha256:746423cb45f66db032f2138f7459a26051dadb1c5101727bd8abb847c6f90b7f
+    Port:               <none>
+    Command:
+      /bin/sh
+    Args:
+      -c
+      touch /mnt/SUCCESS && exit 0 || exit 1
+    State:              Terminated
+      Reason:           Completed
+      Exit Code:        0
+      Started:          Sat, 23 Sep 2017 13:28:19 +0200
+      Finished:         Sat, 23 Sep 2017 13:28:19 +0200
+    Ready:              False
+    Restart Count:      0
+    Environment:        <none>
+    Mounts:
+      /mnt from nfs-pvc (rw)
+      /var/run/secrets/kubernetes.io/serviceaccount from default-token-5chdh (ro)
+Conditions:
+  Type          Status
+  Initialized   True
+  Ready         False
+  PodScheduled  True
+Volumes:
+  nfs-pvc:
+    Type:       PersistentVolumeClaim (a reference to a PersistentVolumeClaim in the same namespace)
+    ClaimName:  test-claim
+    ReadOnly:   false
+  default-token-5chdh:
+    Type:       Secret (a volume populated by a Secret)
+    SecretName: default-token-5chdh
+    Optional:   false
+QoS Class:      BestEffort
+Node-Selectors: <none>
+Tolerations:    node.alpha.kubernetes.io/notReady:NoExecute for 300s
+                node.alpha.kubernetes.io/unreachable:NoExecute for 300s
+vents:
+  FirstSeen     LastSeen        Count   From                    SubObjectPath                   Type            Reason                  Message
+  ---------     --------        -----   ----                    -------------                   --------        ------                  -------
+  14s           14s             1       default-scheduler                                       Normal          Scheduled               Successfully assigned t
+est-pod to jarvis-node2
+  14s           14s             1       kubelet, jarvis-node2                                   Normal          SuccessfulMountVolume   MountVolume.SetUp succe
+eded for volume "default-token-5chdh"
+  14s           14s             1       kubelet, jarvis-node2                                   Normal          SuccessfulMountVolume   MountVolume.SetUp succe
+eded for volume "pvc-26194824-a052-11e7-9c1e-b827eb13a985"
+  12s           12s             1       kubelet, jarvis-node2   spec.containers{test-pod}       Normal          Pulling                 pulling image "hypriot/
+armhf-busybox:1.24"
+  5s            5s              1       kubelet, jarvis-node2   spec.containers{test-pod}       Normal          Pulled                  Successfully pulled ima
+ge "hypriot/armhf-busybox:1.24"
+  4s            4s              1       kubelet, jarvis-node2   spec.containers{test-pod}       Normal          Created                 Created container
+  4s            4s              1       kubelet, jarvis-node2   spec.containers{test-pod}       Normal          Started
+----
+
+Check on the NFS server, if some data are written.
+
+=== Hypriot ===
+
+A namespace *hypriot* exists is present. A single service is available which display a
+logo of the Hypriot project.
+
+----
+$ kubectl apply -f k8s/hypriot -n hypriot
+----
+
+You could also create an user *hypriot* to manage this namespace :
+
+----
+$ ./k8s/scripts/kube-add-user.sh 192.168.1.36 hypriot hypriot
+
+Kubernetes master: 192.168.1.36
+Generating RSA private key, 2048 bit long modulus
+.................................................................................+++
+....+++
+e is 65537 (0x10001)
+Signature ok
+subject=/CN=hypriot/O=jarvis
+Getting CA Private Key
+Cluster "admin" set.
+User "hypriot" set.
+Context "hypriot" modified.
+rolebinding "hypriot-admin" created
+rolebinding "hypriot-admin" labeled
+Switched to context "hypriot".
+
+$ kubectl --kubeconfig=/tmp/hypriot-config get deployment
+NAME      DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
+hypriot   1         1         1            1           27m
+
+$ kubectl --kubeconfig=/tmp/hypriot-config get ingress
+NAME              HOSTS            ADDRESS            PORTS     AGE
+hypriot-ingress   hypriot.jarvis   192.168.1.20,...   80        27m
+
+----
+
+=== Monitoring ===
+
+A namespace *monitoring* is present for monitoring tools.
+You could install
+
+* https://prometheus.io/[Prometheus] :
+
+----
+$ kubectl apply -f k8s/prometheus/ --record
+----
+
+* https://prometheus.io/docs/alerting/alertmanager/[alertmanager]:
+
+----
+$ kubectl apply -f k8s/alertmanager/ --record
+----
+
+* and other tools like https://github.com/kubernetes/kube-state-metrics[kube state metrics],  https://github.com/prometheus/node_exporter[node exporter] :
+
+----
+$ kubectl apply -f k8s/kube-state-metrics/ --record
+$ kubectl apply -f k8s/node-exporter/ --record
+----
+
+
+=== Metrics ===
+
+For some metrics, you could also install the https://www.influxdata.com/[InfluxDB] database :
+
+----
+$ kubectl apply -f k8s/influxdb/ --record
+----
+
+
+=== DNS ===

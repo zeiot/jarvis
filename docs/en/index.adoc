@@ -1,0 +1,69 @@
+= Jarvis
+Nicolas Lamirault <nicolas.lamirault@gmail.com>
+v0.3.0
+:DOCTYPE: book
+:lang: en
+:copyright: Nicolas Lamirault
+:revnumber: 0.3.0
+:revdate: 12/20/2017
+:sectnums:
+:icons: font
+:includedir: chapters
+:imagesdir: images
+:sectanchors:
+:sectlinks:
+:toc: left
+:toc-title: Table of contents
+:toc-levels: 3
+// :title-logo-image: ../assets/images/logo.png
+:title-logo-image: image:assets/images/logo.png
+:front-cover-image: image:atmos-cover.png[width=1050,height=1600]
+
+== Identification ==
+
+.Identification
+|===
+
+| Référence      | FR/BDX/Lam
+| Date           | {revdate}
+| Version        | {revnumber}
+| Classification | Open Source
+
+|===
+
+.Suivi de révisions
+[width="100%",cols="12%,12%,35%,41%",]
+|======================================================================================================================
+|Version |Date |Auteur |Modification
+
+|0.1.0 |12/20/2017 |Nicolas Lamirault <nicolas.lamirault@gmail.com> | Initialize
+|======================================================================================================================
+
+== Introduction ==
+
+include::{includedir}/intro.adoc[]
+
+== Resume ==
+include::{includedir}/resume.adoc[]
+
+== System ==
+
+include::{includedir}/setup.adoc[]
+
+== Services ==
+include::{includedir}/services.adoc[]
+
+:numbered!:
+
+== Annexes ==
+
+=== Bibliographie ===
+
+* http://docs.ansible.com/ansible/latest/index.html[Ansible documentation]
+
+=== Figures ===
+
+=== Glossaire ===
+
+* CNCF: Cloud Native Computing Foundation
+* Kubernetes : Containeurs orchestrator (manage by the https://www.cncf.io/[CNCF])
