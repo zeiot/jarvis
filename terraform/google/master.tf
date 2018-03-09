@@ -13,7 +13,7 @@
 # limitations under the License.
 
 resource "google_compute_address" "jarvis-master" {
-  name = "jarvis-master"
+  name = "${var.cluster_name}-master"
 }
 
 resource "google_compute_instance" "jarvis-master" {
@@ -39,6 +39,28 @@ resource "google_compute_instance" "jarvis-master" {
       nat_ip = "${google_compute_address.jarvis-master.address}"
     }
   }
+
+
+  provisioner "remote-exec" {
+    inline = [
+      "sudo sed -i -r  's/127.0.0.1 localhost/127.0.0.1 localhost ${var.cluster_name}-master/' /etc/hosts",
+      "curl -s -O https://packages.cloud.google.com/apt/doc/apt-key.gpg",
+      "sudo apt-key add ./apt-key.gpg",
+      "sudo add-apt-repository -y 'deb http://apt.kubernetes.io/ kubernetes-xenial main'",
+      "sudo apt-get -y -qq update",
+      "sudo apt-get -y -qq upgrade",
+      "sudo apt-get install -y -q apt-transport-https docker.io",
+      "sudo systemctl start docker.service",
+      "sudo apt-get -y -q update",
+      "sudo apt-get install -y -q htop kubelet kubeadm kubectl kubernetes-cni",
+      "sudo service kubelet restart",
+      "sudo kubeadm init --token ${var.kubeadm_token} --kubernetes-version ${var.kubeadm_token}",
+      "sudo cp -v /etc/kubernetes/admin.conf /home/ubuntu/config",
+      "sudo chown ubuntu /home/ubuntu/config",
+      "kubectl apply -f https://git.io/weave-kube",
+    ]
+  }
+
   connection {
     user = "${var.gce_ssh_user}"
     key_file = "${var.gce_ssh_private_key_file}"
