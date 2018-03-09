@@ -1,0 +1,125 @@
+= Jarvis / Gcloud
+Nicolas Lamirault
+:revnumber: 0.1.0
+:revdate: 12/23/2017
+:description: Jarvis on Google Cloud Platform
+:doctype: book
+// Settings:
+:compat-mode:
+:experimental:
+:icons: font
+:listing-caption: Listing
+:sectnums:
+:toc:
+:toclevels: 3
+ifdef::backend-pdf[]
+:title-logo-image: image:chapters/images/cover.svg[scaledwidth=30%,align=center]
+:pygments-style: tango
+//:source-highlighter: pygments
+:source-highlighter: coderay
+endif::[]
+
+== Description
+
+This project contains https://www.terraform.io/[Terraform] templates to help you deploy *Jarvis* on https://console.cloud.google.com[Google cloud].
+
+Prerequisites:
+
+* A Google Cloud account
+* A Google Compute Engine project
+* A Google Compute Engine account file
+* A Google Compute Engine Password-less SSH Key
+
+
+=== GCloud
+
+Install the Google Cloud SDK, see the https://cloud.google.com/sdk[documentation]
+
+[source,bash]
+----
+$ gcloud version
+Google Cloud SDK 183.0.0
+bq 2.0.27
+core 2017.12.08
+gsutil 4.28
+----
+
+=== Terraform
+
+Install https://www.terraform.io/[Terraform]
+
+[source,bash]
+----
+terraform version
+Terraform v0.11.3
+----
+
+Configure a service account for terraform :
+
+[source,bash]
+----
+SA_EMAIL=$(gcloud iam service-accounts --format='value(email)' create jarvis-cloud-terraform)
+Created service account [jarvis-cloud-terraform].
+----
+
+[source,bash]
+----
+gcloud iam service-accounts keys create account.json --iam-account=$SA_EMAIL
+----
+
+[source,bash]
+----
+PROJECT=$(gcloud config list core/project --format='value(core.project)')
+gcloud projects add-iam-policy-binding $PROJECT --member serviceAccount:$SA_EMAIL --role roles/editor
+----
+
+
+== Installation
+
+The available variables that can be configured are:
+
+* **gce_account_file**: Path to the JSON file used to describe your account credentials, downloaded from Google Cloud Console
+* **gce_project**: The name of the project to apply any resources to
+* **gce_ssh_user**: SSH user
+* **pvt_key_file**: Path to the SSH private key file
+* **gce_region**: The region to operate under (default us-central1)
+* **gce_zone**: The zone that the machines should be created in (default us-central1-a)
+* **gce_ipv4_range**: The IPv4 address range that machines in the network are assigned to, represented as a CIDR block (default 10.0.0.0/16)
+* **gce_image**: The name of the image to base the launched instances (default ubuntu-1604-lts)
+
+
+
+
+=== Configure
+
+Configure the terraform modules:
+
+[source,bash]
+----
+terraform init
+----
+
+Copy and renamed *terraform.tfvars.example* to *terraform.tfvars*.
+Follow the instructions in the comments of the **terraform.tfvars.example** and
+**variables.tf** file.
+
+=== Evaluate
+
+[source,bash]
+----
+terraform plan --var-file=terraform.tfvars
+----
+
+=== Deploy your cluster
+
+[source,bash]
+----
+terraform apply --var-file=terraform.tfvars
+----
+
+=== Destroy the cluster
+
+[source,bash]
+----
+terraform destroy --var-file=terraform.tfvars
+----
