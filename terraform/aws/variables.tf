@@ -57,12 +57,12 @@ variable "aws_image" {
 }
 
 variable "aws_instance_type_master" {
-    description = "The machine type to use for the Hyperion master instance."
+    description = "The machine type to use for the master instance."
     default = "m3.medium"
 }
 
 variable "aws_instance_type_node" {
-    description = "The machine type to use for the Hyperion nodes instances."
+    description = "The machine type to use for the nodes instances."
     default = "m3.medium"
 }
 

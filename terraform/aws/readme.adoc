@@ -53,9 +53,9 @@ The available variables that can be configured are:
 * **aws_vpc_cidr_block**: The IPv4 address range that machines in the network are assigned to, represented as a CIDR block (default **10.0.0.0/16**)
 * **aws_subnet_cidr_block**: The IPv4 address range that machines in the network are assigned to, represented as a CIDR block (default **10.0.1.0/24**)
 * **aws_image**: The name of the image to base the launched instances (default `Debian Jessie 64bit hvm ami`)
-* **aws_instance_type_master**: The machine type to use for the Hyperion master instance (default `m3.medium`)
-* **aws_instance_type_node**: The machine type to use for the Hyperion nodes instances (default `m3.medium`)
-* **hyperion_nb_nodes**: The number of Hyperino nodes to launch (default **2**)
+* **aws_instance_type_master**: The machine type to use for the master instance (default `m3.medium`)
+* **aws_instance_type_node**: The machine type to use for the nodes instances (default `m3.medium`)
+* **nb_nodes**: The number of nodes to launch (default **2**)
 
 
 === Configure

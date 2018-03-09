@@ -69,10 +69,10 @@ variable "openstack_image_id" {
 }
 
 variable "openstack_instance_type_master" {
-    description = "The machine type to use for the Hyperion master instance."
+    description = "The machine type to use for the master instance."
 }
 variable "openstack_instance_type_node" {
-    description = "The machine type to use for the Hyperion nodes instance."
+    description = "The machine type to use for the nodes instance."
 }
 
 variable "kubeadm_token" {
