@@ -1,0 +1,93 @@
+= Jarvis / AWS
+Nicolas Lamirault
+:revnumber: 0.1.0
+:revdate: 09/03/2018
+:description: Jarvis on Amazon AWS
+:doctype: book
+// Settings:
+:compat-mode:
+:experimental:
+:icons: font
+:listing-caption: Listing
+:sectnums:
+:toc:
+:toclevels: 3
+ifdef::backend-pdf[]
+:title-logo-image: image:chapters/images/cover.svg[scaledwidth=30%,align=center]
+:pygments-style: tango
+//:source-highlighter: pygments
+:source-highlighter: coderay
+endif::[]
+
+== Description
+
+This project contains https://www.terraform.io/[Terraform] templates to help you deploy *Jarvis* on https://aws.amazon.com/console/[Amazon AWS].
+
+Prerequisites
+
+* An http://aws.amazon.com/[Amazon Web Services account]
+* An http://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSGettingStartedGuide/AWSCredentials.html[AWS Access and Secret Access Keys]
+* An http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html[AWS EC2 Key Pairs]
+
+
+=== Terraform
+
+Install https://www.terraform.io/[Terraform]
+
+[source,bash]
+----
+terraform version
+Terraform v0.11.3
+----
+
+== Installation
+
+The available variables that can be configured are:
+
+* **aws_access_key**: AWS access key
+* **aws_secret_key**: AWS secret key
+* **aws_key_name**: The SSH key name to use for the instances
+* **aws_ssh_private_key_file**: Path to the SSH private key file
+* **aws_ssh_user**: SSH user (default **admin**)
+* **aws_region**: AWS region (default **eu-west-1**)
+* **aws_vpc_cidr_block**: The IPv4 address range that machines in the network are assigned to, represented as a CIDR block (default **10.0.0.0/16**)
+* **aws_subnet_cidr_block**: The IPv4 address range that machines in the network are assigned to, represented as a CIDR block (default **10.0.1.0/24**)
+* **aws_image**: The name of the image to base the launched instances (default `Debian Jessie 64bit hvm ami`)
+* **aws_instance_type_master**: The machine type to use for the Hyperion master instance (default `m3.medium`)
+* **aws_instance_type_node**: The machine type to use for the Hyperion nodes instances (default `m3.medium`)
+* **hyperion_nb_nodes**: The number of Hyperino nodes to launch (default **2**)
+
+
+=== Configure
+
+Configure the terraform modules:
+
+[source,bash]
+----
+terraform init
+----
+
+Copy and renamed *terraform.tfvars.sample* to *terraform.tfvars*.
+Follow the instructions in the comments of the **terraform.tfvars.example** and
+**variables.tf** file.
+
+=== Evaluate
+
+[source,bash]
+----
+terraform plan --var-file=terraform.tfvars
+----
+
+=== Deploy your cluster
+
+[source,bash]
+----
+terraform apply --var-file=terraform.tfvars
+----
+
+=== Destroy the cluster
+
+[source,bash]
+----
+terraform destroy --var-file=terraform.tfvars
+----

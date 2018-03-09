@@ -1,0 +1,38 @@
+# Copyright (C) 2017-2018 Nicolas Lamirault <nicolas.lamirault@gmail.com>
+
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+#
+# Jarvis Cloud - AWS Platform setup
+#
+
+aws_access_key = "xxxxxxxxxxxxxxxx"
+aws_secret_key = "xxxxxxxxxx"
+aws_region = "eu-west-1"
+aws_key_name = "xxxxx"
+aws_ssh_public_key = "/home/johndoe/.ssh/id_rsa.pub"
+aws_ssh_private_key_file = "/home/johndoe/.ssh/id_rsa.pub"
+aws_ssh_user = "johndoe"
+aws_vpc_cidr_block = "10.0.0.0/16"
+aws_subnet_cidr_block = "10.0.1.0/24"
+aws_image = "ami-xxxxxxxxxx"
+aws_ssh_user = "admin"
+aws_instance_type_master = "t2.micro"
+aws_instance_type_node = "t2.micro"
+
+cluster_name = "jarvis-cloud"
+nb_nodes = "2"
+
+# Generate the token for Kubeadm
+# python2 -c 'import random; print "%0x.%0x" % (random.SystemRandom().getrandbits(3*8), random.SystemRandom().getrandbits(8*8))'
+kubeadm_token = ""
