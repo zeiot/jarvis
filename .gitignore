@@ -20,3 +20,7 @@ dns/jarvis_hosts
 
 # Ansible
 ansible/inventory
+
+# Terraform
+terraform/google/account.json
+terraform/google/.terraform
