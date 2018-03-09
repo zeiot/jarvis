@@ -27,18 +27,6 @@ Home Assistant :
 
 See [docs/en/index.adoc](documentation)
 
-### Cloud
-
-You could use [Terraform](https://terraform.io) to deploy on a cloud provider :
-
-| Provider       | Support      | Documentation                                    |
-| -------------- | -----------  | ------------------------------------------------ |
-| Google         | [x]          | [terraform/google/readme.adoc](documentation)    |
-| Amazon         | [x]          | [terraform/aws/readme.adoc](documentation)       |
-| Openstack      | [x]          | [terraform/openstack/readme.adoc](documentation) |
-| Azure          | [ ]          |                                                  |
-
-
 ## Contributing
 
 See [CONTRIBUTING](CONTRIBUTING.md).
