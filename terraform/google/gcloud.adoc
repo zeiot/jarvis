@@ -88,8 +88,6 @@ The available variables that can be configured are:
 * **gce_image**: The name of the image to base the launched instances (default ubuntu-1604-lts)
 
 
-
-
 === Configure
 
 Configure the terraform modules:
@@ -99,7 +97,7 @@ Configure the terraform modules:
 terraform init
 ----
 
-Copy and renamed *terraform.tfvars.example* to *terraform.tfvars*.
+Copy and renamed *terraform.tfvars.sample* to *terraform.tfvars*.
 Follow the instructions in the comments of the **terraform.tfvars.example** and
 **variables.tf** file.
 
