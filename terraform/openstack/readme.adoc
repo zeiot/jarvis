@@ -1,7 +1,7 @@
-== Jarvis / OpenStack
+= Jarvis / OpenStack
 Nicolas Lamirault
 :revnumber: 0.1.0
-:revdate: 03/09/2018
+:revdate: 09/03/2018
 :description: Jarvis on OpenStack
 :doctype: book
 // Settings:
@@ -21,16 +21,12 @@ endif::[]
 
 == Description
 
-This project contains https://www.terraform.io/[Terraform] templates to help you deploy *Jarvis* on https://www.openstack.org/[OpenStack].
+This project contains https://www.terraform.io/[Terraform] templates to help you deploy *Jarvis* on https://openstack.org/[OpenStack].
 
-Prerequisites:
+Prerequisites
 
 * An Openstack Cloud
 * An Account, project and relevant access on your openstack cloud.
-
-=== Openstack
-
-Generate en `openstackrc` file
 
 === Terraform
 
@@ -45,6 +41,7 @@ Terraform v0.11.3
 == Installation
 
 The available variables that can be configured are:
+
 * **openstack_access_key**: Openstack username.
 * **openstack_secret_key**: Openstack Password.
 * **openstack_tenant_name**: The Tenant/Project name in Openstack.
@@ -53,14 +50,6 @@ The available variables that can be configured are:
 * **pvt_key**: Path to the SSH private key file (Stays local. Used for provisioning.)
 * **openstack_ssh_user**: SSH user (default ubuntu)
 * **openstack_keystone_uri**: The Keystone API URL
-
-Setup your informations :
-
-----
-$ export OPENSTACK_ACCESS_KEY="xxxx"
-$ export OPENSTACK_SECRET_KEY="xxxx"
-$ ...
-----
 
 
 
