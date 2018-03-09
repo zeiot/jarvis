@@ -1,4 +1,4 @@
- Jarvis / OpenStack
+Jarvis / OpenStack
 Nicolas Lamirault
 :revnumber: 0.1.0
 :revdate: 03/09/2018
