@@ -198,6 +198,16 @@ Heapster is running at https://192.168.1.36:6443/api/v1/namespaces/kube-system/s
 CoreDNS is running at https://192.168.1.36:6443/api/v1/namespaces/kube-system/services/kube-dns/proxy
 ----
 
+You can get a simple diagnostic:
+
+----
+$ kubectl get componentstatus 
+NAME                 STATUS    MESSAGE              ERROR
+scheduler            Healthy   ok                   
+controller-manager   Healthy   ok                   
+etcd-0               Healthy   {"health": "true"}   
+----
+
 How cluster's nodes are :
 
 ----
