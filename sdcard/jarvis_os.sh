@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Copyright (C) 2016 Nicolas Lamirault <nicolas.lamirault@gmail.com>
+# Copyright (C) 2016-2018 Nicolas Lamirault <nicolas.lamirault@gmail.com>
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,32 +14,65 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-hostname=$1
-ssid=$2
-wifipassword=$3
-host=$4
+SCRIPT=$(readlink -f "$0")
+# echo $SCRIPT
+SCRIPTPATH=$(dirname "$SCRIPT")
+# echo $SCRIPTPATH
 
-NO_COLOR="\033[0m"
-OK_COLOR="\033[32;01m"
-ERROR_COLOR="\033[31;01m"
-WARN_COLOR="\033[33;01m"
-DEBUG_COLOR="\033[34;01m"
+. ${SCRIPTPATH}/commons.sh
 
-HYPRIOTOS_VERSION=1.4.0
+HYPRIOTOS_VERSION=1.8.0
 
-echo -e "${OK_COLOR}== Jarvis OS: Hypriot ${HYPRIOTOS_VERSION} ==${NO_COLOR}"
-if [ $# -ne 4 ]; then
-  echo -e "${ERROR_COLOR}Usage: $0 hostname ssid wifipassword Linux|Darwin${NO_COLOR}"
-  exit 1
+hostname=""
+ssid=""
+wifipassword=""
+
+
+function usage {
+    echo -e "${OK_COLOR}Usage${NO_COLOR} : $0 --hostname <hostname> --ssid <ssid> --password <wifipassword>"
+}
+
+function create {
+    local hostname=$1
+    local ssid=$2
+    local wifipassword=$3
+    echo -e "${OK_COLOR}== Jarvis OS: Hypriot ${HYPRIOTOS_VERSION} ==${NO_COLOR}"
+    echo -e "${DEBUG_COLOR}Download flash${NO_COLOR}"
+    curl -sSLO --progress-bar https://raw.githubusercontent.com/hypriot/flash/2.0.0/flash
+    chmod +x flash
+    echo -e "${DEBUG_COLOR}Flash HypriotOS${NO_COLOR}"
+    ./flash --hostname ${hostname} --ssid ${ssid} --password ${wifipassword} https://github.com/hypriot/image-builder-rpi/releases/download/v${HYPRIOTOS_VERSION}/hypriotos-rpi-v${HYPRIOTOS_VERSION}.img.zip
+    echo -e "${DEBUG_COLOR}Cleanup${NO_COLOR}"
+    rm ./flash
+    echo -e "${OK_COLOR}== Done ==${NO_COLOR}"
+}
+
+if [ $# -eq 0 ]; then
+    usage
+    exit 0
 fi
 
-echo -e "${DEBUG_COLOR}Download flash${NO_COLOR}"
-curl -LO --progress-bar https://raw.githubusercontent.com/hypriot/flash/master/${host}/flash
-chmod +x flash
-# ./flash --hostname ${hostname} --ssid ${ssid} --password ${wifipassword} https://downloads.hypriot.com/hypriotos-rpi-v${HYPRIOTOS_VERSION}.img.zip
-./flash --hostname ${hostname} --ssid ${ssid} --password ${wifipassword} https://github.com/hypriot/image-builder-rpi/releases/download/v${HYPRIOTOS_VERSION}/hypriotos-rpi-v${HYPRIOTOS_VERSION}.img.zip
+while getopts n:s:p:h option; do
+    case "${option}"
+    in
+        n) hostname=${OPTARG};;
+        s) ssid=${OPTARG};;
+        p) wifipassword=${OPTARG};;
+        h)
+            usage
+            exit 0
+            ;;
+        *)
+            usage
+            exit 1
+            ;;
+    esac
+done
 
-echo -e "${DEBUG_COLOR}Cleanup${NO_COLOR}"
-rm ./flash
+# DEBUG:
+# echo ${hostname}
+# echo ${ssid}
+# echo ${wifipassword}
+# exit 0
 
-echo -e "${OK_COLOR}== Done ==${NO_COLOR}"
+create ${hostname} ${ssid} ${wifipassword}
