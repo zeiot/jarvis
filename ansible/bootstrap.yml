@@ -15,5 +15,7 @@
 ---
 - name: Initialize hosts
   hosts: all
+  become: true
+  become_method: sudo
   roles:
     - bootstrap
