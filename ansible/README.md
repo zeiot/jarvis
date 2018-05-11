@@ -2,7 +2,8 @@
 
 Ansible is used to setup *Kubernetes*.
 
-Runtime: 
+Runtime:
+
 * [x] Docker
 * [ ] cri-containerd
 * [ ] cri-o
@@ -14,22 +15,23 @@ Prerequisite:
 
 Use *debug.yml* to verify that.
 
-
 ## Install
 
 Edit the **inventory** file :
 
-	[master]
-    <master_ip_address>         ansible_connection=ssh        ansible_user=pirate
+```bash
+[master]
+<master_ip_address>         ansible_connection=ssh        ansible_user=pirate
 
-	[nodes]
-	<node1_ip_address>          ansible_connection=ssh        ansible_user=pirate
-	<node2_ip_address>          ansible_connection=ssh        ansible_user=pirate
-	<node3_ip_address>          ansible_connection=ssh        ansible_user=pirate
+[nodes]
+<node1_ip_address>          ansible_connection=ssh        ansible_user=pirate
+<node2_ip_address>          ansible_connection=ssh        ansible_user=pirate
+<node3_ip_address>          ansible_connection=ssh        ansible_user=pirate
+```
 
 Test :
 
-	$ ansible all -m ping -i inventory
+    $ ansible all -m ping -i inventory
 
 ## Usage
 
@@ -41,24 +43,28 @@ Test :
 
     $ ansible-playbook -i inventory bootstrap.yml
 
+### Update distribution
+
+	$ ansible-playbook -i inventory update.yml
 
 ### Setup
 
 	$ ansible-playbook -i inventory site.yml
 
-    PLAY [Kubernetes setup] *********************************************************************************************************
+    PLAY [Kubernetes setup] ******************************************************************
 
-    TASK [master : Cluster token] **************************************************************************************************************************************************************************************ok: [192.168.1.36]
+    TASK [master : Cluster token] ************************************************************
+    ok: [192.168.1.36]
 
-    TASK [master : debug] **********************************************************************************************************************************************************************************************
+    TASK [master : debug] ********************************************************************
     ok: [192.168.1.36] => {
         "msg": "Kubernetes token: 14b539.de95fe444fb68be1"
     }
 
-    TASK [master : Initialize cluster] *********************************************************************************************************************************************************************************
+    TASK [master : Initialize cluster] *******************************************************
     changed: [192.168.1.36]
 
-    TASK [master : debug] **********************************************************************************************************************************************************************************************
+    TASK [master : debug] ********************************************************************
     ok: [192.168.1.36] => {
         "msg": "Kubernetes init: [kubeadm] WARNING: kubeadm is in beta, please do not use it for production clusters.\n[init] Using Kubernetes version: v1.8.5\n[init] Using Authorization modes: [Node RBAC]\n[prefligh
     t] Skipping pre-flight checks\n[kubeadm] WARNING: starting in 1.8, tokens expire after 24 hours by default (if you require a non-expiring token use --token-ttl 0)\n[certificates] Generated ca certificate and key.
@@ -82,11 +88,11 @@ for a local etcd instance to \"/etc/kubernetes/manifests/etcd.yaml\"\n[init] Wai
 
     [...]
 
-    TASK [nodes : Adding node to cluster] ******************************************************************************************************************************************************************************
+    TASK [nodes : Adding node to cluster] ***********************************************
     changed: [192.168.1.26]
     changed: [192.168.1.20]
 
-    TASK [nodes : debug] ***********************************************************************************************************************************************************************************************
+    TASK [nodes : debug] ****************************************************************
     ok: [192.168.1.20] => {
         "msg": "[kubeadm] WARNING: kubeadm is in beta, please do not use it for production clusters.\n[preflight] Skipping pre-flight checks\n[validation] WARNING: using token-based discovery without DiscoveryTokenCACertHashes can be unsafe (see https://kubernetes.io/docs/admin/kubeadm/#kubeadm-join).\n[validation] WARNING: Pass --discovery-token-unsafe-skip-ca-verification to disable this warning. This warning will become an error in Kubernetes 1.9.\n[discovery] Trying to connect to API Server \"192.168.1.36:6443\"\n[discovery] Created cluster-info discovery client, requesting info from \"https://192.168.1.36:6443\"\n[discovery] Cluster info signature and contents are valid and no TLS pinning was specified, will use API Server \"192.168.1.36:6443\"\n[discovery] Successfully established connection with API Server \"192.168.1.36:6443\"\n[bootstrap] Detected server version: v1.8.5\n[bootstrap] The server supports the Certificates API (certificates.k8s.io/v1beta1)\n\nNode join complete:\n* Certificate signing request sent to master and response\n  received.\n* Kubelet informed of new secure connection details.\n\nRun 'kubectl get nodes' on the master to see this machine join."
     }
@@ -94,7 +100,7 @@ for a local etcd instance to \"/etc/kubernetes/manifests/etcd.yaml\"\n[init] Wai
         "msg": "[kubeadm] WARNING: kubeadm is in beta, please do not use it for production clusters.\n[preflight] Skipping pre-flight checks\n[validation] WARNING: using token-based discovery without DiscoveryTokenCACertHashes can be unsafe (see https://kubernetes.io/docs/admin/kubeadm/#kubeadm-join).\n[validation] WARNING: Pass --discovery-token-unsafe-skip-ca-verification to disable this warning. This warning will become an error in Kubernetes 1.9.\n[discovery] Trying to connect to API Server \"192.168.1.36:6443\"\n[discovery] Created cluster-info discovery client, requesting info from \"https://192.168.1.36:6443\"\n[discovery] Cluster info signature and contents are valid and no TLS pinning was specified, will use API Server \"192.168.1.36:6443\"\n[discovery] Successfully established connection with API Server \"192.168.1.36:6443\"\n[bootstrap] Detected server version: v1.8.5\n[bootstrap] The server supports the Certificates API (certificates.k8s.io/v1beta1)\n\nNode join complete:\n* Certificate signing request sent to master and response\n  received.\n* Kubelet informed of new secure connection details.\n\nRun 'kubectl get nodes' on the master to see this machine join."
     }
 
-    PLAY RECAP *********************************************************************************************************************************************************************************************************
+    PLAY RECAP *************************************************************************
     192.168.1.20               : ok=27   changed=7    unreachable=0    failed=0
     192.168.1.26               : ok=27   changed=7    unreachable=0    failed=0
     192.168.1.36               : ok=37   changed=12   unreachable=0    failed=0
@@ -104,15 +110,15 @@ for a local etcd instance to \"/etc/kubernetes/manifests/etcd.yaml\"\n[init] Wai
 
     $ ansible-playbook -i inventory k8s.yml
 
-    PLAY [Kubernetes informations] *********************************************************************************************
+    PLAY [Kubernetes informations] ********************************************************
 
-    TASK [Gathering Facts] *****************************************************************************************************
+    TASK [Gathering Facts] ****************************************************************
     ok: [192.168.1.36]
 
-    TASK [kubernetes : Version] ************************************************************************************************
+    TASK [kubernetes : Version] ***********************************************************
     changed: [192.168.1.36]
 
-    TASK [kubernetes : Display version] ****************************************************************************************
+    TASK [kubernetes : Display version] ***************************************************
     ok: [192.168.1.36] => {
         "kubernetes_version.stdout_lines": [
             "Client Version: version.Info{Major:\"1\", Minor:\"8\", GitVersion:\"v1.8.5\", GitCommit:\"cce11c6a185279d037023e02ac5249e14daa22bf\", GitTreeState:\"clean\", BuildDate:\"2017-12-07T16:16:03Z\", GoVersion:\"go1.8.3\", Compiler:\"gc\", Platform:\"linux/arm\"}",
@@ -120,10 +126,10 @@ for a local etcd instance to \"/etc/kubernetes/manifests/etcd.yaml\"\n[init] Wai
         ]
     }
 
-    TASK [kubernetes : Get nodes] **********************************************************************************************
+    TASK [kubernetes : Get nodes] *******************************************************
     changed: [192.168.1.36]
 
-    TASK [kubernetes : Display nodes] ******************************************************************************************
+    TASK [kubernetes : Display nodes] ***************************************************
     ok: [192.168.1.36] => {
         "kubernetes_nodes.stdout_lines": [
             "NAME            STATUS     ROLES     AGE       VERSION",
@@ -133,10 +139,10 @@ for a local etcd instance to \"/etc/kubernetes/manifests/etcd.yaml\"\n[init] Wai
         ]
     }
 
-    TASK [kubernetes : Get cluster info] ***************************************************************************************
+    TASK [kubernetes : Get cluster info] ************************************************
     changed: [192.168.1.36]
 
-    TASK [kubernetes : Display cluster info] ***********************************************************************************
+    TASK [kubernetes : Display cluster info] ********************************************
     ok: [192.168.1.36] => {
         "kubernetes_clusterinfo.stdout_lines": [
             "\u001b[0;32mKubernetes master\u001b[0m is running at \u001b[0;33mhttps://192.168.1.36:6443\u001b[0m",
@@ -146,14 +152,8 @@ for a local etcd instance to \"/etc/kubernetes/manifests/etcd.yaml\"\n[init] Wai
         ]
     }
 
-    PLAY RECAP *****************************************************************************************************************
+    PLAY RECAP *************************************************************************
     192.168.1.36               : ok=7    changed=3    unreachable=0    failed=0
-
-
-
-### Update
-
-	$ ansible-playbook -i inventory update.yml
 
 
 ### Destroy
