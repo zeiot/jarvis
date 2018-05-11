@@ -23,8 +23,8 @@ cidr: 10.244.0.0/16
 
 docker_version: "17.07.0~ce-0~raspbian"
 
-k8s_release: "v1.8.5"
-k8s_version: "1.8.5-00"
+k8s_release: "v1.10.2"
+k8s_version: "1.10.2-00"
 k8s_cni_version: "0.6.0-00"
 k8s_cfssl_version: "R1.2"
 

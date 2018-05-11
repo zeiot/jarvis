@@ -12,15 +12,25 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-- name: Setup Docker to version {{ docker_version }} (the latest supported by Kubernetes)
-  template: src=docker-apt-pin.txt dest=/etc/apt/preferences.d/docker
+# - name: Setup Docker to version {{ docker_version }} (the latest supported by Kubernetes)
+#   template: src=docker-apt-pin.txt dest=/etc/apt/preferences.d/docker
 
-- name: Downgrade docker
+- name: Install docker
   apt:
     state: present
-    name: docker-ce={{ docker_version }}
-    autoremove: yes
-    force: yes
+    # name: docker-ce={{ docker_version }}
+    # autoremove: yes
+    # force: yes
+
+- name: Add Docker GPG key
+  apt_key: url=https://download.docker.com/linux/ubuntu/gpg
+
+- name: Add Docker APT repository
+  apt_repository:
+    repo: deb https://download.docker.com/linux/debian {{ ansible_distribution_release }} stable
+
+- name: Install Docker
+  apt: name=docker-ce
 
 - name: Creates Docker systemd configuration directory
   action: file path=/etc/systemd/system/docker.service.d state=directory owner=root group=root recurse=yes

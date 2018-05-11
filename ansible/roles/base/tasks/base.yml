@@ -34,3 +34,4 @@
     - "jq"
     - "nfs-common"
     - "dnsutils"
+    - "lsb-release"
