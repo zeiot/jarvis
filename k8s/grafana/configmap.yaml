@@ -37,15 +37,15 @@ data:
     [paths]
     # Path to where grafana can store temp files, sessions, and the sqlite3 db (if that is used)
     #
-    data = data
+    data = /var/lib/grafana/data
     #
     # Directory where grafana can store logs
     #
-    logs = data/log
+    logs = /var/log/grafana
     #
     # Directory where grafana will automatically scan and look for plugins
     #
-    plugins = data/plugins
+    plugins = /var/lib/grafana/plugins
 
     #################################### Server ##############################
     [server]
