@@ -16,7 +16,9 @@
   command: /usr/bin/kubeadm reset
 
 - name: Copy kubeadm.yaml file
-  template: src=kubeadm.yaml.j2  dest=/etc/kubernetes/kubeadm.yaml
+  template:
+    src=kubeadm.yaml.j2
+    dest=/etc/kubernetes/kubeadm.yaml
 
 - name: Check for existing kubelet configuration
   stat:
