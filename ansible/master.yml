@@ -12,10 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-- name: Kubernetes setup
-  hosts: all
+- name: Kubernetes master configuration
+  hosts: master
   remote_user: root
   become: true
 
   roles:
-    - base
+    - master
