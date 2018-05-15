@@ -37,3 +37,15 @@
     - /etc/kubernetes
     - /var/lib/etcd
     - /opt/cni
+
+- name: Reboot host
+  shell: sleep 2 && /sbin/shutdown -r now "Ansible reboot"
+  async: 1
+  poll: 0
+
+- name: Wait for host to come back up
+  become: false
+  wait_for_connection:
+    delay: 15
+    sleep: 2
+    timeout: 120

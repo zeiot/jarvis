@@ -12,99 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-- name: Reset Kubernetes
-  command: /usr/bin/kubeadm reset
+---
+- name: Setup Control Plane
+  include_tasks: kube.yml
 
-- name: Copy kubeadm.yaml file
-  template:
-    src=kubeadm.yaml.j2
-    dest=/etc/kubernetes/kubeadm.yaml
+# - name: Install CNI Flannel
+#   include_tasks: flannel.yml
 
-- name: Check for existing kubelet configuration
-  stat:
-    path: /etc/kubernetes/kubelet.conf
-  register: kubelet_conf
+# - name: Install CNI Weave
+#   include_tasks: weave.yml
 
-- name: Check kubelet state
-  systemd:
-    name: kubelet
-    daemon_reload: yes
-    state: started
-
-- name: Token generate
-  command: kubeadm token generate
-  register: new_token
-  when: kubelet_conf.stat.exists == False
-
-- name: Get existing token
-  command: sh -c "kubeadm token list | awk '/The default bootstrap token/ { print $1; }'"
-  register: existing_token
-  when: kubelet_conf.stat.exists == True
-
-# https://github.com/ansible/ansible/issues/4297
-- name: Cluster token
-  set_fact:
-    kubeadm_token: "{{ new_token.stdout if kubelet_conf.stat.exists == False else existing_token.stdout }}"
-
-- debug:
-    msg: "Kubernetes token: {{ kubeadm_token }}"
-
-- name: Initialize cluster
-  shell: /usr/bin/kubeadm init --kubernetes-version {{ k8s_release }} --apiserver-advertise-address={{ groups['master'][0] }} --token {{ kubeadm_token }} --pod-network-cidr={{ cidr }} --skip-preflight-checks
-  register: k8s_init_output
-
-# - name: Initialize cluster
-#   shell: /usr/bin/kubeadm init --config=/etc/kubernetes/kubeadm.yaml --skip-preflight-checks
-#   register: k8s_init_output
-
-- debug:
-    msg: "Kubernetes init: {{ k8s_init_output.stdout }}"
-
-- name: Wait for admin pods are started
-  pause:
-    minutes: 3
-
-- name: Retrieve Kubernetes version
-  shell: "kubectl version | base64 | tr -d '\n'"
-  register: kubernetes_version
-  environment:
-    KUBECONFIG: /etc/kubernetes/admin.conf
-
-- debug:
-    msg: "Kubernetes version: {{ kubernetes_version.stdout }}"
-
-- name: Install Weavenet network add-on
-  shell: "kubectl apply -f \"https://cloud.weave.works/k8s/net?k8s-version={{ kubernetes_version.stdout }}\" --validate=false"
-  environment:
-    KUBECONFIG: /etc/kubernetes/admin.conf
-  when:
-    - inventory_hostname == groups["master"][0]
-
-- name: Ensure kubectl configuration directory is present
-  become: True
-  file:
-    path: /home/{{ ansible_user }}/.kube
-    state: directory
-    owner: "{{ ansible_user }}"
-    group: "{{ ansible_user }}"
-    mode: 0700
-
-- name: Copy kubectl configuration for the default ansible_user
-  become: True
-  copy:
-    remote_src: True
-    src: /etc/kubernetes/admin.conf
-    dest: /home/{{ ansible_user }}/.kube/config
-    owner: "{{ ansible_user }}"
-    group: "{{ ansible_user }}"
-    mode: 0600
-
-- name: Check for existing kubectl bash completion
-  stat:
-    path: /etc/bash_completion.d/kubectl
-  register: kubectl_bash_completion
-
-- name: Ensure kubectl bash_completion is present
-  become: True
-  shell: kubectl completion bash > /etc/bash_completion.d/kubectl
-  when: kubectl_bash_completion.stat.exists == False

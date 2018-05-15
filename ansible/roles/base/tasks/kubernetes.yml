@@ -23,7 +23,6 @@
     state: present
     update_cache: yes
 
-
 - name: Install Kubernetes components
   apt:
     name: "{{item}}"
