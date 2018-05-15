@@ -1,4 +1,4 @@
-# Copyright (C) 2016, 2017 Nicolas Lamirault <nicolas.lamirault@gmail.com>
+# Copyright (C) 2016-2018 Nicolas Lamirault <nicolas.lamirault@gmail.com>
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -31,19 +31,13 @@ help:
 	@echo -e "$(OK_COLOR)==== $(APP) [$(VERSION)] ====$(NO_COLOR)"
 	@grep -E '^[a-zA-Z0-9_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "$(MAKE_COLOR) : %s\n", $$1, $$2}'
 
-.PHONY: clean
-clean: ## clean installation
-	platformio run -d arduino/dht --target clean
-	platformio run -d arduino/photocell --target clean
-	platformio run -d arduino/teleinfo --target clean
-
 #
 # Raspberry PI
 #
 
 .PHONY: rpi-create
 rpi-create: ## Create the Raspberry PI SDCard (sdb=sdbXXX)
-	@raspberrypi/raspbian.sh $(sdb)
+	@sdcard/jarvis_os.sh $(sdb)
 
 .PHONY: rpi-k8s
 rpi-k8s: ## Initialize components on the Raspberry PI (master=x.x.x.x)
