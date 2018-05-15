@@ -29,4 +29,5 @@ k8s_cni_version: "0.6.0-00"
 k8s_cfssl_version: "R1.2"
 
 # uuidgen | sed -e 's/-//g' -e 's/\(.\{6\}\)\(.\{16\}\).*/\1\.\2/g'
-token: "51e53c.1cc667492ca435eb"
+k8s_token: "56e9f2.c225b9e4191fddbd"
+k8s_ca_cert_hash: "a8b05e6c912ceed269e8848b6a1354c9b738f3744417b93ba329cbca28f68608"
