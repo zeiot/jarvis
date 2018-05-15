@@ -1,5 +1,19 @@
 === Operating System ===
 
+Install the operating system (Debian Stretch) on the master:
+
+----
+./sdcard/jarvis_master_os.sh -s /dev/mmcblk0
+== Jarvis OS: Rock64 Stretch 0.5.15 ==
+Download OS image
+Install OS on /dev/mmcblk0
+2218786816 bytes (2.2 GB, 2.1 GiB) copied, 10 s, 222 MB/s
+544+1 records in
+544+1 records out
+2282749952 bytes (2.3 GB, 2.1 GiB) copied, 42.0649 s, 54.3 MB/s
+== Done ==
+----
+
 Install https://github.com/hypriot/image-builder-rpi/releases[HypriotOS] onto the sdcard:
 
 ----
@@ -201,11 +215,11 @@ CoreDNS is running at https://192.168.1.36:6443/api/v1/namespaces/kube-system/se
 You can get a simple diagnostic:
 
 ----
-$ kubectl get componentstatus 
+$ kubectl get componentstatus
 NAME                 STATUS    MESSAGE              ERROR
-scheduler            Healthy   ok                   
-controller-manager   Healthy   ok                   
-etcd-0               Healthy   {"health": "true"}   
+scheduler            Healthy   ok
+controller-manager   Healthy   ok
+etcd-0               Healthy   {"health": "true"}
 ----
 
 How cluster's nodes are :
