@@ -1,0 +1,33 @@
+# Copyright (C) 2016-2018 Nicolas Lamirault <nicolas.lamirault@gmail.com>
+
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+- name: Enable Flannel CNI
+  shell: "curl -sSL https://raw.githubusercontent.com/coreos/flannel/v0.10.0/Documentation/kube-flannel.yml | sed 's/amd64/arm64/g' | kubectl create -f -"
+  register: cni_out
+
+- debug: var=cni_out
+
+- name: Wait for the Flannel CNI pods
+  shell: kubectl get pods --namespace=kube-system | grep kube-flannel | grep Running | wc -l
+  register: cni_test
+  until: cni_test.stdout == '1'
+  retries: 12
+  delay: 10
+
+- name: Wait for the DNS pods
+  shell: kubectl get pods --namespace=kube-system | grep kube-dns | grep Running | wc -l
+  register: dns_test
+  until: dns_test.stdout == '1'
+  retries: 12
+  delay: 10

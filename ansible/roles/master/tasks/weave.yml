@@ -12,10 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-- name: Kubernetes setup
-  hosts: all
-  remote_user: root
-  become: true
-
-  roles:
-    - base
+- name: Install Weavenet network CNI
+  shell: "kubectl apply -f \"https://cloud.weave.works/k8s/net?k8s-version={{ kubernetes_version.stdout }}\" --validate=false"
+  environment:
+    KUBECONFIG: /etc/kubernetes/admin.conf
+  when:
+    - inventory_hostname == groups["master"][0]

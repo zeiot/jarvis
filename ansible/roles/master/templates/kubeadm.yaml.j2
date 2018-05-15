@@ -12,10 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-- name: Kubernetes setup
-  hosts: all
-  remote_user: root
-  become: true
-
-  roles:
-    - base
+apiVersion: kubeadm.k8s.io/v1alpha1
+kind: MasterConfiguration
+api:
+ advertiseAddress: {{ groups['master'][0] }}
+networking:
+ podSubnet: {{ cidr }}
+kubernetesVersion: {{ k8s_release }}
+nodeName: jarvis-master
