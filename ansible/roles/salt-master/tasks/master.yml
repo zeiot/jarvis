@@ -12,18 +12,29 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
----
-- name: Install base
-  include_tasks: base.yml
+- name: Install salt-master
+  apt:
+    name: "{{item}}"
+    state: present
+  with_items:
+   - salt-master
+   - salt-cloud
 
-- name: Configure system
-  include_tasks: system.yml
+- name: Create pki directory
+  file: path=/etc/salt/pki/master/minions state=directory
 
-- name: Configure Docker
-  include_tasks: docker.yml
+- name: Create base directory
+  file: path={{ salt_base_dir }} state=directory
 
-- name: Configure Kubernetes
-  include_tasks: kubernetes.yml
+- name: Create base directory
+  file: path={{ salt_pillar_dir }} state=directory
 
-- name: Create Jarvis user
-  include_tasks: user.yml
+- name: Setup master
+  template: src="master.conf.j2" dest="/etc/salt/master" owner="root" mode="644"
+  notify: restart salt-master
+
+# - name: Accept all minions
+#   shell: salt-key --accept-all --yes
+
+# - name: List keys
+#   shell: salt-key  -L

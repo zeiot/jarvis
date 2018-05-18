@@ -12,9 +12,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-- name: Install Weavenet network CNI
-  shell: "kubectl apply -f \"https://cloud.weave.works/k8s/net?k8s-version={{ kubernetes_version.stdout }}\" --validate=false"
-  environment:
-    KUBECONFIG: /etc/kubernetes/admin.conf
-  when:
-    - inventory_hostname == groups["master"][0]
+- name: Saltstack master setup
+  hosts: master
+  remote_user: root
+  become: true
+
+  roles:
+    - salt
+    - salt-master
+
+- name: Saltstack minions setup
+  hosts: nodes
+  remote_user: root
+  become: true
+
+  roles:
+    - salt
+    - salt-minion
