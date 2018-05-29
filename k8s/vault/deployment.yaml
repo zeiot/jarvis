@@ -58,4 +58,4 @@ spec:
           claimName: vault-data
       - name: vault-config
         configMap:
-          name: vault-config
+          name: vault
