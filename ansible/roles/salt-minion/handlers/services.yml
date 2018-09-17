@@ -12,18 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
----
-- name: Install base
-  include_tasks: base.yml
-
-- name: Configure system
-  include_tasks: system.yml
-
-- name: Configure Docker
-  include_tasks: docker.yml
-
-- name: Configure Kubernetes
-  include_tasks: kubernetes.yml
-
-- name: Create Jarvis user
-  include_tasks: user.yml
+- name: restart salt-minion
+  service:
+    name: salt-minion
+    state: restarted

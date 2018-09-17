@@ -12,18 +12,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
----
-- name: Install base
-  include_tasks: base.yml
+- name: Saltstack master setup
+  hosts: master
+  remote_user: root
+  become: true
 
-- name: Configure system
-  include_tasks: system.yml
+  roles:
+    - salt
+    - salt-master
 
-- name: Configure Docker
-  include_tasks: docker.yml
+- name: Saltstack minions setup
+  hosts: nodes
+  remote_user: root
+  become: true
 
-- name: Configure Kubernetes
-  include_tasks: kubernetes.yml
-
-- name: Create Jarvis user
-  include_tasks: user.yml
+  roles:
+    - salt
+    - salt-minion

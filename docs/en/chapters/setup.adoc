@@ -14,7 +14,8 @@ Install OS on /dev/mmcblk0
 == Done ==
 ----
 
-Install https://github.com/hypriot/image-builder-rpi/releases[HypriotOS] onto the sdcard:
+Install https://github.com/hypriot/image-builder-rpi/releases[HypriotOS] onto
+the sdcard:
 
 ----
 $ sdcard/jarvis_os_2.sh jarvis myssid mywifipassword Linux
@@ -29,7 +30,7 @@ https://www.ansible.com/[Ansible] is used to configure the cluster.
 
 Go into the *ansible* directory to manage the cluster.
 
-==== Creation ====
+==== Setup ====
 
 Create an *inventory* file like that:
 
@@ -55,22 +56,22 @@ Display some informations :
 $ ansible-playbook -i inventory debug.yml
 ----
 
-Initialize hosts
+Bootstrap hosts (like machine-id uniques, ...):
 
 ----
 $ ansible-playbook -i inventory bootstrap.yml
 ----
 
-Then setup the cluster :
+Install the base on hosts :
 
 ----
-$ ansible-playbook -i inventory site.yml
+$ ansible-playbook -i inventory base.yml
 ----
 
-After that, you could check Kubernetes cluster status :
+Setup Salt for manage the hosts :
 
 ----
-$ ansible-playbook -i inventory k8s.yml
+$ ansible-playbook -i inventory salt.yml
 ----
 
 ==== Update ====
@@ -85,7 +86,83 @@ $ ansible-playbook -i inventory update.yml
 $ ansible-playbook -i inventory destroy.yml
 ----
 
+
+=== Management ===
+
+==== Ping ====
+
+Connect to the master and check minions :
+
+----
+$ salt "*" test.ping
+jarvis-node1.localdomain:
+    True
+jarvis-node3.localdomain:
+    True
+jarvis-node2.localdomain:
+    True
+----
+
+Execute command on minions :
+
+----
+$ sudo salt '*' cmd.run 'docker ps'
+----
+
+
 === Components ===
+
+==== Cluster ====
+
+On the master initialize the cluster :
+
+----
+$ sudo kubeadm init --kubernetes-version v1.9.6 \
+    --apiserver-advertise-address=192.168.1.33 \
+    --pod-network-cidr=10.244.0.0/16 \
+    --skip-preflight-checks
+----
+
+Wait for pods are available. Then install the CNI.
+We use Flannel due to an error on Weave (RPI reboot) :
+
+----
+$ curl -sSL https://raw.githubusercontent.com/coreos/flannel/v0.10.0/Documentation/kube-flannel.yml | sed 's/amd64/arm64/g' | kubectl create -f -
+----
+
+Check the join command from the master :
+
+----
+$ sudo kubeadm token create --print-join-command
+kubeadm join --token 63b510.cc71025ad4a04f4f 192.168.1.33:6443 --discovery-token-ca-cert-hash sha256:75e299f512e401072447f0e3ad22dbf8936446d38d6579f09d11cffc457c16f9
+----
+
+Then on each node, join the cluster :
+
+----
+$ kubeadm join --token 63b510.cc71025ad4a04f4f 192.168.1.33:6443 --discovery-token-ca-cert-hash sha256:75e299f512e401072447f0e3ad22dbf8936446d38d6579f09d11cffc457c16f9
+----
+
+Wait for control plane is available :
+
+----
+$ kubectl get cs
+NAME                 STATUS    MESSAGE              ERROR
+controller-manager   Healthy   ok
+scheduler            Healthy   ok
+etcd-0               Healthy   {"health": "true"}
+----
+
+How cluster's nodes are :
+
+----
+$ kubectl get nodes -o wide
+NAME            STATUS    ROLES     AGE       VERSION   EXTERNAL-IP   OS-IMAGE                       KERNEL-VERSION               CONTAINER-RUNTIME
+jarvis-master   Ready     master    2d        v1.9.6    <none>        Ubuntu 16.04.3 LTS             4.4.77-rockchip-ayufan-136   docker://18.3.1
+jarvis-node1    Ready     <none>    2d        v1.9.6    <none>        Debian GNU/Linux 9 (stretch)   4.14.37-hypriotos-v8         docker://18.4.0
+jarvis-node2    Ready     <none>    2d        v1.9.6    <none>        Debian GNU/Linux 9 (stretch)   4.14.37-hypriotos-v8         docker://18.4.0
+jarvis-node3    Ready     <none>    2d        v1.9.6    <none>        Debian GNU/Linux 9 (stretch)   4.14.37-hypriotos-v8         docker://18.4.0
+----
 
 ==== Kubernetes Dashboard ====
 
@@ -220,16 +297,6 @@ NAME                 STATUS    MESSAGE              ERROR
 scheduler            Healthy   ok
 controller-manager   Healthy   ok
 etcd-0               Healthy   {"health": "true"}
-----
-
-How cluster's nodes are :
-
-----
-$ kubectl get nodes
-NAME            STATUS    ROLES     AGE       VERSION
-jarvis-master   Ready     master    3h        v1.8.5
-jarvis-node1    Ready     <none>    3h        v1.8.5
-jarvis-node2    Ready     <none>    3h        v1.8.5
 ----
 
 You could see also nodes metrics (with heapster) :

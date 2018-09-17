@@ -24,7 +24,7 @@ monitoring    Active    47s
 We use a NFS server for storage. So we will use the NFS client provisionner :
 
 ----
-$ kubectl create -f k8s/nfs-client-provisioner/
+$ kubectl apply -f k8s/nfs-client-provisioner/
 ----
 
 After that, creates a POD to check the NFS access :

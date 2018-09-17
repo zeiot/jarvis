@@ -12,18 +12,28 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
----
-- name: Install base
-  include_tasks: base.yml
+- name: Ensure infra group is present
+  group:
+    name: infra
+    state: present
 
-- name: Configure system
-  include_tasks: system.yml
+- name: Ensure infra group has sudo privileges
+  lineinfile:
+    dest: /etc/sudoers
+    state: present
+    regexp: "^%infra"
+    line: "%infra ALL=(ALL:ALL) NOPASSWD:ALL"
+    validate: "/usr/sbin/visudo -cf %s"
 
-- name: Configure Docker
-  include_tasks: docker.yml
-
-- name: Configure Kubernetes
-  include_tasks: kubernetes.yml
-
-- name: Create Jarvis user
-  include_tasks: user.yml
+- name: Create a jarvis user
+  user:
+    name: jarvis
+    password: 'P.Z71VIbrdlGs'
+    groups:
+      - infra
+      - docker
+      - sudo
+    state: present
+    shell: /bin/bash
+    system: no
+    createhome: yes

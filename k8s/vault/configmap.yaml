@@ -1,5 +1,5 @@
-# Copyright (C) 2016-2018 Nicolas Lamirault <nicolas.lamirault@gmail.com>
-
+# Copyright 2016-2018 Nicolas Lamirault <nicolas.lamirault@gmail.com>
+#
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -12,18 +12,22 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
----
-- name: Install base
-  include_tasks: base.yml
-
-- name: Configure system
-  include_tasks: system.yml
-
-- name: Configure Docker
-  include_tasks: docker.yml
-
-- name: Configure Kubernetes
-  include_tasks: kubernetes.yml
-
-- name: Create Jarvis user
-  include_tasks: user.yml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: vault
+  namespace: security
+  labels:
+    app: vault
+    provider: jarvis
+data:
+  vault.conf: |-
+    backend "file" {
+      path = "/vault/file/vaultsecrets"
+    }
+    listener "tcp" {
+      address = "0.0.0.0:8200"
+      #tls_cert_file = "/root/server.crt"
+      #tls_key_file = "/root/server.key"
+      tls_disable = 1
+    }

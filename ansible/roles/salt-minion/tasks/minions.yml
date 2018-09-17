@@ -12,18 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
----
-- name: Install base
-  include_tasks: base.yml
+- name: Install salt-minion
+  apt:
+    name: "{{item}}"
+    state: present
+  with_items:
+   - salt-minion
 
-- name: Configure system
-  include_tasks: system.yml
+- name: Create pki directory
+  file: path=/etc/salt/pki/minion/ state=directory
 
-- name: Configure Docker
-  include_tasks: docker.yml
-
-- name: Configure Kubernetes
-  include_tasks: kubernetes.yml
-
-- name: Create Jarvis user
-  include_tasks: user.yml
+- name: Setup minion
+  template: src="minion.conf.j2" dest="/etc/salt/minion" owner="root" mode="644"
+  notify: restart salt-minion

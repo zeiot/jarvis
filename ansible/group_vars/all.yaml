@@ -15,9 +15,8 @@
 timezone: "Europe/Paris"
 arch: arm
 
-#
 # Kubernetes
-#
+# ------------------------------
 
 cidr: 10.244.0.0/16
 
@@ -28,6 +27,8 @@ k8s_version: "1.9.6-00"
 k8s_cni_version: "0.6.0-00"
 k8s_cfssl_version: "R1.2"
 
-# uuidgen | sed -e 's/-//g' -e 's/\(.\{6\}\)\(.\{16\}\).*/\1\.\2/g'
-k8s_token: "56e9f2.c225b9e4191fddbd"
-k8s_ca_cert_hash: "a8b05e6c912ceed269e8848b6a1354c9b738f3744417b93ba329cbca28f68608"
+# Salt
+# ------------------------------
+
+salt_base_dir: "/srv/salt"
+salt_pillar_dir: "/srv/pillar"
