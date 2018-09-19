@@ -12,17 +12,27 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-en_US.UTF-8:
-  file.uncomment:
-    - name: /etc/locale.gen
-    - regex: en_US.UTF-8 UTF-8
-    - char: '# '
+us_locale:
+  locale.present:
+    - name: en_US.UTF-8
+
+default_locale:
+  locale.system:
+    - name: en_US.UTF-8
     - require:
-      - pkg: locales
-    - watch_in:
-      - cmd: locales
-  locale:
-    - system
+      - locale: us_locale
+
+# en_US.UTF-8:
+#   file.uncomment:
+#     - name: /etc/locale.gen
+#     - regex: en_US.UTF-8 UTF-8
+#     - char: '# '
+#     - require:
+#       - pkg: locales
+#     - watch_in:
+#       - cmd: locales
+#   locale:
+#     - system
 
 Europe/Paris:
   timezone.system
