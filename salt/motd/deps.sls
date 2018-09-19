@@ -12,11 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-base:
-  '*':
-    - server
-    - motd
-  'master*':
-    - master
-  'minions*':
-    - minion
+motd-packages:
+  pkg.installed:
+    - pkgs:
+      - figlet
+      - lsb-release
+      - python-utmp
+      - bc
+      - debian-goodies
