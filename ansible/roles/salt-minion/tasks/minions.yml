@@ -15,7 +15,7 @@
 - name: Install salt-minion
   apt:
     name: "{{item}}"
-    state: present
+    state: latest
   with_items:
    - salt-minion
 

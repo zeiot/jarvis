@@ -15,7 +15,7 @@
 - name: Install salt-master
   apt:
     name: "{{item}}"
-    state: present
+    state: latest
   with_items:
    - salt-master
    - salt-cloud
