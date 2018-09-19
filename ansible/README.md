@@ -1,19 +1,6 @@
-# Kubernetes installation with Ansible
+# Hosts configuration with Ansible
 
-Ansible is used to setup *Kubernetes*.
-
-Runtime:
-
-* [x] Docker
-* [ ] cri-containerd
-* [ ] cri-o
-
-Prerequisite:
-
-* unique MAC address
-* unique machine_id
-
-Use *debug.yml* to verify that.
+Ansible is used to setup hosts
 
 ## Install
 
@@ -49,7 +36,7 @@ Test :
 
 ### Setup
 
-	$ ansible-playbook -i inventory k8s.yml
+    $ ansible-playbook -i inventory k8s.yml
     $ ansible-playbook -i inventory master.yml
     $ ansible-playbook -i inventory nodes.yml
 
