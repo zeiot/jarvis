@@ -17,8 +17,6 @@ jarvis:
     - fullname: Zeiot Jarvis
     - shell: /bin/bash
     - home: /home/jarvis
-    - uid: 4000
-    - gid: 4000
     - groups:
       - users
       - docker
