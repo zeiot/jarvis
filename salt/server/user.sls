@@ -24,7 +24,7 @@ jarvis:
 /home/jarvis/bin:
   file.directory:
     - user: jarvis
-    - group: infra
+    - group: users
     - mode: 755
     - makedirs: True
 
@@ -32,5 +32,5 @@ jarvis:
   file.managed:
     - source: salt://server/bashrc
     - user: jarvis
-    - group: infra
+    - group: users
     - mode: 755
