@@ -68,4 +68,12 @@ k8s-status: ## Check the Kubernetes cluster
 	@echo -e "$(OK_COLOR)[$(APP)] Check the cluster$(NO_COLOR)"
 	@ansible-playbook -i inventory cluster.yml
 
+.PHONY: salt-master
+salt-master: ## Check hosts connection
+	@echo -e "$(OK_COLOR)[$(APP)] Configure Salt infra$(NO_COLOR)"
+	@ansible-playbook -i inventory salt-master.yml
 
+.PHONY: salt-minions
+salt-minions: ## Check hosts connection
+	@echo -e "$(OK_COLOR)[$(APP)] Configure Salt infra$(NO_COLOR)"
+	@ansible-playbook -i inventory salt-minions.yml
