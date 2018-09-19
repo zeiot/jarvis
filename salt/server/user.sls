@@ -12,7 +12,27 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-include:
-    - .common
-    - .locale
-    - .user
+jarvis:
+  user.present:
+    - fullname: Zeiot Jarvis
+    - shell: /bin/bash
+    - home: /home/jarvis
+    - uid: 4000
+    - gid: 4000
+    - groups:
+      - users
+      - docker
+
+/home/jarvis/bin:
+  file.directory:
+    - user: jarvis
+    - group: infra
+    - mode: 755
+    - makedirs: True
+
+/home/jarvis/.bashrc:
+  file.managed:
+    - source: salt://server/bashrc
+    - user: jarvis
+    - group: infra
+    - mode: 755
