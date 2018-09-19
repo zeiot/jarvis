@@ -30,5 +30,5 @@ k8s_cfssl_version: "R1.2"
 # Salt
 # ------------------------------
 
-salt_base_dir: "/srv/salt"
+salt_base_dir: "/srv/jarvis"
 salt_pillar_dir: "/srv/pillar"
