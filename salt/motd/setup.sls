@@ -16,7 +16,7 @@ remove-old-motd:
   file.absent:
     - name: /etc/motd
 
-remove-old-motd:
+remove-dynamic-motd:
   file.absent:
     - name: /var/run/motd.dynamic
 
