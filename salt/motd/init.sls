@@ -14,3 +14,4 @@
 
 include:
     - .deps
+    - .setup
