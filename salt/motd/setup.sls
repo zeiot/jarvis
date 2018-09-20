@@ -16,6 +16,10 @@ remove-old-motd:
   file.absent:
     - name: /etc/motd
 
+remove-old-motd:
+  file.absent:
+    - name: /var/run/motd.dynamic
+
 symbolic-motd:
   file.symlink:
     - name: /etc/motd
