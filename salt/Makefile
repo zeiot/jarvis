@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-APP="Jarvis / Ansible"
+APP="Jarvis / Salt"
 
 NO_COLOR=\033[0m
 OK_COLOR=\033[32;01m
@@ -41,6 +41,7 @@ check: ## Check hosts connection
 	@echo -e "$(OK_COLOR)[$(APP)] Check hosts$(NO_COLOR)"
 	@sudo salt '*' test.ping
 	@sudo salt '*' status.uptime
+	@sudo salt '*' cmd.run 'dpkg -l|grep salt-'
 
 .PHONY: commons
 commons: ## Perform configuration
