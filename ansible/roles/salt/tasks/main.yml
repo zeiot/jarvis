@@ -16,11 +16,11 @@
 
 - name: Add Saltstack Repo Key
   apt_key:
-    url: "https://repo.saltstack.com/apt/debian/9/amd64/2018.3/SALTSTACK-GPG-KEY.pub"
+    url: "https://repo.saltstack.com/apt/debian/9/amd64/{{ salt_version }}/SALTSTACK-GPG-KEY.pub"
     state: present
 
 - name: Add Saltstack Repo
   apt_repository:
-    repo: "deb [arch=amd64] http://repo.saltstack.com/apt/debian/9/amd64/2018.3 stretch main"
+    repo: "deb [arch=amd64] http://repo.saltstack.com/apt/debian/9/amd64/{{ salt_version }} stretch main"
     state: present
     update_cache: yes
