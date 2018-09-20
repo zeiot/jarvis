@@ -12,10 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+remove-old-motd:
+  file.absent:
+    - name: /etc/motd
+
 symbolic-motd:
   file.symlink:
     - name: /etc/motd
-    - target: /var/run/motd
+    - target: /var/run/motd.dynamic
     - force: True
     - backupname: bak
 
