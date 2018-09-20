@@ -23,7 +23,7 @@ remove-dynamic-motd:
 symbolic-motd:
   file.symlink:
     - name: /etc/motd
-    - target: /var/run/motd.dynamic
+    - target: /var/run/motd.dynamic.new
     - force: True
     - backupname: bak
 
