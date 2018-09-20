@@ -1,6 +1,9 @@
 # Hosts configuration with Ansible
 
-Ansible is used to setup hosts
+Ansible is used to setup hosts:
+
+* a Kubernetes cluster (`v1.9.6`)
+* a Salt infra (master and minions) (`2018.3`)
 
 ## Install
 
@@ -20,7 +23,7 @@ Test :
 
     $ ansible all -m ping -i inventory
 
-## Usage
+## Kubernetes
 
 ### Debug Kubernetes hosts informations
 
@@ -93,3 +96,6 @@ Test :
 ### Destroy
 
 	$ ansible-playbook -i inventory destroy.yml
+
+
+## Salt
