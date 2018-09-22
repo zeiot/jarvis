@@ -14,6 +14,7 @@
 
 - name: Saltstack minions setup
   hosts:
+    - master
     - nodes
     - ha
   remote_user: root
