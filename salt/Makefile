@@ -46,8 +46,8 @@ check: ## Check hosts connection
 .PHONY: check-k8s
 check-k8s: ## Check Kubernetes cluster
 	@echo -e "$(OK_COLOR)[$(APP)] Check hosts$(NO_COLOR)"
-	@sudo salt '*' cmd.run 'dpkg -l|grep docker-ce'
-	@sudo salt '*' cmd.run 'dpkg -l|grep kube*'
+	@sudo salt -C 'G@osarch:arm64' cmd.run 'dpkg -l|grep docker-ce'
+	@sudo salt -C 'G@osarch:arm64' cmd.run 'dpkg -l|grep kube*'
 
 .PHONY: commons
 commons: ## Perform configuration
