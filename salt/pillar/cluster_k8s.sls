@@ -12,15 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-base:
-  '*':
-    - server
-    - motd
-  'master*':
-    - docker
-    - kubernetes
-    - k8s-master
-  'minions*':
-    - docker
-    - kubernetes
-    - k8s-worker
+kubernetes:
+  k8s_release: v1.9.6
+  k8s_version: "1.9.6-00"
+  k8s_cni_version: "0.6.0-00"
+  k8s_cfssl_version: "R1.2"
+  global:
+    cidr: 10.244.0.0/16

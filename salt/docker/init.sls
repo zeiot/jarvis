@@ -12,15 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-base:
-  '*':
-    - server
-    - motd
-  'master*':
-    - docker
-    - kubernetes
-    - k8s-master
-  'minions*':
-    - docker
-    - kubernetes
-    - k8s-worker
+include:
+    - .deps
+    - .packages
