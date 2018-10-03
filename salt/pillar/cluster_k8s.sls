@@ -1,5 +1,5 @@
-# Copyright (C) 2018 Nicolas Lamirault <nicolas.lamirault@gmail.com>
-
+# Copyright (C) 2016-2018 Nicolas Lamirault <nicolas.lamirault@gmail.com>
+#
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -13,11 +13,11 @@
 # limitations under the License.
 
 docker:
-  ubuntu_version: 18.03.1~ce-0~ubuntu
-  debian_version: 18.04.0~ce~3-0~debian
+  ubuntu_version: "18.03.1~ce-0~ubuntu"
+  debian_version: "18.04.0~ce~3-0~debian"
 
 kubernetes:
-  k8s_release: v1.9.6
+  k8s_release: "v1.9.6"
   k8s_version: "1.9.6-00"
   k8s_cni_version: "0.6.0-00"
   k8s_cfssl_version: "R1.2"
