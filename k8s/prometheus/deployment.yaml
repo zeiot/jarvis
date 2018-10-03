@@ -40,19 +40,12 @@ spec:
           imagePullPolicy: Always
           args:
             - --config.file=/config/prometheus.yml
-            - --web.enable-lifecycle
+            #- --web.enable-lifecycle
             - --storage.tsdb.path=/prometheus
             - --web.external-url=http://prometheus.jarvis
           ports:
             - containerPort: 9090
               protocol: TCP
-          resources:
-            limits:
-              cpu: '1'
-              memory: 512Mi
-            requests:
-              cpu: 100m
-              memory: 128Mi
           volumeMounts:
             - name: prometheus-data
               mountPath: "/prometheus"
