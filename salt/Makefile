@@ -40,16 +40,26 @@ hosts: ## Display available hosts
 check: ## Check hosts connection
 	@echo -e "$(OK_COLOR)[$(APP)] Check hosts$(NO_COLOR)"
 	@sudo salt '*' test.ping
-	@sudo salt '*' test.version 
+	@sudo salt '*' test.version
 	@sudo salt '*' status.uptime
+
+.PHONY: check-k8s
+check-k8s: ## Check Kubernetes cluster
+	@echo -e "$(OK_COLOR)[$(APP)] Check hosts$(NO_COLOR)"
+	@sudo salt '*' cmd.run 'dpkg -l|grep docker-ce'
+	@sudo salt '*' cmd.run 'dpkg -l|grep kube*'
 
 .PHONY: commons
 commons: ## Perform configuration
 	@echo -e "$(OK_COLOR)[$(APP)] Configure hosts$(NO_COLOR)"
 	@sudo salt '*' state.apply
 
+.PHONY: kubernetes
+kubernetes: ## Setup a Kubernetes cluster
+	@echo -e "$(OK_COLOR)[$(APP)] Setup monitoring$(NO_COLOR)"
+	@sudo salt '*' state.sls kubernetes
+
 .PHONY: monitoring
 monitoring: ## Setup monitoring tools
 	@echo -e "$(OK_COLOR)[$(APP)] Setup monitoring$(NO_COLOR)"
-	@sudo salt '*' state.apply monitoring
-
+	@sudo salt '*' state.sls monitoring

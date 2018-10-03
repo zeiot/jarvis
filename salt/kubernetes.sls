@@ -13,6 +13,13 @@
 # limitations under the License.
 
 base:
-  '*':
-    - server
-    - motd
+  'master*':
+    'osarch:arm64':
+      - docker
+      - kubernetes
+      # - k8s-master
+  'minions*':
+    'osarch:arm64':
+      - docker
+      - kubernetes
+      # - k8s-worker
