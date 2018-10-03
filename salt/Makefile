@@ -40,10 +40,16 @@ hosts: ## Display available hosts
 check: ## Check hosts connection
 	@echo -e "$(OK_COLOR)[$(APP)] Check hosts$(NO_COLOR)"
 	@sudo salt '*' test.ping
+	@sudo salt '*' test.version 
 	@sudo salt '*' status.uptime
-	@sudo salt '*' cmd.run 'dpkg -l|grep salt-'
 
 .PHONY: commons
 commons: ## Perform configuration
 	@echo -e "$(OK_COLOR)[$(APP)] Configure hosts$(NO_COLOR)"
 	@sudo salt '*' state.apply
+
+.PHONY: monitoring
+monitoring: ## Setup monitoring tools
+	@echo -e "$(OK_COLOR)[$(APP)] Setup monitoring$(NO_COLOR)"
+	@sudo salt '*' state.apply monitoring
+
