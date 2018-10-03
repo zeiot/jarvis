@@ -12,6 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+{%- set docker_version = {
+  'Debian': pillar['docker']['debian_version'],
+  'Ubuntu': pillar['docker']['ubuntu_version'],
+}.get(grains.os) %}
+
 {% set gpg = {
     'Debian': 'https://download.docker.com/linux/debian/gpg',
     'Ubuntu': 'https://download.docker.com/linux/ubuntu/gpg',
@@ -39,7 +44,7 @@ docker.customization:
 docker.deps:
   pkg.installed:
     - pkgs:
-      - docker-ce
+      - docker-ce: {{ docker_version }}
 
 docker.service:
   service.running:

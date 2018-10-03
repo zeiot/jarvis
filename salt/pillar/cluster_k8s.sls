@@ -12,6 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+docker:
+  ubuntu_version: 18.03.1~ce-0~ubuntu
+  debian_version: 18.04.0~ce~3-0~debian
+
 kubernetes:
   k8s_release: v1.9.6
   k8s_version: "1.9.6-00"

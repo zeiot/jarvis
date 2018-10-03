@@ -13,13 +13,11 @@
 # limitations under the License.
 
 base:
+  '*':
+    G'osarch:arm64':
+      - docker
+      - kubernetes
   'master*':
-    'osarch:arm64':
-      - docker
-      - kubernetes
-      # - k8s-master
+      - k8s-master
   'minions*':
-    'osarch:arm64':
-      - docker
-      - kubernetes
-      # - k8s-worker
+      - k8s-worker

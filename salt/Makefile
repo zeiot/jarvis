@@ -56,7 +56,7 @@ commons: ## Perform configuration
 
 .PHONY: k8s-setup
 k8s-setup: ## Setup a Kubernetes cluster
-	@echo -e "$(OK_COLOR)[$(APP)] Setup monitoring$(NO_COLOR)"
+	@echo -e "$(OK_COLOR)[$(APP)] Setup Kubernetes cluster$(NO_COLOR)"
 	@sudo salt '*' state.sls kubernetes
 
 .PHONY: monitoring
