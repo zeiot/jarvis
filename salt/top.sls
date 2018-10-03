@@ -16,3 +16,13 @@ base:
   '*':
     - server
     - motd
+
+kubernetes:
+  '*':
+    G'osarch:arm64':
+      - docker
+      - kubernetes
+  'master*':
+      - k8s-master
+  'minions*':
+      - k8s-worker

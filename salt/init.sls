@@ -12,8 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Copier la configuration locale situé dans<git-salt-master>/salt/templates/minion vers la machine
-# salt:// représente le dossier racine de la configuration de salt master, c'est à dire /srv/salt
 salt_minion_conf_set:
   file.managed:
     - name: /etc/salt/minion
