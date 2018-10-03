@@ -43,8 +43,8 @@ check: ## Check hosts connection
 	@sudo salt '*' test.version
 	@sudo salt '*' status.uptime
 
-.PHONY: check-k8s
-check-k8s: ## Check Kubernetes cluster
+.PHONY: k8s-check
+k8s-check: ## Check Kubernetes cluster
 	@echo -e "$(OK_COLOR)[$(APP)] Check hosts$(NO_COLOR)"
 	@sudo salt -C 'G@osarch:arm64' cmd.run 'dpkg -l|grep docker-ce'
 	@sudo salt -C 'G@osarch:arm64' cmd.run 'dpkg -l|grep kube*'
@@ -54,8 +54,8 @@ commons: ## Perform configuration
 	@echo -e "$(OK_COLOR)[$(APP)] Configure hosts$(NO_COLOR)"
 	@sudo salt '*' state.apply
 
-.PHONY: kubernetes
-kubernetes: ## Setup a Kubernetes cluster
+.PHONY: k8s-setup
+k8s-setup: ## Setup a Kubernetes cluster
 	@echo -e "$(OK_COLOR)[$(APP)] Setup monitoring$(NO_COLOR)"
 	@sudo salt '*' state.sls kubernetes
 
