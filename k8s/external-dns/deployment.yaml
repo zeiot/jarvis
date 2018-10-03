@@ -1,0 +1,70 @@
+# Copyright 2016-2018 Nicolas Lamirault <nicolas.lamirault@gmail.com>
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: external-dns
+  namespace: dns
+  labels:
+    k8s-app: external-dns
+    app: external-dns
+    provider: jarvis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      k8s-app: external-dns
+  template:
+    metadata:
+      annotations:
+        scheduler.alpha.kubernetes.io/critical-pod: ""
+      labels:
+        k8s-app: external-dns
+        app: external-dns
+        provider: jarvis
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: node-role.kubernetes.io/master
+                operator: In
+                values:
+                - ''
+      serviceAccountName: external-dns
+      tolerations:
+      - key: CriticalAddonsOnly
+        operator: Exists
+      - effect: NoSchedule
+        key: node-role.kubernetes.io/master
+      containers:
+      - name: external-dns
+        image: registry.opensource.zalan.do/teapot/external-dns:v0.5.4
+        env:
+        - name: ETCD_URLS
+          value: "http://coredns-etcd:2379"
+        args:
+        - --provider=coredns
+        - --source=service
+        - --source=ingress
+        - --registry=txt
+        - --interval=15s
+        - --log-level=debug
+        # - --fqdn-template="{{.Namespace}}.k8s.local"
+        # - --domain-filter=k8s.local
+        # - --namespace=default
+        # - --txt-owner-id=default.k8s.local
+        # - --metrics-address=":7979"

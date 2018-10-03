@@ -1,0 +1,65 @@
+# Copyright 2016-2018 Nicolas Lamirault <nicolas.lamirault@gmail.com>
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: coredns
+  namespace: dns
+  labels:
+    app: coredns
+    provider: jarvis
+spec:
+  # replicas: 4
+  selector:
+    matchLabels:
+      app: coredns
+  template:
+    metadata:
+      labels:
+        app: coredns
+        provider: jarvis
+    spec:
+      containers:
+      - name: coredns
+        image: zeiot/rpi-coredns:v1.1.2.arm64
+        imagePullPolicy: IfNotPresent
+        args: [ "-conf", "/etc/coredns/Corefile" ]
+        volumeMounts:
+        - name: config-volume
+          mountPath: /etc/coredns
+        ports:
+        - containerPort: 53
+          name: dns
+          protocol: UDP
+        - containerPort: 53
+          name: dns-tcp
+          protocol: TCP
+        - containerPort: 9153
+          name: metrics
+          protocol: TCP
+        resources:
+          limits:
+            cpu: 100m
+            memory: 128Mi
+          requests:
+            cpu: 100m
+            memory: 128Mi
+      volumes:
+      - name: config-volume
+        configMap:
+          name: coredns
+          items:
+          - key: Corefile
+            path: Corefile
