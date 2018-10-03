@@ -30,9 +30,15 @@ https://www.ansible.com/[Ansible] is used to configure the cluster.
 
 Go into the *ansible* directory to manage the cluster.
 
-==== Setup ====
+==== Ansible ====
 
-Create an *inventory* file like that:
+Create an *inventory* file.
+
+Example, my personal configuration is :
+
+* a kubernetes cluster (Rock64 as master, 3 RPI3 as nodes)
+* PI ZeroW as Home Assistant server
+* PI3 as a multimedia server (OSMC)
 
 ----
 [master]
@@ -42,73 +48,66 @@ Create an *inventory* file like that:
 <node1_ip_address>          ansible_connection=ssh        ansible_user=pirate
 <node2_ip_address>          ansible_connection=ssh        ansible_user=pirate
 <node3_ip_address>          ansible_connection=ssh        ansible_user=pirate
+
+[ha]
+<zero1_ip_address>          ansible_connection=ssh        ansible_user=pirate
+
+[osmc]
+<osmc_ip_address>          ansible_connection=ssh        ansible_user=pirate
 ----
 
 You could now check communications with hosts:
 
 ----
-$ ansible all -m ping -i inventory
+$ make check
 ----
 
-Display some informations :
+==== Kubernetes cluster ====
+
+Bootstrap and setup the Kubernetes cluster
 
 ----
-$ ansible-playbook -i inventory debug.yml
+$ make k8s-bootstrap
+$ make k8s-setup
 ----
 
-Bootstrap hosts (like machine-id uniques, ...):
+After that, you could update or destroy the cluster :
 
 ----
-$ ansible-playbook -i inventory bootstrap.yml
+$ make k8s-update
+$ make k8s-destroy
 ----
 
-Install the base on hosts :
+==== Saltstack ====
+
+Saltstack is used to manage all hosts.
+Install the master :
 
 ----
-$ ansible-playbook -i inventory base.yml
+$ make salt-master
 ----
 
-Setup Salt for manage the hosts :
+and the minions :
 
 ----
-$ ansible-playbook -i inventory salt.yml
+$ make salt-minions
 ----
 
-==== Update ====
+On the master accepts minions keys. See https://docs.saltstack.com/en/latest/ref/cli/salt-key.html
+
+On the master :
 
 ----
-$ ansible-playbook -i inventory update.yml
+$ cd /srv/jarvis
+$ make check
+$ make hosts
 ----
 
-==== Destruction ====
+Configure servers :
 
 ----
-$ ansible-playbook -i inventory destroy.yml
+$ make commons
 ----
-
-
-=== Management ===
-
-==== Ping ====
-
-Connect to the master and check minions :
-
-----
-$ salt "*" test.ping
-jarvis-node1.localdomain:
-    True
-jarvis-node3.localdomain:
-    True
-jarvis-node2.localdomain:
-    True
-----
-
-Execute command on minions :
-
-----
-$ sudo salt '*' cmd.run 'docker ps'
-----
-
 
 === Components ===
 

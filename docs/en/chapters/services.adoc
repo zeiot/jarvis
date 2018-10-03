@@ -3,20 +3,17 @@
 Create the necessary namespaces :
 
 ----
-$ $ kubectl apply -f k8s/namespaces/ --record
-namespace "logs" created
-namespace "metrics" created
-namespace "monitoring" created
-namespace "hypriot" created
-$ kubectl get ns
-NAME          STATUS    AGE
-default       Active    54d
-hypriot       Active    54d
-kube-public   Active    54d
-kube-system   Active    54d
-logs          Active    48s
-metrics       Active    47s
-monitoring    Active    47s
+$ kubectl apply -f k8s/namespaces/ --record
+
+$ kubectl get ns -l provider=jarvis
+NAME             STATUS    AGE
+hypriot          Active    14d
+ingress-system   Active    14d
+logs             Active    14d
+metrics          Active    14d
+monitoring       Active    14d
+security         Active    49m
+tools            Active    14d
 ----
 
 === Storage ===
@@ -106,45 +103,6 @@ ge "hypriot/armhf-busybox:1.24"
 
 Check on the NFS server, if some data are written.
 
-=== Hypriot ===
-
-A namespace *hypriot* exists is present. A single service is available which display a
-logo of the Hypriot project.
-
-----
-$ kubectl apply -f k8s/hypriot -n hypriot
-----
-
-You could also create an user *hypriot* to manage this namespace :
-
-----
-$ ./k8s/scripts/kube-add-user.sh 192.168.1.36 hypriot hypriot
-
-Kubernetes master: 192.168.1.36
-Generating RSA private key, 2048 bit long modulus
-.................................................................................+++
-....+++
-e is 65537 (0x10001)
-Signature ok
-subject=/CN=hypriot/O=jarvis
-Getting CA Private Key
-Cluster "admin" set.
-User "hypriot" set.
-Context "hypriot" modified.
-rolebinding "hypriot-admin" created
-rolebinding "hypriot-admin" labeled
-Switched to context "hypriot".
-
-$ kubectl --kubeconfig=/tmp/hypriot-config get deployment
-NAME      DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
-hypriot   1         1         1            1           27m
-
-$ kubectl --kubeconfig=/tmp/hypriot-config get ingress
-NAME              HOSTS            ADDRESS            PORTS     AGE
-hypriot-ingress   hypriot.jarvis   192.168.1.20,...   80        27m
-
-----
-
 === Monitoring ===
 
 A namespace *monitoring* is present for monitoring tools.
@@ -178,5 +136,125 @@ For some metrics, you could also install the https://www.influxdata.com/[InfluxD
 $ kubectl apply -f k8s/influxdb/ --record
 ----
 
+You can use kubectl exec to access a shell in the InfluxDB container and run the InfluxDB CLI.
+Ex: setup the Home Assistant database and user :
+
+----
+$ kubectl get pods -n metrics
+NAME                        READY     STATUS    RESTARTS   AGE
+influxdb-679777db78-pfqtx   1/1       Running   0          3m
+$ kubectl -n metrics exec influxdb-679777db78-pfqtx -i -t -- bash -il
+influx -version
+InfluxDB shell version: 1.5.2
+$ influx
+Connected to http://localhost:8086 version 1.5.2
+InfluxDB shell version: 1.5.2
+> CREATE DATABASE homeassistant
+> CREATE USER homeassistant WITH PASSWORD 'mypassword'
+> GRANT ALL ON homeassistant TO homeassistant
+> SHOW DATABASES
+name: databases
+name
+_internal
+homeassistant
+----
 
 === DNS ===
+
+[PiHole](https://pi-hole.net/) is used to block Internet advertisements :
+
+----
+$ kubectl apply -f k8s/pihole/ --record
+----
+
+You could see services  :
+
+----
+$ kubectl get svc -n tools -o wide -l app=pi-hole
+NAME          TYPE           CLUSTER-IP       EXTERNAL-IP     PORT(S)        AGE       SELECTOR
+pi-hole-dns   LoadBalancer   10.96.242.120    192.168.1.228   53:31937/UDP   15h       app=pi-hole
+pi-hole-ui    LoadBalancer   10.107.222.227   192.168.1.227   80:32039/TCP   15h       app=pi-hole
+----
+
+=== Grafana ===
+
+[Grafana](https://grafana.com/) could be installed to display informations :
+
+----
+$ kubectl apply -f k8s/grafana/ --record
+----
+
+Check the service  :
+
+----
+$ kubectl get svc -n tools -o wide -l app=grafana
+NAME      TYPE           CLUSTER-IP     EXTERNAL-IP     PORT(S)        AGE       SELECTOR
+grafana   LoadBalancer   10.108.27.97   192.168.1.225   80:30694/TCP   17h       app=grafana
+----
+
+
+=== Vault ===
+
+[Vault](https://www.vaultproject.io/) could be deployed :
+
+----
+$ kubectl apply -f k8s/vault --record
+----
+
+Check the service  :
+
+----
+$ kubectl get svc -n security -o wide -l app=vault
+NAME      TYPE           CLUSTER-IP      EXTERNAL-IP     PORT(S)        AGE       SELECTOR
+vault     LoadBalancer   10.99.137.176   192.168.1.229   80:31919/TCP   45m       app=vault
+----
+
+Download the Vault CLI from [Hashicorp project](https://www.vaultproject.io/downloads.html), and
+export the following environment for Vault CLI environment:
+
+----
+$ export VAULT_ADDR='https://192.168.1.229'
+$ export VAULT_SKIP_VERIFY="true"
+----
+
+Verify that the Vault server is accessible using the Vault CLI:
+
+----
+$ vault status
+Error checking seal status: Error making API request.
+
+URL: GET http://192.168.1.229/v1/sys/seal-status
+Code: 400. Errors:
+
+* server is not yet initialized
+----
+
+See [Initializing the Vault](https://www.vaultproject.io/intro/getting-started/deploy.html#initializing-the-vault) on how to initialize a Vault cluster.
+Check the status :
+
+----
+$ vault status
+Key             Value
+---             -----
+Seal Type       shamir
+Sealed          false
+Total Shares    5
+Threshold       3
+Version         0.10.1
+Cluster Name    vault-cluster-81cc7d1e
+Cluster ID      24f2af3d-f0e1-6b60-d5d1-89d2be0a9aec
+HA Enabled      false
+----
+
+Then write secret :
+
+----
+$ vault write secret/foo value=bar
+Success! Data written to: secret/foo
+
+$ vault read secret/foo
+Key                 Value
+---                 -----
+refresh_interval    768h
+value               bar
+----
