@@ -17,9 +17,6 @@ base:
     - server
     - motd
   'osarch:arm64':
+    - match: grain
     - docker
     - kubernetes
-  'master*':
-      - k8s-master
-  'minions*':
-      - k8s-worker

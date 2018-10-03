@@ -15,6 +15,6 @@
 base:
   '*':
     - schedule
-  {% if "k8s-master" in grains.get('role', []) or "k8s-worker" in grains.get('role', []) %}
+  'osarch:arm64':
+    - match: grain
     - cluster_k8s
-  {% endif %}

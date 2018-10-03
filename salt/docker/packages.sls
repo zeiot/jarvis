@@ -27,7 +27,8 @@
     'Ubuntu': '"deb [arch=amd64] https://download.docker.com/linux/ubuntu xenial stable"',
 }.get(grains.os) %}
 
-pkgrepo.managed:
+docker.repo:
+  pkgrepo.managed:
     - humanname: deb-docker
     - name: {{ repo }}
     - file: /etc/apt/sources.list.d/deb-docker.list
@@ -41,7 +42,7 @@ docker.customization:
     - group: root
     - mode: 644
 
-docker.deps:
+docker-packages:
   pkg.installed:
     - pkgs:
       - docker-ce: {{ docker_version }}

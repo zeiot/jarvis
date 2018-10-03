@@ -15,14 +15,14 @@
 {%- set k8s_version = pillar['kubernetes']['k8s_version'] -%}
 {%- set k8s_cni_version = pillar['kubernetes']['k8s_cni_version'] -%}
 
-kubernetes.repo:
+kubernetes-repo:
   pkgrepo.managed:
-      - humanname: deb-kubernetes
-      - name: deb http://apt.kubernetes.io/ kubernetes-xenial main
-      - file: /etc/apt/sources.list.d/deb-docker.list
-      - key_url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+    - humanname: deb-kubernetes
+    - name: deb http://apt.kubernetes.io/ kubernetes-xenial main
+    - file: /etc/apt/sources.list.d/deb-docker.list
+    - key_url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
 
-kubernetes.packages:
+kubernetes-packages:
   pkg.installed:
     - pkgs:
       - kubeadm: {{ k8s_version }}
@@ -30,15 +30,15 @@ kubernetes.packages:
       - kubelet: {{ k8s_version }}
       - kubernetes-cni: {{ k8s_cni_version }}
 
-bash.completion:
+bash-completion:
   cmd.run:
     - kubectl completion bash > /etc/bash_completion.d/kubectl
 
-kubelet.service:
+kubelet-service:
   service.running:
     - name: kubelet
     - enable: True
 
-setup.ipv4:
+setup-ipv4:
   cmd.run:
     - sysctl net.bridge.bridge-nf-call-iptables=1

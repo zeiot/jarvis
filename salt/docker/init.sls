@@ -13,5 +13,5 @@
 # limitations under the License.
 
 include:
-    - .deps
-    - .packages
+    - docker.deps
+    - docker.packages

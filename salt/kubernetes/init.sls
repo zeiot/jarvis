@@ -13,4 +13,4 @@
 # limitations under the License.
 
 include:
-    - .packages
+    - kubernetes.packages
