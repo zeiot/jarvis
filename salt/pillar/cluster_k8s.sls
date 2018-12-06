@@ -13,7 +13,7 @@
 # limitations under the License.
 
 docker:
-  ubuntu_version: "18.03.1~ce-0~ubuntu"
+  ubuntu_version: "18.06.1~ce~3-0~ubuntu"
   debian_version: "18.04.0~ce~3-0~debian"
 
 kubernetes:
