@@ -6,18 +6,9 @@
 * Master : [![Circle CI](https://circleci.com/gh/zeiot/jarvis/tree/master.svg?style=svg)](https://circleci.com/gh/zeiot/jarvis/tree/master)
 * Develop: [![Circle CI](https://circleci.com/gh/zeiot/jarvis/tree/develop.svg?style=svg)](https://circleci.com/gh/zeiot/jarvis/tree/develop)
 
-Infrastructure :
+Personal HomeLab.
 
-* [x] Management of containerized applications using [Kubernetes][]
-* [x] Monitoring solution with [Prometheus][] in the Kubernetes cluster
-* [x] Dashboards using [Grafana][] in the Kubernetes cluster
-* [x] Custom DNS using [CoreDNS][] (See [k8s/coredns/README.md]())
-* [x] Home Assistant as the home automation platform
 
-Home Assistant :
-
-* [x] Extract the energy consumption information from an EDF meter ([ERDF Teleinfo][])
-* [x] Analyze the indoor / outdoor temperature
 
 ![Dashboard](dashboard.png)
 
