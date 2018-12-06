@@ -20,23 +20,25 @@
 
 - name: Remove packages
   apt:
-    name: "{{ item }}"
+    name: "{{ packages }}"
     state: absent
     purge: yes
-  with_items:
-    - kubeadm
-    - kubelet
-    - kubectl
-    - kubernetes-cni
+  vars:
+    packages:
+      - kubeadm
+      - kubelet
+      - kubectl
+      - kubernetes-cni
 
 - name: Remove Kubernetes directories
   file:
     state: absent
-    path: "{{ item }}/"
-  with_items:
-    - /etc/kubernetes
-    - /var/lib/etcd
-    - /opt/cni
+    path: "{{ directory }}/"
+  vars:
+    directory:
+      - /etc/kubernetes
+      - /var/lib/etcd
+      - /opt/cni
 
 - name: Reboot host
   shell: sleep 2 && /sbin/shutdown -r now "Ansible reboot"
@@ -46,6 +48,6 @@
 - name: Wait for host to come back up
   become: false
   wait_for_connection:
-    delay: 15
-    sleep: 2
-    timeout: 120
+    delay: "15"
+    sleep: "2"
+    timeout: "120"

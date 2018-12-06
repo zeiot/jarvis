@@ -14,14 +14,21 @@
 
 - name: Install salt-minion
   apt:
-    name: "{{item}}"
+    name: "{{ packages }}"
     state: latest
-  with_items:
-   - salt-minion
+  vars:
+    packages:
+      - salt-minion
 
 - name: Create pki directory
-  file: path=/etc/salt/pki/minion/ state=directory
+  file:
+    path: /etc/salt/pki/minion/
+    state: directory
 
 - name: Setup minion
-  template: src="minion.conf.j2" dest="/etc/salt/minion" owner="root" mode="644"
+  template:
+    src: "minion.conf.j2"
+    dest: "/etc/salt/minion"
+    owner: "root"
+    mode: "644"
   notify: restart salt-minion

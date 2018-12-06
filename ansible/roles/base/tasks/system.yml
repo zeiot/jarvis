@@ -13,7 +13,8 @@
 # limitations under the License.
 
 - name: Set timezone
-  timezone: name="{{ timezone }}"
+  timezone:
+    name: "{{ timezone }}"
 
 - name: Update timezone
   command: dpkg-reconfigure --frontend noninteractive tzdata

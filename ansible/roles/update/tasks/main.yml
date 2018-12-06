@@ -13,10 +13,12 @@
 # limitations under the License.
 
 - name: Update APT package
-  apt: update_cache=yes
+  apt:
+    update_cache: yes
 
 - name: Upgrade APT package
-  apt: upgrade=yes
+  apt:
+    upgrade: yes
 
 #- name: Reboot
 #  shell: sleep 2 && reboot

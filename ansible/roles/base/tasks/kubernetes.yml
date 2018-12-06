@@ -33,7 +33,9 @@
     - kubelet={{ k8s_version }}
     - kubernetes-cni={{ k8s_cni_version }}
 
-- stat: path=/etc/bash_completion.d/kubectl
+- name: Check kubectl completion file
+  stat:
+    path: /etc/bash_completion.d/kubectl
   register: kubernetes_completion
 
 - shell: kubectl completion bash > /etc/bash_completion.d/kubectl

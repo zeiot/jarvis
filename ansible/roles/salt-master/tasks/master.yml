@@ -14,23 +14,34 @@
 
 - name: Install salt-master
   apt:
-    name: "{{item}}"
+    name: "{{ packages }}"
     state: latest
-  with_items:
-   - salt-master
-   - salt-cloud
+  vars:
+    packages:
+      - salt-master
+      - salt-cloud
 
 - name: Create pki directory
-  file: path=/etc/salt/pki/master/minions state=directory
+  file:
+    path: /etc/salt/pki/master/minions
+    state: directory
 
 - name: Create base directory
-  file: path={{ salt_base_dir }} state=directory
+  file:
+    path: "{{ salt_base_dir }}"
+    state: directory
 
 - name: Create base directory
-  file: path={{ salt_pillar_dir }} state=directory
+  file:
+    path: "{{ salt_pillar_dir }}"
+    state: directory
 
 - name: Setup master
-  template: src="master.conf.j2" dest="/etc/salt/master" owner="root" mode="644"
+  template:
+    src: "master.conf.j2"
+    dest: "/etc/salt/master"
+    owner: "root"
+    mode: "644"
   notify: restart salt-master
 
 # - name: Accept all minions

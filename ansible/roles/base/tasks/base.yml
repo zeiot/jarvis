@@ -26,12 +26,13 @@
 
 - name: Install necessary tools
   apt:
-    name: "{{ item }}"
+    name: "{{ packages }}"
     update_cache: yes
-  with_items:
-    - "apt-transport-https"
-    - "bash-completion"
-    - "jq"
-    - "nfs-common"
-    - "dnsutils"
-    - "lsb-release"
+  vars:
+    packages:
+      - "apt-transport-https"
+      - "bash-completion"
+      - "jq"
+      - "nfs-common"
+      - "dnsutils"
+      - "lsb-release"
