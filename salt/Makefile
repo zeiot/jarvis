@@ -34,7 +34,7 @@ help:
 .PHONY: hosts
 hosts: ## Display available hosts
 	@echo -e "$(OK_COLOR)[$(APP)] Display available hosts$(NO_COLOR)"
-	sudo salt-key -L
+	@sudo salt-key -L
 
 .PHONY: check
 check: ## Check hosts connection
