@@ -45,7 +45,7 @@ docker.repo:
 docker-packages:
   pkg.installed:
     - pkgs:
-      # - docker-ce: {{ docker_version }}
+      - docker-ce: {{ docker_version }}
 
 docker.service:
   service.running:
