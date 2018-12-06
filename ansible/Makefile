@@ -28,7 +28,7 @@ SHELL = /bin/bash
 
 .PHONY: help
 help:
-	@echo -e "$(OK_COLOR)==== $(APP) [$(VERSION)] ====$(NO_COLOR)"
+	@echo -e "$(OK_COLOR)==== $(APP) ====$(NO_COLOR)"
 	@grep -E '^[0-9a-zA-Z_\-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "$(MAKE_COLOR) : %s\n", $$1, $$2}'
 
 .PHONY: check
@@ -36,25 +36,20 @@ check: ## Check hosts connection
 	@echo -e "$(OK_COLOR)[$(APP)] Check hosts$(NO_COLOR)"
 	@ansible all -m ping -i inventory
 
-.PHONY: k8s-debug
-k8s-debug: ## Display some informations about hosts
+.PHONY: debug
+debug: ## Display some informations about hosts
 	@echo -e "$(OK_COLOR)[$(APP)] Retrieve informations$(NO_COLOR)"
 	@ansible-playbook -i inventory debug.yml
 
-.PHONY: k8s-bootstrap
-k8s-bootstrap: ## Bootstrap the Kubernetes cluster
+.PHONY: bootstrap
+bootstrap: ## Bootstrap the Kubernetes cluster
 	@echo -e "$(OK_COLOR)[$(APP)] Bootstrap the cluster$(NO_COLOR)"
 	@ansible-playbook -i inventory bootstrap.yml
 
-.PHONY: k8s-destroy
-k8s-destroy: ## Bootstrap the Kubernetes cluster
+.PHONY: destroy
+destroy: ## Destroy the Kubernetes cluster
 	@echo -e "$(OK_COLOR)[$(APP)] Destroy the cluster$(NO_COLOR)"
 	@ansible-playbook -i inventory destroy.yml
-
-.PHONY: k8s-update
-k8s-update: ## Update the Kubernetes cluster
-	@echo -e "$(OK_COLOR)[$(APP)] Update the cluster$(NO_COLOR)"
-	@ansible-playbook -i inventory update.yml
 
 .PHONY: k8s-setup
 k8s-setup: ## Setup the Kubernetes cluster
