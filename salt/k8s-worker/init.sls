@@ -11,3 +11,10 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
+{% set k8s_version = pillar['kubernetes']['k8s_version'] %}
+
+kubernetes-packages:
+  pkg.installed:
+    - pkgs:
+      - kubeadm: {{ k8s_version }}

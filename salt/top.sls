@@ -20,3 +20,7 @@ base:
     - match: grain
     - docker
     - kubernetes
+  '*master*':
+    - k8s-master
+  '*node*':
+    - k8s-worker

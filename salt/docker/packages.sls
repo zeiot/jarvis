@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-{%- set docker_version = {
+{% set docker_version = {
   'Debian': pillar['docker']['debian_version'],
   'Ubuntu': pillar['docker']['ubuntu_version'],
 }.get(grains.os) %}
