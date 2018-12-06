@@ -25,14 +25,14 @@ kubernetes-repo:
 kubernetes-packages:
   pkg.installed:
     - pkgs:
-      - kubeadm: {{ k8s_version }}
+      # - kubeadm: {{ k8s_version }}
       - kubectl: {{ k8s_version }}
       - kubelet: {{ k8s_version }}
       - kubernetes-cni: {{ k8s_cni_version }}
 
 bash-completion:
   cmd.run:
-    - kubectl completion bash > /etc/bash_completion.d/kubectl
+    - name: kubectl completion bash > /etc/bash_completion.d/kubectl
 
 kubelet-service:
   service.running:
@@ -41,4 +41,4 @@ kubelet-service:
 
 setup-ipv4:
   cmd.run:
-    - sysctl net.bridge.bridge-nf-call-iptables=1
+    - name: sysctl net.bridge.bridge-nf-call-iptables=1

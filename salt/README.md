@@ -25,6 +25,6 @@ Salt is used to manage hosts
         2018.3.3
     jarvis-zero1.localdomain:
         2018.3.2
-    ...
+
 
 

@@ -41,7 +41,7 @@ check: ## Check hosts connection
 	@echo -e "$(OK_COLOR)[$(APP)] Check hosts$(NO_COLOR)"
 	@sudo salt '*' test.ping
 	@sudo salt '*' test.version
-	@sudo salt '*' status.uptime
+	# @sudo salt '*' status.uptime
 
 .PHONY: k8s-check
 k8s-check: ## Check Kubernetes cluster
