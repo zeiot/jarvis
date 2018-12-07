@@ -12,5 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-include:
-    - k8s-master.packages
+{% set k8s_version = pillar['kubernetes']['k8s_version'] %}
+
+master.packages:
+  pkg.installed:
+    - pkgs:
+      - kubeadm: {{ k8s_version }}
