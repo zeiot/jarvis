@@ -34,18 +34,10 @@ docker.repo:
     - file: /etc/apt/sources.list.d/deb-docker.list
     - key_url: {{ gpg }}
 
-# docker.customization:
-#   file.managed:
-#     - source: salt://docker/overlay.conf
-#     - target: /etc/systemd/system/docker.service.d/overlay.conf
-#     - user: root
-#     - group: root
-#     - mode: 644
-
-docker-packages:
+docker.packages:
   pkg.installed:
     - pkgs:
-      # - docker-ce: {{ docker_version }}
+      - docker-ce: {{ docker_version }}
 
 docker.service:
   service.running:
