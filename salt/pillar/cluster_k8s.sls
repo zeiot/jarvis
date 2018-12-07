@@ -14,7 +14,7 @@
 
 docker:
   ubuntu_version: "18.06.1~ce~3-0~ubuntu"
-  debian_version: "18.04.0~ce~3-0~debian"
+  debian_version: "18.06.1~ce~3-0~debian"
 
 kubernetes:
   k8s_release: "v1.13.0"
