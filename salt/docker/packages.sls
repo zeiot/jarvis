@@ -42,7 +42,7 @@ docker.repo:
 #     - group: root
 #     - mode: 644
 
-docker-packages:
+docker.packages:
   pkg.installed:
     - pkgs:
       - docker-ce: {{ docker_version }}
