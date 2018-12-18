@@ -28,7 +28,7 @@ SHELL = /bin/bash
 
 .PHONY: help
 help:
-	@echo -e "$(OK_COLOR)==== $(APP) [$(VERSION)] ====$(NO_COLOR)"
+	@echo -e "$(OK_COLOR)==== $(APP) ====$(NO_COLOR)"
 	@grep -E '^[0-9a-zA-Z_\-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "$(MAKE_COLOR) : %s\n", $$1, $$2}'
 
 .PHONY: hosts

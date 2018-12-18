@@ -24,7 +24,6 @@ data:
   config: |
     address-pools:
     - name: default
-      protocol: arp
-      arp-network: 192.168.1.0/24
-      cidr:
-      - 192.168.1.224/27
+      protocol: layer2
+      addresses:
+      - 192.168.1.128-192.168.1.250

@@ -33,7 +33,7 @@ spec:
     spec:
       containers:
       - name: coredns
-        image: zeiot/rpi-coredns:v1.1.2.arm64
+        image: zeiot/coredns:v1.3.0.arm64
         imagePullPolicy: IfNotPresent
         args: [ "-conf", "/etc/coredns/Corefile" ]
         volumeMounts:

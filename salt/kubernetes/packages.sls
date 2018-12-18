@@ -25,7 +25,7 @@ kubernetes-repo:
 kubernetes-packages:
   pkg.installed:
     - pkgs:
-      # - kubeadm: {{ k8s_version }}
+      - kubeadm: {{ k8s_version }}
       - kubectl: {{ k8s_version }}
       - kubelet: {{ k8s_version }}
       - kubernetes-cni: {{ k8s_cni_version }}

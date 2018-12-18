@@ -1,0 +1,36 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations: {}
+  labels:
+    name: unsee
+    provider: jarvis
+  name: unsee
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  selector:
+    matchLabels:
+      name: unsee
+  template:
+    metadata:
+      labels:
+        app: sup
+        name: unsee
+    spec:
+      containers:
+      - env:
+        - name: ALERTMANAGER_URIS
+          value: http://alertmanager.jarvis
+        - name: STRIP_LABELS
+          value: chart component instance kubernetes_name job type monitor
+        - name: ALERTMANAGER_TTL
+          value: 10s
+        image: zeiot/rpi-unsee:v0.8.0
+        imagePullPolicy: Always
+        name: unsee
+        ports:
+        - containerPort: 8080
+          name: ui
+          protocol: TCP
+        resources: {}

@@ -14,11 +14,11 @@
 
 docker:
   ubuntu_version: "18.06.1~ce~3-0~ubuntu"
-  debian_version: "18.04.0~ce~3-0~debian"
+  debian_version: "18.06.1~ce~3-0~debian"
 
 kubernetes:
-  k8s_release: "v1.9.6"
-  k8s_version: "1.9.6-00"
+  k8s_release: "v1.13.0"
+  k8s_version: "1.13.0-00"
   k8s_cni_version: "0.6.0-00"
   k8s_cfssl_version: "R1.2"
   global:

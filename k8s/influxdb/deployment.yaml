@@ -33,7 +33,7 @@ spec:
     spec:
       containers:
       - name: influxdb
-        image: zeiot/rpi-influxdb:v1.4.3
+        image: zeiot/rpi-influxdb:v1.5.2.arm
         imagePullPolicy: Always
         ports:
         - containerPort: 8086
