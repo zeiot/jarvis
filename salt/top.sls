@@ -16,6 +16,7 @@ base:
   '*':
     - server
     - motd
+    - swap
   'osarch:arm64':
     - match: grain
     - docker

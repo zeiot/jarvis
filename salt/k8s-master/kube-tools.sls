@@ -14,12 +14,6 @@
 
 {% set k8s_version = pillar['kubernetes']['k8s_version'] %}
 
-kube-tools-packages:
-  pkg.installed:
-    - pkgs:
-      - kubectl: {{ k8s_version }}
-      - kubeadm: {{ k8s_version }}
-
 kubectl-completion:
   cmd.run:
     - name: kubectl completion bash > /etc/bash_completion.d/kubectl
