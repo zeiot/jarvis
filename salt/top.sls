@@ -20,3 +20,9 @@ base:
     - match: grain
     - docker
     - kubernetes
+  'os:Ubuntu':
+    - match: grain
+  # '*master*':
+  #  - match: pcre
+    - k8s-master.kube-tools
+    

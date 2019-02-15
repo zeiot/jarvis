@@ -49,15 +49,17 @@ k8s-check: ## Check Kubernetes cluster
 	@sudo salt -C 'G@osarch:arm64' cmd.run 'dpkg -l|grep docker-ce'
 	@sudo salt -C 'G@osarch:arm64' cmd.run 'dpkg -l|grep kube*'
 
-.PHONY: commons
-commons: ## Perform configuration
+.PHONY: k8s-destroy
+k8s-destroy: ## Destroy the Kubernetes cluster
+	@echo -e "$(OK_COLOR)[$(APP)] Destroy the Kubernetes cluster$(NO_COLOR)"
+	@sudo salt -C 'G@osarch:arm64' cmd.run 'apt-get remove -y --purge kubectl kubelet kubernetes-cni'
+	@sudo salt -C 'G@osarch:arm64' cmd.run 'rm -fr /etc/kubernetes/ /var/lib/etcd/ /opt/cni /var/lib/kubelet'
+	@sudo salt -C 'G@roles:salt_master' cmd.run 'apt-get remove -y --purge kubeadm'
+
+.PHONY: setup
+k8s-setup: ## Perform configuration
 	@echo -e "$(OK_COLOR)[$(APP)] Configure hosts$(NO_COLOR)"
 	@sudo salt '*' state.apply
-
-.PHONY: k8s-setup
-k8s-setup: ## Setup a Kubernetes cluster
-	@echo -e "$(OK_COLOR)[$(APP)] Setup Kubernetes cluster$(NO_COLOR)"
-	@sudo salt '*' state.sls kubernetes
 
 .PHONY: monitoring
 monitoring: ## Setup monitoring tools
