@@ -21,10 +21,16 @@ function tmux-jarvis {
     tmux start-server
     tmux new-session -s $SESSION -n Jarvis -d
     tmux new-window -n "Jarvis"
-    tmux send-keys -t $SESSION "cd ${HOME}/Perso/Zeiot/jarvis" C-m
-    tmux new-window -n "Ctop"
+    tmux send-keys -t $SESSION "cd ${HOME}/Projects/jarvis" C-m
+    tmux new-window -n "Ansible"
+    tmux send-keys -t $SESSION "cd ${HOME}/Projects/jarvis/ansible" C-m
+    tmux new-window -n "Salt"
+    tmux send-keys -t $SESSION "cd ${HOME}/Projects/jarvis/salt" C-m
+    tmux new-window -n "Node1"
     tmux send-keys -t $SESSION "cd ${HOME}" C-m
-    tmux new-window -n "Charts"
+    tmux new-window -n "Node2"
+    tmux send-keys -t $SESSION "cd ${HOME}" C-m
+    tmux new-window -n "Node3"
     tmux send-keys -t $SESSION "cd ${HOME}" C-m
     tmux attach-session -t $SESSION
 }
