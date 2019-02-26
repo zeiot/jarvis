@@ -67,6 +67,7 @@ spec:
       - name: radarr-downloads
         persistentVolumeClaim:
           claimName: radarr-downloads
-      - name: radarr-movies
-        persistentVolume:
-          name: radarr-movies
+      - name: radar-movies
+        nfs:
+          server: 192.168.1.13
+          path: "/volume1/video"
