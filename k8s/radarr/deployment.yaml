@@ -33,7 +33,7 @@ spec:
     spec:
       containers:
       - name: radarr
-        image: lsioarmhf/radarr-aarch64:117
+        image: lsioarmhf/radarr-aarch64:139
         imagePullPolicy: Always
         ports:
         - name: ui
