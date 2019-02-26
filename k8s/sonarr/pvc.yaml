@@ -15,15 +15,33 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: sonarr-data
+  name: sonarr-config
   namespace: multimedia
   labels:
     app: sonarr
     provider: jarvis
+  annotations:
+    volume.beta.kubernetes.io/storage-class: "jarvis-nfs-client"
 spec:
   accessModes:
     - ReadWriteMany
-  storageClassName: ""
+  resources:
+    requests:
+      storage: 10Mi
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: sonarr-downloads
+  namespace: multimedia
+  labels:
+    app: sonarr
+    provider: jarvis
+  annotations:
+    volume.beta.kubernetes.io/storage-class: "jarvis-nfs-client"
+spec:
+  accessModes:
+    - ReadWriteMany
   resources:
     requests:
       storage: 10Mi

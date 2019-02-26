@@ -40,13 +40,19 @@ spec:
           containerPort: 8989
           protocol: TCP
         volumeMounts:
+        - mountPath: /config
+          name: sonarr-config
+        - mountPath: /downloads
+          name: sonarr-downloads
         - mountPath: /tv
-          name: sonarr-data
+          name: sonarr-tv
         env:
           - name: PGID
             value: "1000"
           - name: PUID
             value: "1000"
+          - name: TZ
+            value: "Europe/Paris"
         resources:
           requests:
             memory: "128Mi"
@@ -55,6 +61,13 @@ spec:
             memory: "128Mi"
             cpu: "500m"
       volumes:
-      - name: sonarr-data
+      - name: sonarr-config
         persistentVolumeClaim:
-          claimName: sonarr-data
+          claimName: sonarr-config
+      - name: sonarr-downloads
+        persistentVolumeClaim:
+          claimName: sonarr-downloads
+      - name: sonarr-tv
+        nfs:
+          server: 192.168.1.13
+          path: "/volume1/video/Séries"
