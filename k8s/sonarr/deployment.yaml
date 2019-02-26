@@ -33,7 +33,7 @@ spec:
     spec:
       containers:
       - name: sonarr
-        image: lsioarmhf/sonarr-aarch64:86
+        image: lsioarmhf/sonarr-aarch64:109
         imagePullPolicy: Always
         ports:
         - name: ui
