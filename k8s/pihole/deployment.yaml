@@ -30,16 +30,14 @@ spec:
     spec:
       containers:
         - name: pi-hole
+          image: pihole/pihole:4.2.2_aarch64
           # image: diginc/pi-hole-multiarch:v3.2.1_debian_armhf
-          image: pihole/pihole:v4.0_aarch64
           imagePullPolicy: IfNotPresent
           env:
-            - name: POD_IP
+            - name: ServerIP
               valueFrom:
                 fieldRef:
-                  fieldPath: status.podIP
-            - name: "ServerIP"
-              value: "127.0.0.1"
+                  fieldPath: status.hostIP
             - name: "WEBPASSWORD"
               valueFrom:
                 secretKeyRef:
@@ -51,6 +49,8 @@ spec:
             #   value: "208.67.222.222"
             - name: "VIRTUAL_HOST"
               value: "pihole.jarvis"
+            - name: TZ
+              value: "Europe/Paris"
           ports:
             - name: "dns-tcp"
               containerPort: 53
