@@ -1,4 +1,4 @@
-# Copyright 2016-2018 Nicolas Lamirault <nicolas.lamirault@gmail.com>
+# Copyright 2016-2019 Nicolas Lamirault <nicolas.lamirault@gmail.com>
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -40,13 +40,19 @@ spec:
           containerPort: 7878
           protocol: TCP
         volumeMounts:
+        - mountPath: /config
+          name: radarr-config
+        - mountPath: /downloads
+          name: radarr-downloads
         - mountPath: /movies
-          name: radarr-data
+          name: radarr-movies
         env:
           - name: PGID
             value: "1000"
           - name: PUID
             value: "1000"
+          - name: TZ
+            value: "Europe/Paris"
         resources:
           requests:
             memory: "128Mi"
@@ -55,6 +61,12 @@ spec:
             memory: "128Mi"
             cpu: "500m"
       volumes:
-      - name: radarr-data
+      - name: radarr-config
         persistentVolumeClaim:
-          claimName: radarr-data
+          claimName: radarr-config
+      - name: radarr-downloads
+        persistentVolumeClaim:
+          claimName: radarr-downloads
+      - name: radarr-movies
+        persistentVolume:
+          name: radarr-movies

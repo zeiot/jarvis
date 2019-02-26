@@ -1,4 +1,4 @@
-# Copyright 2016-2018 Nicolas Lamirault <nicolas.lamirault@gmail.com>
+# Copyright 2016-2019 Nicolas Lamirault <nicolas.lamirault@gmail.com>
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,15 +15,33 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: radarr-data
+  name: radarr-config
   namespace: multimedia
   labels:
     app: radarr
     provider: jarvis
+  annotations:
+    volume.beta.kubernetes.io/storage-class: "jarvis-nfs-client"
 spec:
   accessModes:
     - ReadWriteMany
-  storageClassName: ""
+  resources:
+    requests:
+      storage: 10Mi
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: radarr-downloads
+  namespace: multimedia
+  labels:
+    app: radarr
+    provider: jarvis
+  annotations:
+    volume.beta.kubernetes.io/storage-class: "jarvis-nfs-client"
+spec:
+  accessModes:
+    - ReadWriteMany
   resources:
     requests:
       storage: 10Mi
