@@ -34,7 +34,7 @@ spec:
     spec:
       containers:
       - name: alertmanager
-        image: zeiot/rpi-alertmanager:v0.15.2.arm64
+        image: zeiot/alertmanager:v0.16.1.arm64
         args:
           - '--config.file=/etc/alertmanager/config.yml'
           - '--storage.path=/alertmanager'
