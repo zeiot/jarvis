@@ -51,6 +51,13 @@ spec:
               value: "pihole.jarvis"
             - name: TZ
               value: "Europe/Paris"
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "500m"
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
           ports:
             - name: "dns-tcp"
               containerPort: 53

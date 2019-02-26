@@ -47,6 +47,13 @@ spec:
             value: "1000"
           - name: PUID
             value: "1000"
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "500m"
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
       volumes:
       - name: sonarr-data
         persistentVolumeClaim:

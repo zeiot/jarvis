@@ -48,6 +48,13 @@ spec:
           mountPath: /etc/alertmanager-templates
         - name: alertmanager
           mountPath: /alertmanager
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "500m"
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
       volumes:
       - name: config-volume
         configMap:

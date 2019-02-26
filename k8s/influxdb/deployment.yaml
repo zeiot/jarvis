@@ -41,6 +41,13 @@ spec:
         volumeMounts:
         - mountPath: /data
           name: influxdb-data
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "500m"
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
       volumes:
       - name: influxdb-data
         persistentVolumeClaim:
