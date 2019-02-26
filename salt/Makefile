@@ -53,8 +53,7 @@ k8s-check: ## Check Kubernetes cluster
 k8s-destroy: ## Destroy the Kubernetes cluster
 	@echo -e "$(OK_COLOR)[$(APP)] Destroy the Kubernetes cluster$(NO_COLOR)"
 	@sudo salt -C 'G@osarch:arm64' cmd.run 'apt-get remove -y --purge kubectl kubelet kubernetes-cni'
-	@sudo salt -C 'G@osarch:arm64' cmd.run 'rm -fr /etc/kubernetes/ /var/lib/etcd/ /opt/cni /var/lib/kubelet'
-	@sudo salt -C 'G@roles:salt_master' cmd.run 'apt-get remove -y --purge kubeadm'
+	@sudo salt -C 'G@osarch:arm64' cmd.run 'rm -fr /etc/kubernetes/ /var/lib/etcd/ /var/lib/cni/ /etc/cni /opt/cni /var/lib/kubelet'
 
 .PHONY: setup
 k8s-setup: ## Perform configuration
