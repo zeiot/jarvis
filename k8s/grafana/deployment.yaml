@@ -19,7 +19,7 @@ metadata:
     app: grafana
     provider: jarvis
   name: grafana
-  namespace: tools
+  namespace: metrics
 spec:
   replicas: 1
   selector:

@@ -16,7 +16,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: grafana
-  namespace: tools
+  namespace: metrics
   labels:
     app: grafana
     provider: jarvis

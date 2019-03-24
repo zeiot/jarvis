@@ -19,7 +19,7 @@ metadata:
     app: grafana
     provider: jarvis
   name: grafana-data
-  namespace: tools
+  namespace: metrics
   annotations:
     volume.beta.kubernetes.io/storage-class: "jarvis-nfs-client"
 spec:
@@ -35,7 +35,7 @@ spec:
 #   labels:
 #     app: grafana
 #   name: grafana-config
-#   namespace: tools
+#   namespace: metrics
 #   annotations:
 #     volume.beta.kubernetes.io/storage-class: "jarvis-nfs-client"
 # spec:

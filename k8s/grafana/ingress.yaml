@@ -18,7 +18,7 @@ metadata:
   labels:
     provider: jarvis
   name: grafana
-  namespace: tools
+  namespace: metrics
 spec:
   rules:
   - host: grafana.jarvis
