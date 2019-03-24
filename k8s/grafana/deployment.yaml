@@ -32,7 +32,8 @@ spec:
         provider: jarvis
     spec:
       containers:
-      - image: zeiot/grafana:v5.4.3.arm64
+              # - image: zeiot/grafana:v5.4.3.arm64
+      - image: grafana/grafana-arm64v8-linux:6.0.2
         imagePullPolicy: Always
         name: grafana
         ports:
