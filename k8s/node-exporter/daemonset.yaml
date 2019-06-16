@@ -33,7 +33,7 @@ spec:
         app: node-exporter
     spec:
       containers:
-      - image: zeiot/rpi-node_exporter:v0.15.2
+      - image: zeiot/node-exporter:v0.17.0.arm64
         imagePullPolicy: IfNotPresent
         livenessProbe:
           failureThreshold: 3
