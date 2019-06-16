@@ -74,7 +74,20 @@ spec:
           volumeMounts:
             - name: pihole-config
               mountPath: "/etc/pihole"
+          livenessProbe:
+            httpGet:
+              path: /admin.index.php
+              port: 80
+            initialDelaySeconds: 60
+            periodSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /admin/index.php
+              port: 80
+            initialDelaySeconds: 25
+            periodSeconds: 5
       volumes:
         - name: pihole-config
           persistentVolumeClaim:
             claimName: pihole-config
+
