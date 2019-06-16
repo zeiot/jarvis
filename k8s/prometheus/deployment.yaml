@@ -1,4 +1,4 @@
-# Copyright 2016-2018 Nicolas Lamirault <nicolas.lamirault@gmail.com>
+# Copyright 2016-2019 Nicolas Lamirault <nicolas.lamirault@gmail.com>
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -36,7 +36,7 @@ spec:
       serviceAccountName: prometheus
       containers:
         - name: prometheus
-          image: zeiot/prometheus:v2.7.1.arm64
+          image: zeiot/prometheus:v2.8.0.arm64
           imagePullPolicy: Always
           args:
             - --config.file=/config/prometheus.yml
