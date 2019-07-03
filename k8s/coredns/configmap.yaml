@@ -18,8 +18,12 @@ metadata:
   name: coredns
   namespace: dns
   labels:
-    app: coredns
-    provider: jarvis
+    app.kubernetes.io/name: coredns
+    app.kubernetes.io/instance: coredns
+    app.kubernetes.io/version: "v1"
+    app.kubernetes.io/component: dns
+    app.kubernetes.io/part-of: jarvis
+    app.kubernetes.io/managed-by: kubectl
 data:
   Corefile: |
     .:53 {
