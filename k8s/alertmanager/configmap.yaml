@@ -18,8 +18,12 @@ metadata:
   name: alertmanager
   namespace: monitoring
   labels:
-    app: alertmanager
-    provider: jarvis
+    app.kubernetes.io/name: alertmanager
+    app.kubernetes.io/instance: alertmananger
+    app.kubernetes.io/version: "v1"
+    app.kubernetes.io/component: alerting
+    app.kubernetes.io/part-of: jarvis
+    app.kubernetes.io/managed-by: kubectl
 data:
   config.yml: |-
     global:
