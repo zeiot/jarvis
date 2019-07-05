@@ -15,7 +15,6 @@
 apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
-  annotations: {}
   labels:
     app: node-exporter
     provider: jarvis

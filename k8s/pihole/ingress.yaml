@@ -16,13 +16,13 @@ apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   namespace: tools
-  name: pi-hole
+  name: pihole
   labels:
-    app: pi-hole
+    k8s-app: pihole
     provider: jarvis
 spec:
   backend:
-    serviceName: pi-hole
+    serviceName: pihole
     servicePort: 80
   rules:
   - host: pihole.jarvis
@@ -30,5 +30,5 @@ spec:
       paths:
       - path: /*
         backend:
-          serviceName: pi-hole
+          serviceName: pihole
           servicePort: 80

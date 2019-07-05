@@ -33,8 +33,8 @@ spec:
     spec:
       containers:
       - name: vault
-        image: zeiot/vault:1.0.0.arm64
-        command: [ "vault", "server", "-config", "/vault/config/vault.conf" ]
+        image: zeiot/vault:v1.0.0.arm64
+        command: [ "vault", "server", "-log-level", "debug", "-config", "/vault/config/vault.hcl" ]
         resources:
           limits:
             memory: 256Mi
@@ -42,16 +42,31 @@ spec:
           requests:
             memory: 128Mi
             cpu: "100m"
+        securityContext:
+          capabilities:
+            add:
+              - IPC_LOCK
         ports:
         - containerPort: 8200
           name: vault
-        securityContext:
-          privileged: true
         volumeMounts:
         - name: vault-storage
           mountPath: /vault/file/
         - name: vault-config
           mountPath: /vault/config/
+        env:
+          - name: "VAULT_API_ADDR"
+            value: "http://0.0.0.0:8200"
+        livenessProbe:
+          httpGet:
+            path: 'v1/sys/health?standbyok=true'
+            port: 8200
+            scheme: HTTP
+        readinessProbe:
+          httpGet:
+            path: 'v1/sys/health?standbyok=true'
+            port: 8200
+            scheme: HTTP
       volumes:
       - name: vault-storage
         persistentVolumeClaim:

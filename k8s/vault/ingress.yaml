@@ -16,19 +16,19 @@ apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   namespace: security
-  name: vault-ui
+  name: vault
   labels:
     app: vault
     provider: jarvis
 spec:
   backend:
-    serviceName: vault-ui
-    servicePort: 8000
+    serviceName: vault
+    servicePort: 80
   rules:
-  - host: vault-ui.jarvis
+  - host: vault.jarvis
     http:
       paths:
       - path: /*
         backend:
-          serviceName: vault-ui
-          servicePort: 8000
+          serviceName: vault
+          servicePort: 80
