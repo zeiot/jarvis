@@ -27,5 +27,3 @@ resources:
 - rbac.yaml
 - storage-class.yaml
 - deployment.yaml
-- nfs-pod-test.yaml
-- nfs-pvc-test.yaml
