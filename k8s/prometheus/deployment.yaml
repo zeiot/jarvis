@@ -38,24 +38,41 @@ spec:
         - name: prometheus
           image: zeiot/prometheus:v2.8.0.arm64
           imagePullPolicy: Always
+          command:
+          - "/bin/prometheus"
           args:
-            - --config.file=/config/prometheus.yml
-            #- --web.enable-lifecycle
-            - --storage.tsdb.path=/prometheus
-            - --web.external-url=http://prometheus.jarvis
+            - "--config.file=/config/prometheus.yml"
+            - "--storage.tsdb.path=/prometheus"
+            - "--web.console.libraries=/usr/share/prometheus/console_libraries"
+            - "--web.console.templates=/usr/share/prometheus/consoles"
+            - "--storage.tsdb.retention=5w"
+          livenessProbe:
+            httpGet:
+              path: /-/healthy
+              port: 9090
+            initialDelaySeconds: 5
+            periodSeconds: 3
+            failureThreshold: 40
+          readinessProbe:
+            httpGet:
+              path: /-/ready
+              port: 9090
+            initialDelaySeconds: 30
+            periodSeconds: 3
+            failureThreshold: 40
           ports:
             - containerPort: 9090
               protocol: TCP
           volumeMounts:
-            - name: prometheus-data
+            - name: data
               mountPath: "/prometheus"
-            - name: prometheus-config
+            - name: config
               mountPath: "/config"
       volumes:
-        - name: prometheus-data
+        - name: data
           persistentVolumeClaim:
             claimName: prometheus-data
-        - name: prometheus-config
+        - name: config
           configMap:
             name: prometheus
             items:

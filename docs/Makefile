@@ -62,8 +62,49 @@ doc-pdf: ## Generate PDF version of the documentation (lang=xx)
 	    -a pdf-fontsdir=/documents/assets/fonts \
 	    -a pdf-style=custom -d book -a toc2
 
-.PHONY: epub
-epub: ## Generate ePUB version of the documentation (lang=xx)
+.PHONY: doc-epub
+doc-epub: ## Generate ePUB version of the documentation (lang=xx)
 	$(DOCKER) run --rm=true \
 		-it -v `pwd`:/documents/ \
 		$(DOCKER_IMAGE) asciidoctor-epub3 ${lang}/$(BOOK)
+
+BOOK_NAME := getting-started-with-knaitve-zh
+BOOK_OUTPUT := _book
+
+.PHONY: install build all
+install:
+	yarn add gitbook-cli
+	./node_modules/.bin/gitbook install
+
+build:
+	./node_modules/.bin/gitbook build . $(BOOK_OUTPUT)
+
+all: install build
+
+.PHONY: serve
+serve:
+	./node_modules/.bin/gitbook serve . $(BOOK_OUTPUT)
+
+.PHONY: epub
+epub:
+	./node_modules/.bin/gitbook epub . $(BOOK_NAME).epub
+
+.PHONY: pdf
+pdf:
+	./node_modules/.bin/gitbook pdf . $(BOOK_NAME).pdf
+
+.PHONY: mobi
+mobi:
+	./node_modules/.bin/gitbook mobi . $(BOOK_NAME).mobi
+
+
+.PHONY: help
+help:
+	@echo "Help for make"
+	@echo "make          - Build the book"
+	@echo "make build    - Build the book"
+	@echo "make serve    - Serving the book on localhost:4000"
+	@echo "make install  - Install gitbook and plugins"
+	@echo "make epub     - Build epub book"
+	@echo "make pdf      - Build pdf book"
+	@echo "make clean    - Remove generated files"
