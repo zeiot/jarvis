@@ -20,6 +20,7 @@ fi
 
 address=$1
 username=$2
+cluster_name="kube-jarvis"
 
 echo -e "${INFO_COLOR}Kubernetes master: ${address}${NO_COLOR}"
 
@@ -27,7 +28,7 @@ generate_certs ${username}
 
 KUBECONFIG=/tmp/${username}-config
 
-KUBECONFIG=${KUBECONFIG} kubectl config set-cluster admin \
+KUBECONFIG=${KUBECONFIG} kubectl config set-cluster ${cluster_name} \
   --server=https://${address}:6443 \
   --certificate-authority=/etc/kubernetes/pki/ca.crt \
   --embed-certs=true
@@ -38,7 +39,9 @@ KUBECONFIG=${KUBECONFIG} kubectl config set-credentials ${username} \
   --embed-certs=true
 
 KUBECONFIG=${KUBECONFIG} kubectl config set-context ${username} \
-  --cluster=admin \
+  --cluster=${cluster_name} \
   --user=${username}
 
 KUBECONFIG=${KUBECONFIG} kubectl config use-context ${username}
+
+kubectl create clusterrolebinding ${username}-cluster-admin-binding --clusterrole=cluster-admin --user=${username}
