@@ -17,3 +17,7 @@ bases:
 - "../../base"
 commonLabels:
   env: homelab
+images:
+- name: quay.io/external_storage/nfs-client-provisioner:latest
+  newName: quay.io/external_storage/nfs-client-provisioner-arm
+  newTag: v2.0.1
