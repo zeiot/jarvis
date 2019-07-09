@@ -1,4 +1,4 @@
-# Copyright (C) 2016, 2019 Nicolas Lamirault <nicolas.lamirault@gmail.com>
+# Copyright (C) 2016-2019 Nicolas Lamirault <nicolas.lamirault@gmail.com>
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ spec:
         # Any image is permissible as long as:
         # 1. It serves a 404 page at /
         # 2. It serves 200 on a /healthz endpoint
-        image: gcr.io/google_containers/defaultbackend:1.4
+        image: gcr.io/google_containers/defaultbackend:latest
         livenessProbe:
           httpGet:
             path: /healthz
