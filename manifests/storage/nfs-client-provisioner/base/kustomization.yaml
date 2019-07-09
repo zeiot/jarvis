@@ -1,4 +1,4 @@
-# Copyright (C) 2016, 2019 Nicolas Lamirault <nicolas.lamirault@gmail.com>
+# Copyright (C) 2016-2019 Nicolas Lamirault <nicolas.lamirault@gmail.com>
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -22,8 +22,7 @@ commonLabels:
   app.kubernetes.io/managed-by: kustomize
 namespace: storage
 resources:
-- namespace.yaml
 - serviceaccount.yaml
 - rbac.yaml
-- storage-class.yaml
+- storageclass.yaml
 - deployment.yaml
