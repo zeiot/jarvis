@@ -23,7 +23,9 @@ commonLabels:
 namespace: monitoring
 resources:
 - namespace.yaml
+- serviceaccount.yaml
 - rbac.yaml
+- network-policy.yaml
 - service.yaml
 # - statefulset.yaml
 - deployment.yaml
