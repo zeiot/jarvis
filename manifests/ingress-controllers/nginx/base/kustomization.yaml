@@ -25,10 +25,11 @@ resources:
 - namespace.yaml
 - cluster-role-binding.yaml
 - cluster-role.yaml
-- deployment.yaml
 - role-binding.yaml
 - role.yaml
 - service-account.yaml
+- network-policy.yaml
+- deployment.yaml
 - service.yaml
 - configmap-tcp-services.yaml
 - configmap-udp-services.yaml
