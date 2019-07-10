@@ -22,5 +22,6 @@ commonLabels:
   app.kubernetes.io/part-of: jarvis
   app.kubernetes.io/managed-by: kustomize
 resources:
+- network-policy.yaml
 - statefulset.yaml
 - service.yaml
