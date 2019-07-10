@@ -22,7 +22,6 @@ commonLabels:
   app.kubernetes.io/managed-by: kustomize
 namespace: ingress-controllers
 resources:
-- namespace.yaml
 - cluster-role-binding.yaml
 - cluster-role.yaml
 - role-binding.yaml

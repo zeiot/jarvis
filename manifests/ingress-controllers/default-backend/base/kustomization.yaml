@@ -22,5 +22,6 @@ commonLabels:
   app.kubernetes.io/managed-by: kustomize
 namespace: ingress-controllers
 resources:
+- network-policy.yaml
 - deployment.yaml
 - service.yaml
