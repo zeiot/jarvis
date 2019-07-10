@@ -21,7 +21,7 @@ route:
 receivers:
 - name: slack_alert_manager
   slack_configs:
-  - api_url: ""
+  - api_url: "https://hooks.slack.com/services/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"
     username: "Jarvis Alert"
     #color: "warning"
     channel: '#alert'
@@ -32,7 +32,7 @@ receivers:
     send_resolved: true
 - name: slack_alert_manager_informations
   slack_configs:
-  - api_url: ""
+  - api_url: "https://hooks.slack.com/services/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"
     username: "Jarvis Alert"
     #color: "warning"
     channel: '#notifications'

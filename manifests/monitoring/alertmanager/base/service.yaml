@@ -11,13 +11,16 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-kind: Kustomization
-apiVersion: kustomize.config.k8s.io/v1beta1
-bases:
-- ../../base
-commonLabels:
-  env: homelab
-images:
-- name: prom/alertmanager:latest
-  newName: zeiot/alertmanager
-  newTag: v0.16.1.arm64
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: alertmanager
+  annotations:
+    prometheus.io/scrape: 'true'
+spec:
+  type: LoadBalancer
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 9093

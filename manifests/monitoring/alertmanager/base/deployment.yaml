@@ -20,6 +20,7 @@ spec:
   replicas: 1
   template:
     spec:
+      serviceAccountName: alertmanager
       containers:
       - name: alertmanager
         image: prom/alertmanager:latest
@@ -50,7 +51,7 @@ spec:
             memory: "1000Mi"
             cpu: "1000m"
       volumes:
-      - name: alertmanager-config
+      - name: alertmanager
         configMap:
           name: alertmanager
           items:

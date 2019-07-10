@@ -1,4 +1,4 @@
-# Copyright (C) 2016, 2019 Nicolas Lamirault <nicolas.lamirault@gmail.com>
+# Copyright (C) 2016-2019 Nicolas Lamirault <nicolas.lamirault@gmail.com>
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -11,16 +11,20 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-kind: Kustomization
-apiVersion: kustomize.config.k8s.io/v1beta1
-namespace: monitoring
-commonLabels:
-  app.kubernetes.io/name: alertmanager
-  app.kubernetes.io/instance: alertmanager
-  app.kubernetes.io/version: "v1"
-  app.kubernetes.io/component: monitoring
-  app.kubernetes.io/part-of: jarvis
-  app.kubernetes.io/managed-by: kustomize
-resources:
-- deployment.yaml
-- service.yaml
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: ingress-controller
+spec:
+  podSelector:
+    matchLabels: {}
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels: {}
+    ports:
+    - protocol: TCP
+      port: 80
