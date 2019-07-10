@@ -12,20 +12,29 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 ---
-apiVersion: apps/v1
-kind: StatefulSet
+apiVersion: extensions/v1beta1
+kind: Deployment
 metadata:
   name: grafana
 spec:
-  serviceName: grafana
   replicas: 1
   template:
     spec:
-      securityContext:
-        fsGroup: 1000
+      serviceaccount: grafana
       containers:
-      - name: grafana
-        image: grafana/grafana:latest
+      - image: grafana/grafana:latest
+        imagePullPolicy: Always
+        name: grafana
+        ports:
+        - containerPort: 3000
+          protocol: TCP
+        resources:
+          limits:
+            cpu: 500m
+            memory: 128Mi
+          requests:
+            cpu: 500m
+            memory: 128Mi
         livenessProbe:
           httpGet:
             path: /api/health
@@ -38,24 +47,18 @@ spec:
             port: 3000
           initialDelaySeconds: 10
           periodSeconds: 3
-        ports:
-        - containerPort: 3000
-          name: grafana
         volumeMounts:
-        - name: data
-          mountPath: /var/lib/grafana
-        resources:
-          requests:
-            memory: "1024Mi"
-            cpu: "500m"
-          limits:
-            memory: "1024Mi"
-            cpu: "500m"
-  volumeClaimTemplates:
-  - metadata:
-      name: data
-    spec:
-      accessModes: [ "ReadWriteOnce" ]
-      resources:
-        requests:
-          storage: 20Gi
+          - name: grafana-config
+            mountPath: "/etc/grafana"
+          - name: grafana-data
+            mountPath: "/var/lib/grafana"
+      volumes:
+        - name: grafana-data
+          persistentVolumeClaim:
+            claimName: grafana-data
+        - name: grafana-config
+          configMap:
+            name: grafana
+            items:
+              - key: grafana.ini
+                path: grafana.ini
