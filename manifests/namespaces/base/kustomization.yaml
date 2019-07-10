@@ -25,3 +25,4 @@ resources:
 - security.yaml
 - storage.yaml
 - tools.yaml
+- network-default-deny-all.yaml
