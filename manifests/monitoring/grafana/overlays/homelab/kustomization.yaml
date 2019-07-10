@@ -17,7 +17,9 @@ bases:
 - ../../base
 commonLabels:
   env: homelab
+resources:
+- ingress.yaml
 images:
 - name: grafana/grafana:latest
   newName: grafana/grafana-arm64v8-linux
-  newTag: "6.0.2"
+  newTag: 6.2.5

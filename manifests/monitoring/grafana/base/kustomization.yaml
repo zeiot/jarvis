@@ -21,12 +21,17 @@ commonLabels:
   app.kubernetes.io/component: monitoring
   app.kubernetes.io/part-of: jarvis
   app.kubernetes.io/managed-by: kustomize
-configMapGenerator:
-- name: grafana
-  files:
-  - grafana.ini
 resources:
 - service-account.yaml
 - network-policy.yaml
 - service.yaml
 - deployment.yaml
+configMapGenerator:
+- name: grafana
+  files:
+  - grafana.ini
+secretGenerator:
+- name: grafana
+  literals:
+  - admin-user=jarvis
+  - admin-password=jarvis
