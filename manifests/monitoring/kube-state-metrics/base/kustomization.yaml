@@ -25,5 +25,6 @@ resources:
 - clusterrolebinding.yaml
 - clusterrole.yaml
 - serviceaccount.yaml
+- network-policy.yaml
 - service.yaml
 - deployment.yaml

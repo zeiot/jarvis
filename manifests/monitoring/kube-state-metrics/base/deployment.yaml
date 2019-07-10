@@ -21,12 +21,18 @@ spec:
   template:
     spec:
       serviceAccountName: kube-state-metrics
+      securityContext:
+        fsGroup: 65534
+        runAsNonRoot: true
+        runAsUser: 65534
       containers:
       - name: kube-state-metrics
         image: quay.io/coreos/kube-state-metrics:latest
         ports:
         - name: http-metrics
           containerPort: 8080
+        - name: telemetry
+          containerPort: 8081
         readinessProbe:
           httpGet:
             path: /healthz
