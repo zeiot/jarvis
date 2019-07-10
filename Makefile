@@ -20,6 +20,9 @@ MINIKUBE_VERSION = 1.2.0
 KUBECTL_VERSION = 1.15.0
 KUSTOMIZE_VERSION = 3.0.0
 
+KUBE_CONTEXT=kube-jarvis
+KUBE_CURRENT_CONTEXT=$(shell kubectl config current-context)
+
 SHELL = /bin/bash
 
 NO_COLOR=\033[0m
@@ -183,7 +186,7 @@ kubernetes-minikube-destroy: ## Destroy the development environment
 
 kubernetes-check-context:
 	@if [[ "${KUBE_CONTEXT}" != "${KUBE_CURRENT_CONTEXT}" ]] ; then \
-		echo -e "$(ERROR_COLOR)[KO]$(NO_COLOR) Kubernetes context"; \
+		echo -e "$(ERROR_COLOR)[KO]$(NO_COLOR) Kubernetes context: ${KUBE_CONTEXT} vs ${KUBE_CURRENT_CONTEXT}"; \
 		exit 1; \
 	fi
 
@@ -196,14 +199,14 @@ kubernetes-check: guard-SERVICE guard-ENV ## Check Kubernetes manifests using po
 	@kustomize build $(SERVICE)/overlays/$(ENV)| conftest test -p kubernetes/policy -
 
 .PHONY: kubernetes-build
-kubernetes-build: guard-SERVICE guard-ENV ## Build Kustomization (APP=xxx ENV=xxx)
+kubernetes-build: guard-SERVICE guard-ENV ## Build Kustomization (SERVICE=xxx ENV=xxx)
 	@echo -e "$(OK_COLOR)[$(APP)] Build kustomization$(NO_COLOR)"
 	@kustomize build $(SERVICE)/overlays/$(ENV)
 
-kubernetes-apply: guard-SERVICE guard-ENV kube-check-context ## Apply Kustomization (APP=xxx ENV=xxx)
+kubernetes-apply: guard-SERVICE guard-ENV kubernetes-check-context ## Apply Kustomization (SERVICE=xxx ENV=xxx)
 	@echo -e "$(OK_COLOR)[$(APP)] Build kustomization$(NO_COLOR)"
 	@kustomize build $(SERVICE)/overlays/$(ENV)|kubectl apply -f -
 
-kubernetes-delete: guard-SERVICE guard-ENV kube-check-context ## Delete Kustomization (APP=xxx ENV=xxx)
+kubernetes-delete: guard-SERVICE guard-ENV kubernetes-check-context ## Delete Kustomization (SERVICE=xxx ENV=xxx)
 	@echo -e "$(OK_COLOR)[$(APP)] Build kustomization$(NO_COLOR)"
 	@kustomize build $(SERVICE)/overlays/$(ENV)|kubectl delete -f -
