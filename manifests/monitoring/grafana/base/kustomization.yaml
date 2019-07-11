@@ -23,6 +23,7 @@ commonLabels:
   app.kubernetes.io/managed-by: kustomize
 resources:
 - service-account.yaml
+- rbac.yaml
 - network-policy.yaml
 - service.yaml
 - deployment.yaml

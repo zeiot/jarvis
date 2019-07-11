@@ -15,10 +15,12 @@ kind: Kustomization
 apiVersion: kustomize.config.k8s.io/v1beta1
 bases:
 - ../../base
+namespace: monitoring
 commonLabels:
   env: homelab
 resources:
 - ingress.yaml
+- pvc.yaml
 images:
 - name: grafana/grafana:latest
   newName: grafana/grafana-arm64v8-linux
