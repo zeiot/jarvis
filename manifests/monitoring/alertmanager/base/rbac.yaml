@@ -1,4 +1,4 @@
-# Copyright (C) 2016, 2019 Nicolas Lamirault <nicolas.lamirault@gmail.com>
+# Copyright (C) 2016-2019 Nicolas Lamirault <nicolas.lamirault@gmail.com>
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,37 +12,46 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 ---
-apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: alertmanager
-rules:
-- apiGroups: [""]
-  resources:
-  - nodes
-  - pods
-  - services
-  - resourcequotas
-  - replicationcontrollers
-  - limitranges
-  verbs: ["list", "watch"]
-- apiGroups: ["extensions"]
-  resources:
-  - daemonsets
-  - deployments
-  - replicasets
-  verbs: ["list", "watch"]
+  name: grafana
+rules: []
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: grafana
+  labels:
+    app: grafana
+subjects:
+  - kind: ServiceAccount
+    name: grafana
+    namespace: monitoring
+roleRef:
+  kind: ClusterRole
+  name: grafana
+  apiGroup: rbac.authorization.k8s.io
 ---
 apiVersion: rbac.authorization.k8s.io/v1beta1
-kind: ClusterRoleBinding
+kind: Role
 metadata:
-  name: alertmanager
+  name: grafana
+rules:
+- apiGroups:      ['extensions']
+  resources:      ['podsecuritypolicies']
+  verbs:          ['use']
+  resourceNames:  [grafana]
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: RoleBinding
+metadata:
+  name: grafana
 roleRef:
   apiGroup: rbac.authorization.k8s.io
-  kind: ClusterRole
-  name: alertmanager
+  kind: Role
+  name: grafana
 subjects:
 - kind: ServiceAccount
-  name: alertmanager
+  name: grafana
   namespace: monitoring
-
