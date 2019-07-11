@@ -29,7 +29,8 @@ spec:
         imagePullPolicy: Always
         name: grafana
         ports:
-        - containerPort: 3000
+        - name: http
+          containerPort: 3000
           protocol: TCP
         env:
         - name: GF_SECURITY_ADMIN_USER
@@ -52,13 +53,13 @@ spec:
         livenessProbe:
           httpGet:
             path: /api/health
-            port: 3000
+            port: http
           initialDelaySeconds: 10
           periodSeconds: 3
         readinessProbe:
           httpGet:
             path: /api/health
-            port: 3000
+            port: http
           initialDelaySeconds: 10
           periodSeconds: 3
         volumeMounts:

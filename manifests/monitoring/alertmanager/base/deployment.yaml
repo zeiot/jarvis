@@ -33,13 +33,13 @@ spec:
         livenessProbe:
           httpGet:
             path: /alertmanager/-/healthy
-            port: 9093
+            port: alerts
             scheme: HTTP
           initialDelaySeconds: 60
         readinessProbe:
           httpGet:
             path: /alertmanager/-/healthy
-            port: 9093
+            port: alerts
             scheme: HTTP
           initialDelaySeconds: 10
           timeoutSeconds: 3

@@ -30,12 +30,22 @@ spec:
         livenessProbe:
           httpGet:
             path: /healthz
-            port: 8080
+            port: http
             scheme: HTTP
           initialDelaySeconds: 30
           timeoutSeconds: 5
+        readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /healthz
+              port: http
+              scheme: HTTP
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 3
         ports:
-        - containerPort: 8080
+        - name: http
+          containerPort: 8080
         resources:
           limits:
             cpu: 10m
