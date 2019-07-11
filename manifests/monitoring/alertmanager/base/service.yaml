@@ -23,4 +23,4 @@ spec:
   ports:
   - protocol: TCP
     port: 80
-    targetPort: 9093
+    targetPort: alerts
