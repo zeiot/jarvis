@@ -15,43 +15,43 @@
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: grafana
+  name: alertmanager
 rules: []
 ---
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: grafana
+  name: alertmanager
   labels:
-    app: grafana
+    app: alertmanager
 subjects:
   - kind: ServiceAccount
-    name: grafana
+    name: alertmanager
     namespace: monitoring
 roleRef:
   kind: ClusterRole
-  name: grafana
+  name: alertmanager
   apiGroup: rbac.authorization.k8s.io
 ---
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: Role
 metadata:
-  name: grafana
+  name: alertmanager
 rules:
 - apiGroups:      ['extensions']
   resources:      ['podsecuritypolicies']
   verbs:          ['use']
-  resourceNames:  [grafana]
+  resourceNames:  [alertmanager]
 ---
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: RoleBinding
 metadata:
-  name: grafana
+  name: alertmanager
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
-  name: grafana
+  name: alertmanager
 subjects:
 - kind: ServiceAccount
-  name: grafana
+  name: alertmanager
   namespace: monitoring
