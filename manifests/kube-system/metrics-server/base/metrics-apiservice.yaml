@@ -11,20 +11,17 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-kind: Kustomization
-apiVersion: kustomize.config.k8s.io/v1beta1
-commonLabels:
-  app.kubernetes.io/name: kube-state-metrics
-  app.kubernetes.io/instance: kube-state-metrics
-  app.kubernetes.io/version: "v1"
-  app.kubernetes.io/component: monitoring
-  app.kubernetes.io/part-of: jarvis
-  app.kubernetes.io/managed-by: kustomize
-namespace: monitoring
-resources:
-- clusterrolebinding.yaml
-- clusterrole.yaml
-- serviceaccount.yaml
-- network-policy.yaml
-- service.yaml
-- deployment.yaml
+---
+apiVersion: apiregistration.k8s.io/v1beta1
+kind: APIService
+metadata:
+  name: v1beta1.metrics.k8s.io
+spec:
+  service:
+    name: metrics-server
+    namespace: kube-system
+  group: metrics.k8s.io
+  version: v1beta1
+  insecureSkipTLSVerify: true
+  groupPriorityMinimum: 100
+  versionPriority: 100
