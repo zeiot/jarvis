@@ -17,6 +17,9 @@ bases:
 - ../../base
 commonLabels:
   env: homelab
+resources:
+- ingress.yaml
+- pvc.yaml
 images:
 - name: influxdb:latest
   newName: influxdb
