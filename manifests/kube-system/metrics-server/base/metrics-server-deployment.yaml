@@ -12,17 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 ---
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: metrics-server
-  namespace: kube-system
----
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: metrics-server
-  namespace: kube-system
   labels:
     k8s-app: metrics-server
 spec:
@@ -48,6 +41,10 @@ spec:
         - /metrics-server
         - --kubelet-insecure-tls
         - --kubelet-preferred-address-types=InternalIP
+        ports:
+        - containerPort: 443
+          name: https
+          protocol: TCP
         volumeMounts:
         - name: tmp-dir
           mountPath: /tmp

@@ -22,10 +22,13 @@ commonLabels:
   app.kubernetes.io/managed-by: kustomize
 namespace: kube-system
 resources:
+- service-account.yaml
 - aggregated-metrics-reader.yaml
 - auth-delegator.yaml
 - auth-reader.yaml
+- pdb.yaml
 - metrics-apiservice.yaml
 - metrics-server-deployment.yaml
 - metrics-server-service.yaml
 - resource-reader.yaml
+- network-policy.yaml
