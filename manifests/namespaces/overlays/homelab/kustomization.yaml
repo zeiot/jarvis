@@ -18,3 +18,7 @@ bases:
 - ../../base
 commonLabels:
   env: homelab
+resources:
+- limits.yaml
+- quota-compute.yaml
+- quota-storage.yaml

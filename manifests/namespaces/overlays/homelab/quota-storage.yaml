@@ -13,12 +13,11 @@
 # limitations under the License.
 ---
 apiVersion: v1
-kind: LimitRange
+kind: ResourceQuota
 metadata:
-  name: limit-mem-cpu-per-pod
+  name: storage-resources
 spec:
-  limits:
-  - max:
-      cpu: "2"
-      memory: "2Gi"
-    type: Pod
+  hard:
+    persistentvolumeclaims: "50"
+    requests.storage: "50Gi"
+    jarvis-nfs-client.storageclass.storage.k8s.io/requests.storage: "100Gi"

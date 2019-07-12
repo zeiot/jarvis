@@ -18,16 +18,30 @@ metadata:
   name: limit-mem-cpu-per-container
 spec:
   limits:
-  - max:
-      cpu: "800m"
-      memory: "1Gi"
-    min:
-      cpu: "100m"
-      memory: "99Mi"
-    default:
-      cpu: "700m"
-      memory: "900Mi"
-    defaultRequest:
-      cpu: "110m"
-      memory: "111Mi"
-    type: Container
+    - type: "Pod"
+      max:
+        cpu: "1"
+        memory: "1Gi"
+      min:
+        cpu: "100m"
+        memory: "6Mi"
+    - type: "Container"
+      max:
+        cpu: "1"
+        memory: "1Gi"
+      min:
+        cpu: "100m"
+        memory: "4Mi"
+      default:
+        cpu: "300m"
+        memory: "200Mi"
+      defaultRequest:
+        cpu: "200m"
+        memory: "100Mi"
+      maxLimitRequestRatio:
+        cpu: "10"
+    - type: PersistentVolumeClaim
+      max:
+        storage: 20Gi
+      min:
+        storage: 1Mi

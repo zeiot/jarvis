@@ -13,13 +13,13 @@
 # limitations under the License.
 ---
 apiVersion: v1
-kind: LimitRange
+kind: ResourceQuota
 metadata:
-  name: limit-storage
+  name: compute-resources
 spec:
-  limits:
-  - type: PersistentVolumeClaim
-    max:
-      storage: 20Gi
-    min:
-      storage: 1Gi
+  hard:
+    pods: "4"
+    requests.cpu: "1"
+    requests.memory: 1Gi
+    limits.cpu: "2"
+    limits.memory: 1Gi
