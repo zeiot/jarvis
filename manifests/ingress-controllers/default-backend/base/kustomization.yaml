@@ -25,3 +25,4 @@ resources:
 - network-policy.yaml
 - deployment.yaml
 - service.yaml
+- pdb.yaml

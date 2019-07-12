@@ -1,4 +1,4 @@
-# Copyright (C) 2016-2019 Nicolas Lamirault <nicolas.lamirault@gmail.com>
+# Copyright (C) 2016, 2019 Nicolas Lamirault <nicolas.lamirault@gmail.com>
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -11,26 +11,14 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
----
-apiVersion: networking.k8s.io/v1
-kind: NetworkPolicy
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
 metadata:
-  name: ingress-controller
+  name: default-http-backend
   labels:
-    k8s-app: ingress-nginx-controller
+    k8s-app: default-http-backend
 spec:
-  podSelector:
-    matchLabels: {}
-  policyTypes:
-  - Ingress
-  ingress:
-  - from:
-    - podSelector:
-        matchLabels: {}
-    ports:
-    - protocol: TCP
-      port: 80
-    - protocol: TCP
-      port: 443
-    - protocol: TCP
-      port: 10254
+  minAvailable: 1
+  selector:
+    matchLabels:
+      k8s-app: default-http-backend

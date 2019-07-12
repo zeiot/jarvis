@@ -18,7 +18,7 @@ metadata:
   labels:
     k8s-app: ingress-nginx-controller
 spec:
-  maxUnavailable: 1
+  minAvailable: 1
   selector:
     matchLabels:
       k8s-app: ngins-ingress-controller
