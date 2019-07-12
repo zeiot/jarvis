@@ -16,16 +16,24 @@ kind: DaemonSet
 apiVersion: extensions/v1beta1
 metadata:
   name: fluentbit
+  labels:
+    k8s-app: fluentbit
 spec:
+  selector:
+    matchLabels:
+      k8s-app: fluentbit
   updateStrategy:
     rollingUpdate:
       maxUnavailable: 1
     type: RollingUpdate
   template:
-    annotations:
-      prometheus.io/scrape: "true"
-      prometheus.io/port: "2020"
-      prometheus.io/path: /api/v1/metrics/prometheus
+    metadata:
+      labels:
+        k8s-app: fluentbit
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "2020"
+        prometheus.io/path: /api/v1/metrics/prometheus
     spec:
       serviceAccountName: fluentbit
       terminationGracePeriodSeconds: 60

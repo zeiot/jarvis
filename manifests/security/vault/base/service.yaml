@@ -16,10 +16,14 @@ apiVersion: v1
 kind: Service
 metadata:
   name: vault
+  labels:
+    k8s-app: vault
 spec:
   type: LoadBalancer
+  selector:
+    k8s-app: vault
   ports:
   - name: vault
     port: 80
     protocol: TCP
-    targetPort: 8200
+    targetPort: vault

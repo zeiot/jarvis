@@ -16,9 +16,17 @@ apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
   name: cert-manager
+  labels:
+    k8s-app: cert-manager
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      k8s-app: cert-manager
   template:
+    metadata:
+      labels:
+        k8s-app: cert-manager
     spec:
       serviceAccountName: cert-manager
       containers:

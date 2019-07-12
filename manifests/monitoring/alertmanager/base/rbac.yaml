@@ -16,6 +16,8 @@ kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: alertmanager
+  labels:
+    k8s-app: alertmanager
 rules: []
 ---
 kind: ClusterRoleBinding
@@ -23,7 +25,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: alertmanager
   labels:
-    app: alertmanager
+    k8s-app: alertmanager
 subjects:
   - kind: ServiceAccount
     name: alertmanager
@@ -37,6 +39,8 @@ apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: Role
 metadata:
   name: alertmanager
+  labels:
+    k8s-app: alertmanager
 rules:
 - apiGroups:      ['extensions']
   resources:      ['podsecuritypolicies']
@@ -47,6 +51,8 @@ apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: RoleBinding
 metadata:
   name: alertmanager
+  labels:
+    k8s-app: alertmanager
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role

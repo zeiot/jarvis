@@ -16,9 +16,17 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: kube-state-metrics
+  labels:
+    k8s-app: kube-state-metrics
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      k8s-app: kube-state-metrics
   template:
+    metadata:
+      labels:
+        k8s-app: kube-state-metrics
     spec:
       serviceAccountName: kube-state-metrics
       securityContext:
@@ -36,7 +44,7 @@ spec:
         readinessProbe:
           httpGet:
             path: /healthz
-            port: 8080
+            port: http-metrics
           initialDelaySeconds: 5
           timeoutSeconds: 5
         resources:

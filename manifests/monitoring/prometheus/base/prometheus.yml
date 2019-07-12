@@ -26,6 +26,7 @@ alerting:
 rule_files:
   - "/etc/prometheus/job-rules/job.rules"
   - "/etc/prometheus/alert-rules/alert.rules"
+
 scrape_configs:
 
 # Scrape prometheus itself
@@ -149,3 +150,47 @@ scrape_configs:
   - source_labels: [__meta_kubernetes_pod_name]
     action: replace
     target_label: kubernetes_pod_name
+
+  # Scrape kube-state-metrics service
+  - job_name: "kube-state-metrics"
+    kubernetes_sd_configs:
+      - role: service
+        namespaces:
+          names: ["kube-system"]
+    relabel_configs:
+      - action: keep
+        source_labels: [__meta_kubernetes_service_name]
+        regex: "kube-state-metrics"
+      - action: labelmap
+        regex: __meta_kubernetes_service_(.+)
+      - source_labels: [__meta_kubernetes_service_port_name]
+        action: keep
+        regex: http-metrics
+
+  # Scrape metallb service
+  - job_name: "metallb"
+    kubernetes_sd_configs:
+      - role: pod
+        namespaces:
+          names: ["metallb-system"]
+    relabel_configs:
+      - source_labels: [__address__, __meta_kubernetes_pod_annotation_prometheus_io_port]
+        action: replace
+        regex: ([^:]+)(?::\d+)?;(\d+)
+        replacement: ${1}:${2}
+        target_label: __address__
+      - action: labelmap
+        regex: __meta_kubernetes_pod_(.+)
+
+  # Scrape external-dns service
+  - job_name: "external-dns"
+    kubernetes_sd_configs:
+      - role: service
+        namespaces:
+          names: ["external-dns"]
+    relabel_configs:
+      - source_labels: [__meta_kubernetes_service_name]
+        action: keep
+        regex: external-dns-metrics
+      - action: labelmap
+        regex: __meta_kubernetes_service_(.+)

@@ -16,17 +16,28 @@ apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
   name: node-exporter
+  labels:
+    k8s-app: node-exporter
 spec:
+  selector:
+    matchLabels:
+      k8s-app: node-exporter
   updateStrategy:
     rollingUpdate:
       maxUnavailable: 1
     type: RollingUpdate
   template:
     metadata:
+      labels:
+        k8s-app: node-exporter
       annotations:
         prometheus.io/port: "9100"
         prometheus.io/scrape: "true"
     spec:
+      serviceAccountName: node-exporter
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65534
       containers:
         - name: node-exporter
           image: "quay.io/prometheus/node-exporter:latest"

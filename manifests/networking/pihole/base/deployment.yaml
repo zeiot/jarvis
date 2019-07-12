@@ -16,9 +16,17 @@ apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
   name: pihole
+  labels:
+    k8s-app: pihole
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      k8s-app: pihole
   template:
+    metadata:
+      labels:
+        k8s-app: pihole
     spec:
       serviceAccountName: pihole
       containers:
@@ -81,5 +89,5 @@ spec:
       volumes:
         - name: pihole-config
           persistentVolumeClaim:
-            claimName: pihole-config
+            claimName: pihole
 

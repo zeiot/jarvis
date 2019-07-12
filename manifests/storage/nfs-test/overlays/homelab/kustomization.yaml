@@ -17,4 +17,5 @@ bases:
 - "../../base"
 commonLabels:
   env: homelab
-namespace: storage
+resources:
+- nfs-pvc-test.yaml

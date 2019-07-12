@@ -16,10 +16,17 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: external-dns
+  labels:
+    k8s-app: external-dns
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      k8s-app: external-dns
   template:
     metadata:
+      labels:
+        k8s-app: external-dns
       annotations:
         prometheus.io/path: /metrics
         prometheus.io/port: "7979"
@@ -31,8 +38,8 @@ spec:
         image: bitnami/external-dns:0.5.9-r19
         # image: registry.opensource.zalan.do/teapot/external-dns:v0.5.4
         ports:
-        - containerPort: 7979
-          name: metrics
+        - name: metrics
+          containerPort: 7979
           protocol: TCP
         livenessProbe:
           httpGet:

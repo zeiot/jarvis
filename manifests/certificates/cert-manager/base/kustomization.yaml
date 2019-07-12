@@ -22,7 +22,6 @@ commonLabels:
   app.kubernetes.io/managed-by: kustomize
 namespace: certificates
 resources:
-- namespace.yaml
 - certificate-crd.yaml
 - clusterissuer-crd.yaml
 - deployment.yaml

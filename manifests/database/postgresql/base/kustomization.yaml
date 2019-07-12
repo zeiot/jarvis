@@ -22,7 +22,6 @@ commonLabels:
   app.kubernetes.io/managed-by: kustomize
 namespace: database
 resources:
-- namespace.yaml
 - service.yaml
 - deployment.yaml
 - pvc.yaml

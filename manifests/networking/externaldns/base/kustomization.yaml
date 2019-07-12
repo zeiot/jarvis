@@ -22,7 +22,6 @@ commonLabels:
   app.kubernetes.io/managed-by: kustomize
 namespace: networking
 resources:
-- namespace.yaml
 - deployment.yaml
 - service.yaml
 - serviceaccount.yaml

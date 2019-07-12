@@ -16,6 +16,8 @@ apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: Role
 metadata:
   name: nginx-ingress-role
+  labels:
+    k8s-app: ingress-nginx-controller
 rules:
   - apiGroups:
       - ""

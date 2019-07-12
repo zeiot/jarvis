@@ -22,14 +22,13 @@ commonLabels:
   app.kubernetes.io/managed-by: kustomize
 namespace: monitoring
 resources:
-- namespace.yaml
 - serviceaccount.yaml
-- rbac.yaml
+- clusterrole.yaml
+- clusterrolebinding.yaml
 - network-policy.yaml
 - service.yaml
 # - statefulset.yaml
 - deployment.yaml
-- pvc.yaml
 configMapGenerator:
 - name: prometheus
   files:

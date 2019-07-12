@@ -11,27 +11,36 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
+---
 apiVersion: v1
 kind: Service
 metadata:
   name: pihole-ui
+  labels:
+    k8s-app: pihole
 spec:
   type: LoadBalancer
+  selector:
+    k8s-app: pihole
+  ports:
   ports:
   - name: http
     protocol: TCP
     port: 80
-    targetPort: 80
+    targetPort: http
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: pihole-dns
+  labels:
+    k8s-app: pihole
 spec:
   type: LoadBalancer
+  selector:
+    k8s-app: pihole
   ports:
   - name: udp
     protocol: UDP
     port: 53
-    targetPort: 53
+    targetPort: dns-udp

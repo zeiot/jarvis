@@ -15,11 +15,18 @@
 apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
-  annotations: {}
   name: prometheus
+  labels:
+    k8s-app: prometheus
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      k8s-app: prometheus
   template:
+    metadata:
+      labels:
+        k8s-app: prometheus
     spec:
       serviceAccount: prometheus
       serviceAccountName: prometheus
@@ -38,19 +45,20 @@ spec:
           livenessProbe:
             httpGet:
               path: /-/healthy
-              port: 9090
+              port: http
             initialDelaySeconds: 5
             periodSeconds: 3
             failureThreshold: 40
           readinessProbe:
             httpGet:
               path: /-/ready
-              port: 9090
+              port: http
             initialDelaySeconds: 30
             periodSeconds: 3
             failureThreshold: 40
           ports:
-            - containerPort: 9090
+            - name: http
+              containerPort: 9090
               protocol: TCP
           volumeMounts:
             - name: data

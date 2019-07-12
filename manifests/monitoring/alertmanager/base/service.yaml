@@ -16,10 +16,14 @@ kind: Service
 apiVersion: v1
 metadata:
   name: alertmanager
+  labels:
+    k8s-app: alertmanager
   annotations:
     prometheus.io/scrape: 'true'
 spec:
   type: LoadBalancer
+  selector:
+    k8s-app: alertmanager
   ports:
   - protocol: TCP
     port: 80

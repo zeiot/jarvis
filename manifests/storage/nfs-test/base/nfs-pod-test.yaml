@@ -15,7 +15,9 @@
 kind: Pod
 apiVersion: v1
 metadata:
-  name: test-pod
+  name: nfs-test-pod
+  labels:
+    k8s-app: nfs-test-pod
 spec:
   containers:
   - name: test-pod

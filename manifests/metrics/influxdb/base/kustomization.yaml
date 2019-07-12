@@ -22,7 +22,6 @@ commonLabels:
   app.kubernetes.io/managed-by: kustomize
 namespace: metrics
 resources:
-- namespace.yaml
 - service.yaml
 - ingress.yaml
 - deployment.yaml

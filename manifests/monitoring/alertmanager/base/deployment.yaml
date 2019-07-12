@@ -16,9 +16,17 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: alertmanager
+  labels:
+    k8s-app: alertmanager
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      k8s-app: alertmanager
   template:
+    metadata:
+      labels:
+        k8s-app: alertmanager
     spec:
       serviceAccountName: alertmanager
       containers:

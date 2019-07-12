@@ -16,6 +16,8 @@ kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: grafana
+  labels:
+    k8s-app: grafana
 rules: []
 ---
 kind: ClusterRoleBinding
@@ -23,7 +25,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: grafana
   labels:
-    app: grafana
+    k8s-app: grafana
 subjects:
   - kind: ServiceAccount
     name: grafana
@@ -37,6 +39,8 @@ apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: Role
 metadata:
   name: grafana
+  labels:
+    k8s-app: grafana
 rules:
 - apiGroups:      ['extensions']
   resources:      ['podsecuritypolicies']
@@ -47,6 +51,8 @@ apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: RoleBinding
 metadata:
   name: grafana
+  labels:
+    k8s-app: grafana
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role

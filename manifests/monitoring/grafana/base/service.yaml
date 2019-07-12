@@ -16,8 +16,12 @@ kind: Service
 apiVersion: v1
 metadata:
   name: grafana
+  labels:
+    k8s-app: grafana
 spec:
   type: LoadBalancer
+  selector:
+    k8s-app: grafana
   ports:
   - protocol: TCP
     port: 80

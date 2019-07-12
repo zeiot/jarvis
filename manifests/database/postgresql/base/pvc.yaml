@@ -16,6 +16,8 @@ kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
   name: postgresql-data
+  labels:
+    k8s-app: postgresql
   annotations:
     volume.beta.kubernetes.io/storage-class: "jarvis-nfs-client"
 spec:

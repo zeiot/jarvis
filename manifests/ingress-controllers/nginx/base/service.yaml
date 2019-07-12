@@ -15,10 +15,14 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name: ingress-nginx
+  name: ingress-nginx-controller
+  labels:
+    k8s-app: ingress-nginx-controller
 spec:
   externalTrafficPolicy: Local
   type: LoadBalancer
+  selector:
+    k8s-app: ingress-nginx-controller
   ports:
   - name: http
     port: 80

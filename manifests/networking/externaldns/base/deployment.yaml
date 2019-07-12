@@ -16,9 +16,17 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: external-dns
+  labels:
+    k8s-app: external-dns
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      k8s-app: external-dns
   template:
+    metadata:
+      labels:
+        k8s-app: external-dns
     metadata:
       annotations:
         scheduler.alpha.kubernetes.io/critical-pod: ""

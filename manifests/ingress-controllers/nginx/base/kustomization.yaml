@@ -33,3 +33,4 @@ resources:
 - configmap-tcp-services.yaml
 - configmap-udp-services.yaml
 - configmap.yaml
+- pdb.yaml

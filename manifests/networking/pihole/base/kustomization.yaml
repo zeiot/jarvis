@@ -23,9 +23,6 @@ commonLabels:
 namespace: networking
 resources:
 - deployment.yaml
-- ingress.yaml
-- namespace.yaml
-- pvc.yaml
 - secret.yaml
 - service.yaml
 - serviceaccount.yaml

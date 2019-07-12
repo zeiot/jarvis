@@ -16,16 +16,25 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: influxdb
+  labels:
+    k8s-app: influxdb
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      k8s-app: influxdb
   template:
+    metadata:
+      labels:
+        k8s-app: influxdb
     spec:
       containers:
       - name: influxdb
         image: influxdb:latest
         imagePullPolicy: Always
         ports:
-        - containerPort: 8086
+        - name: http
+          containerPort: 8086
         volumeMounts:
         - mountPath: /data
           name: influxdb-data

@@ -17,6 +17,9 @@ bases:
 - "../../base"
 commonLabels:
   env: homelab
+resources:
+- ingress.yaml
+- pvc.yaml
 images:
 - name: vault:latest
   newName: zeiot/vault

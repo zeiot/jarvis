@@ -16,6 +16,8 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: vault
+  labels:
+    k8s-app: vault
 data:
   vault.hcl:
     ui = true

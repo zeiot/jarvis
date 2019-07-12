@@ -18,17 +18,19 @@ metadata:
   labels:
     control-plane: controller-manager
     controller-tools.k8s.io: "1.0"
+    k8s-app: gatekeeper
   name: gatekeeper-controller-manager
-  namespace: policy-controllers
 spec:
   selector:
     matchLabels:
+      k8s-app: gatekeeper
       control-plane: controller-manager
       controller-tools.k8s.io: "1.0"
   serviceName: gatekeeper-controller-manager-service
   template:
     metadata:
       labels:
+        k8s-app: gatekeeper
         control-plane: controller-manager
         controller-tools.k8s.io: "1.0"
     spec:

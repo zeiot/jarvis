@@ -16,10 +16,19 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: vault
+  labels:
+    k8s-app: vault
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      k8s-app: vault
   template:
+    metadata:
+      labels:
+        k8s-app: vault
     spec:
+      serviceAccount: vault
       containers:
       - name: vault
         image: vault:latest

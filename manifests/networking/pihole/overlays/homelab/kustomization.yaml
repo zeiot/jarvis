@@ -18,6 +18,9 @@ bases:
 - ../../base
 commonLabels:
   env: homelab
+resources:
+- ingress.yaml
+- pvc.yaml
 images:
 - name: pihole/pihole:latest
   newName: pihole/pihole

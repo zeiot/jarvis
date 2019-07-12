@@ -17,7 +17,7 @@ kind: NetworkPolicy
 metadata:
   name: metrics-server
   labels:
-    k8s-app: default-http-backend
+    k8s-app: metrics-server
 spec:
   podSelector:
     matchLabels: {}

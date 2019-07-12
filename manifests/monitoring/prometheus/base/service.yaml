@@ -16,9 +16,13 @@ kind: Service
 apiVersion: v1
 metadata:
   name: prometheus
+  label:
+    k8s-app: prometheus
 spec:
   type: LoadBalancer
+  selector:
+    k8s-app: prometheus
   ports:
   - protocol: TCP
     port: 80
-    targetPort: 9090
+    targetPort: http

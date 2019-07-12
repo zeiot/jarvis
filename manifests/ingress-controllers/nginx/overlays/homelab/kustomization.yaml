@@ -20,4 +20,4 @@ commonLabels:
 images:
 - name: quay.io/kubernetes-ingress-controller/nginx-ingress-controller:latest
   newName: quay.io/kubernetes-ingress-controller/nginx-ingress-controller-arm
-  newTag: "0.25.0"
+  newTag: 0.25.0

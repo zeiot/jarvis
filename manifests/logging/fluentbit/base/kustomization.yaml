@@ -22,7 +22,6 @@ commonLabels:
   app.kubernetes.io/managed-by: kustomize
 namespace: logging
 resources:
-- namespace.yaml
 - rbac.yaml
 - serviceaccount.yaml
 - daemonset.yaml

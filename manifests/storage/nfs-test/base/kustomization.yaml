@@ -20,7 +20,6 @@ commonLabels:
   app.kubernetes.io/component: storage
   app.kubernetes.io/part-of: jarvis
   app.kubernetes.io/managed-by: kustomize
-# namespace: storage
+namespace: storage
 resources:
 - nfs-pod-test.yaml
-- nfs-pvc-test.yaml

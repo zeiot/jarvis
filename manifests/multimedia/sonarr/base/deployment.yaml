@@ -16,9 +16,17 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: sonarr
+  labels:
+    k8s-app: sonarr
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      k8s-app: sonarr
   template:
+    metadata:
+      labels:
+        k8s-app: sonarr
     spec:
       serviceAccountName: sonarr
       containers:

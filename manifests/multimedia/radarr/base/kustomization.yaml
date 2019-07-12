@@ -25,5 +25,3 @@ resources:
 - serviceaccount.yaml
 - service.yaml
 - deployment.yaml
-- ingress.yaml
-- pvc.yaml

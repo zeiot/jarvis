@@ -16,11 +16,19 @@ kind: Deployment
 apiVersion: extensions/v1beta1
 metadata:
   name: nfs-client-provisioner
+  labels:
+    k8s-app: nfs-client-provisioner
 spec:
   replicas: 1
+  selector:
+    matchLabels: nfs-client-provisioner
+      k8s-app:
   strategy:
     type: Recreate
   template:
+    metadata:
+      labels:
+        k8s-app: nfs-client-provisioner
     spec:
       serviceAccount: nfs-client-provisioner
       containers:
