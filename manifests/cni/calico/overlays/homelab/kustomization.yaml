@@ -13,12 +13,14 @@
 # limitations under the License.
 kind: Kustomization
 apiVersion: kustomize.config.k8s.io/v1beta1
-bases:
-- "../../base"
+namespace: kube-system
 commonLabels:
   env: homelab
-images:
-- name: quay.io/external_storage/nfs-client-provisioner-arm:latest
-  newName: quay.io/external_storage/nfs-client-provisioner-arm
-  # newTag: v3.1.0-k8s1.11 # v2.0.1
-  newTag: v2.0.1
+  app.kubernetes.io/name: cni-calico
+  app.kubernetes.io/instance: cni-calico
+  app.kubernetes.io/version: "v1"
+  app.kubernetes.io/component: cni
+  app.kubernetes.io/part-of: jarvis
+  app.kubernetes.io/managed-by: kustomize
+resources:
+- calico.yaml
