@@ -4,7 +4,7 @@ kind: Namespace
 metadata:
   name: metallb-system
   labels:
-    app: metallb
+    k8s-app: metallb
 ---
 
 apiVersion: v1
@@ -13,7 +13,7 @@ metadata:
   namespace: metallb-system
   name: controller
   labels:
-    app: metallb
+    k8s-app: metallb
 ---
 apiVersion: v1
 kind: ServiceAccount
@@ -21,14 +21,14 @@ metadata:
   namespace: metallb-system
   name: speaker
   labels:
-    app: metallb
+    k8s-app: metallb
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   name: metallb-system:controller
   labels:
-    app: metallb
+    k8s-app: metallb
 rules:
 - apiGroups: [""]
   resources: ["services"]
@@ -45,7 +45,7 @@ kind: ClusterRole
 metadata:
   name: metallb-system:speaker
   labels:
-    app: metallb
+    k8s-app: metallb
 rules:
 - apiGroups: [""]
   resources: ["services", "endpoints", "nodes"]
@@ -57,7 +57,7 @@ metadata:
   namespace: metallb-system
   name: config-watcher
   labels:
-    app: metallb
+    k8s-app: metallb
 rules:
 - apiGroups: [""]
   resources: ["configmaps"]
@@ -73,7 +73,7 @@ kind: ClusterRoleBinding
 metadata:
   name: metallb-system:controller
   labels:
-    app: metallb
+    k8s-app: metallb
 subjects:
 - kind: ServiceAccount
   name: controller
@@ -88,7 +88,7 @@ kind: ClusterRoleBinding
 metadata:
   name: metallb-system:speaker
   labels:
-    app: metallb
+    k8s-app: metallb
 subjects:
 - kind: ServiceAccount
   name: speaker
@@ -104,7 +104,7 @@ metadata:
   namespace: metallb-system
   name: config-watcher
   labels:
-    app: metallb
+    k8s-app: metallb
 subjects:
 - kind: ServiceAccount
   name: controller
@@ -121,17 +121,17 @@ metadata:
   namespace: metallb-system
   name: speaker
   labels:
-    app: metallb
+    k8s-app: metallb
     component: speaker
 spec:
   selector:
     matchLabels:
-      app: metallb
+      k8s-app: metallb
       component: speaker
   template:
     metadata:
       labels:
-        app: metallb
+        k8s-app: metallb
         component: speaker
       annotations:
         prometheus.io/scrape: "true"
@@ -176,18 +176,18 @@ metadata:
   namespace: metallb-system
   name: controller
   labels:
-    app: metallb
+    k8s-app: metallb
     component: controller
 spec:
   revisionHistoryLimit: 3
   selector:
     matchLabels:
-      app: metallb
+      k8s-app: metallb
       component: controller
   template:
     metadata:
       labels:
-        app: metallb
+        k8s-app: metallb
         component: controller
       annotations:
         prometheus.io/scrape: "true"
