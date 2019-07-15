@@ -18,3 +18,17 @@ metadata:
   name: nginx-configuration
   labels:
     k8s-app: ingress-nginx-controller
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: tcp-services
+  labels:
+    k8s-app: ingress-nginx-controller
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: udp-services
+  labels:
+    k8s-app: ingress-nginx-controller

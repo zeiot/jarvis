@@ -26,8 +26,8 @@ spec:
   template:
     metadata:
       annotations:
-        prometheus.io/port: '10254'
-        prometheus.io/scrape: 'true'
+        prometheus.io/port: "10254"
+        prometheus.io/scrape: "true"
       labels:
         k8s-app: nginx-ingress-controller
     spec:
@@ -37,7 +37,6 @@ spec:
           image: quay.io/kubernetes-ingress-controller/nginx-ingress-controller:latest
           args:
             - /nginx-ingress-controller
-            - --default-backend-service=$(POD_NAMESPACE)/default-http-backend
             - --configmap=$(POD_NAMESPACE)/nginx-configuration
             - --tcp-services-configmap=$(POD_NAMESPACE)/tcp-services
             - --udp-services-configmap=$(POD_NAMESPACE)/udp-services
@@ -57,27 +56,25 @@ spec:
             containerPort: 80
           - name: https
             containerPort: 443
-          - name: healthz
-            containerPort: 10254
           livenessProbe:
             failureThreshold: 3
             httpGet:
               path: /healthz
-              port: healthz
+              port: 10254
               scheme: HTTP
             initialDelaySeconds: 10
             periodSeconds: 10
             successThreshold: 1
-            timeoutSeconds: 1
+            timeoutSeconds: 20
           readinessProbe:
             failureThreshold: 3
             httpGet:
               path: /healthz
-              port: healthz
+              port: 10254
               scheme: HTTP
             periodSeconds: 10
             successThreshold: 1
-            timeoutSeconds: 1
+            timeoutSeconds: 20
           resources:
             limits:
               cpu: 150m
@@ -86,5 +83,11 @@ spec:
               cpu: 100m
               memory: 200Mi
           securityContext:
-            runAsNonRoot: false
+            allowPrivilegeEscalation: true
+            capabilities:
+              drop:
+                - ALL
+              add:
+                - NET_BIND_SERVICE
+            # www-data -> 33
             runAsUser: 33
