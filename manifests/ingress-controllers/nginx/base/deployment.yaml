@@ -19,7 +19,7 @@ metadata:
   labels:
     k8s-app: ingress-nginx
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       k8s-app: ingress-nginx
