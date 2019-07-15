@@ -30,7 +30,5 @@ resources:
 - network-policy.yaml
 - deployment.yaml
 - service.yaml
-- configmap-tcp-services.yaml
-- configmap-udp-services.yaml
 - configmap.yaml
 - pdb.yaml
