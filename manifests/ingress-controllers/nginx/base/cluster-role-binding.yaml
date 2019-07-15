@@ -17,7 +17,7 @@ kind: ClusterRoleBinding
 metadata:
   name: nginx-ingress-clusterrole-nisa-binding
   labels:
-    k8s-app: ingress-nginx-controller
+    k8s-app: ingress-nginx
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole

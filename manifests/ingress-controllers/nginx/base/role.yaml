@@ -17,7 +17,7 @@ kind: Role
 metadata:
   name: nginx-ingress-role
   labels:
-    k8s-app: ingress-nginx-controller
+    k8s-app: ingress-nginx
 rules:
   - apiGroups:
       - ""

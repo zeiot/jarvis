@@ -16,9 +16,9 @@ kind: PodDisruptionBudget
 metadata:
   name: ngins-ingress-controller
   labels:
-    k8s-app: ingress-nginx-controller
+    k8s-app: ingress-nginx
 spec:
   minAvailable: 1
   selector:
     matchLabels:
-      k8s-app: ngins-ingress-controller
+      k8s-app: ingress-nginx

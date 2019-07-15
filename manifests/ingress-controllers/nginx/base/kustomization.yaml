@@ -17,7 +17,7 @@ commonLabels:
   app.kubernetes.io/name: ingress-nginx
   app.kubernetes.io/instance: ingress-nginx
   app.kubernetes.io/version: "v1"
-  app.kubernetes.io/component: ingress-controller
+  app.kubernetes.io/component: ingress-nginx
   app.kubernetes.io/part-of: jarvis
   app.kubernetes.io/managed-by: kustomize
 namespace: ingress-controllers
@@ -27,7 +27,7 @@ resources:
 - role-binding.yaml
 - role.yaml
 - service-account.yaml
-- network-policy.yaml
+# - network-policy.yaml
 - deployment.yaml
 - service.yaml
 - configmap.yaml

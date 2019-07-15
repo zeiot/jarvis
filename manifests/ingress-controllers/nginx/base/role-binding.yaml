@@ -17,7 +17,7 @@ kind: RoleBinding
 metadata:
   name: nginx-ingress-role-nisa-binding
   labels:
-    k8s-app: ingress-nginx-controller
+    k8s-app: ingress-nginx
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role

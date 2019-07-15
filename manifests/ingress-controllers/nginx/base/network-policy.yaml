@@ -17,7 +17,7 @@ kind: NetworkPolicy
 metadata:
   name: ingress-controller
   labels:
-    k8s-app: ingress-nginx-controller
+    k8s-app: ingress-nginx
 spec:
   podSelector:
     matchLabels: {}

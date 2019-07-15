@@ -17,7 +17,7 @@ kind: ClusterRole
 metadata:
   name: nginx-ingress-clusterrole
   labels:
-    k8s-app: ingress-nginx-controller
+    k8s-app: ingress-nginx
 rules:
   - apiGroups:
       - ""
