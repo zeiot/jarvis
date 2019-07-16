@@ -20,7 +20,7 @@ metadata:
     k8s-app: kubernetes-dashboard
 spec:
   podSelector:
-    matchLabels: {}
+    matchLabels: kubernetes-dashboard
   policyTypes:
   - Ingress
   ingress:
