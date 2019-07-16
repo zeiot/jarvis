@@ -13,10 +13,20 @@
 # limitations under the License.
 kind: Kustomization
 apiVersion: kustomize.config.k8s.io/v1beta1
-bases:
-- "../../base"
+namespace: storage
 commonLabels:
   env: homelab
+  app.kubernetes.io/name: nfs-client-provisioner
+  app.kubernetes.io/instance: nfs-client-provisioner
+  app.kubernetes.io/version: "v1"
+  app.kubernetes.io/component: storage
+  app.kubernetes.io/part-of: jarvis
+  app.kubernetes.io/managed-by: kustomize
+resources:
+- serviceaccount.yaml
+- rbac.yaml
+- storageclass.yaml
+- deployment.yaml
 images:
 - name: quay.io/external_storage/nfs-client-provisioner-arm:latest
   newName: quay.io/external_storage/nfs-client-provisioner-arm
