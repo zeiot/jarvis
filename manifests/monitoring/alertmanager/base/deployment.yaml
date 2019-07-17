@@ -32,36 +32,48 @@ spec:
       containers:
       - name: alertmanager
         image: prom/alertmanager:latest
+        args:
+          - --config.file=/etc/alertmanager/alertmanager.yml
+          - --storage.path=/data
+          - --web.listen-address=:9093
+          - --web.route-prefix=/
+          # - --cluster.listen-address=$(POD_IP):6783
+          # - --cluster.peer=$APP_INSTANCE_NAME-alertmanager-0.$APP_INSTANCE_NAME-alertmanager-operated.$NAMESPACE.svc:6783
+          # - --cluster.peer=$APP_INSTANCE_NAME-alertmanager-1.$APP_INSTANCE_NAME-alertmanager-operated.$NAMESPACE.svc:6783
+          - --log.level=debug
         ports:
-        - name: alerts
+        - name: http
           containerPort: 9093
         volumeMounts:
           - name: alertmanager-config
             mountPath: /etc/alertmanager/
         livenessProbe:
           httpGet:
-            path: /alertmanager/-/healthy
-            port: alerts
+            path: /#/status
+            port: http
             scheme: HTTP
           initialDelaySeconds: 60
         readinessProbe:
           httpGet:
-            path: /alertmanager/-/healthy
-            port: alerts
+            path: /#/status
+            port: http
             scheme: HTTP
           initialDelaySeconds: 10
           timeoutSeconds: 3
         resources:
           requests:
-            memory: "128Mi"
-            cpu: "500m"
+            memory: "50Mi"
+            cpu: "10m"
           limits:
-            memory: "256Mi"
-            cpu: "500m"
+            memory: "80Mi"
+            cpu: "20m"
       volumes:
-      - name: alertmanager-config
-        configMap:
-          name: alertmanager
-          items:
-            - key: alertmanager.yml
-              path: alertmanager.yml
+        - name: alertmanager-data
+          persistentVolumeClaim:
+            claimName: alertmanager-data
+        - name: alertmanager-config
+          configMap:
+            name: alertmanager
+            items:
+              - key: alertmanager.yml
+                path: alertmanager.yml
