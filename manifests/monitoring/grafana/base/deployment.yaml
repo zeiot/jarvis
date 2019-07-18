@@ -53,28 +53,32 @@ spec:
               key: admin-password
         resources:
           limits:
-            cpu: 500m
-            memory: 128Mi
+            cpu: 70m
+            memory: 150Mi
           requests:
-            cpu: 500m
-            memory: 128Mi
+            cpu: 50m
+            memory: 100Mi
         livenessProbe:
           httpGet:
             path: /api/health
             port: http
-          initialDelaySeconds: 10
-          periodSeconds: 3
         readinessProbe:
           httpGet:
             path: /api/health
             port: http
-          initialDelaySeconds: 10
-          periodSeconds: 3
+          initialDelaySeconds: 60
+          timeoutSeconds: 30
+          failureThreshold: 10
+          periodSeconds: 10
         volumeMounts:
           - name: grafana-config
             mountPath: "/etc/grafana"
           - name: grafana-data
             mountPath: "/var/lib/grafana"
+          # - name: datasources
+          #   mountPath: "/etc/grafana/provisioning/datasources/"
+          # - name: dashboardproviders
+          #   mountPath: "/etc/grafana/provisioning/dashboards/"
       volumes:
         - name: grafana-data
           persistentVolumeClaim:

@@ -31,6 +31,12 @@ configMapGenerator:
 - name: grafana
   files:
   - grafana.ini
+- name: datasources.yaml
+  files:
+  - datasources.yaml
+- name: dashboardproviders.yaml
+  files:
+  - dashboardproviders.yaml
 secretGenerator:
 - name: grafana
   literals:
