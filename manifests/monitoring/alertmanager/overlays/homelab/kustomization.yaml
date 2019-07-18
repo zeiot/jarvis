@@ -28,4 +28,4 @@ configMapGenerator:
 images:
 - name: prom/alertmanager:latest
   newName: zeiot/alertmanager
-  newTag: v0.18.0.arm64.latest
+  newTag: v0.18.0.arm64
