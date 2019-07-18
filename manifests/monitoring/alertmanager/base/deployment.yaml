@@ -47,6 +47,8 @@ spec:
         volumeMounts:
           - name: alertmanager-config
             mountPath: /etc/alertmanager/
+          - name: alertmanager-data
+            mountPath: /data
         livenessProbe:
           httpGet:
             path: /#/status

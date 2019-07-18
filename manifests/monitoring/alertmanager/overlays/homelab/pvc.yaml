@@ -16,6 +16,8 @@ kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
   name: alertmanager-data
+  labels:
+    k8s-app: alertmanager
   annotations:
     volume.beta.kubernetes.io/storage-class: "jarvis-nfs-client"
 spec:

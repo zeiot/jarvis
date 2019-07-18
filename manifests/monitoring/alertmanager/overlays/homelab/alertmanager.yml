@@ -25,10 +25,8 @@ receivers:
     username: "Jarvis Alert"
     #color: "warning"
     channel: '#alert'
-{% raw %} # ansible jinja2 disabled here
-    title: "HIGH - \{\{ .CommonLabels.alertname \}\}"
-    text: "Hello,\n\n\{\{ range .Alerts \}\}- \{\{ .Annotations.summary \}\}\n\{\{ end \}\}\n"
-{% endraw %}
+    title: "HIGH - {{ .CommonLabels.alertname }}"
+    text: "Hello,\n\n{{ range .Alerts }}- {{ .Annotations.summary }}\n{{ end }}\n"
     send_resolved: true
 - name: slack_alert_manager_informations
   slack_configs:
@@ -36,9 +34,7 @@ receivers:
     username: "Jarvis Alert"
     #color: "warning"
     channel: '#notifications'
-{% raw %} # ansible jinja2 disabled here
-    title: "MEDIUM - \{\{ .CommonLabels.alertname \}\}"
-    text: "Hello,\n\n\{\{ range .Alerts \}\}- \{\{ .Annotations.summary \}\}\n\{\{ end \}\}\n"
-{% endraw %}
+    title: "MEDIUM - {{ .CommonLabels.alertname }}"
+    text: "Hello,\n\n{{ range .Alerts }}- {{ .Annotations.summary }}\n{{ end }}\n"
     send_resolved: true
 

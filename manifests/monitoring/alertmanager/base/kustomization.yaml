@@ -24,6 +24,6 @@ commonLabels:
 resources:
 - network-policy.yaml
 - service-account.yaml
-# - deployment.yaml
-- statefulset.yaml
+- deployment.yaml
+# - statefulset.yaml
 - service.yaml

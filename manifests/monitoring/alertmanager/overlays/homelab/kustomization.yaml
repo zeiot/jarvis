@@ -20,6 +20,7 @@ commonLabels:
   env: homelab
 resources:
 - ingress.yaml
+- pvc.yaml
 configMapGenerator:
 - name: alertmanager
   files:
@@ -27,4 +28,4 @@ configMapGenerator:
 images:
 - name: prom/alertmanager:latest
   newName: zeiot/alertmanager
-  newTag: v0.16.1.arm64
+  newTag: v0.18.0.arm64.latest

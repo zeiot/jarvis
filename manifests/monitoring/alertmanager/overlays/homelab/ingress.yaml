@@ -15,10 +15,12 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: grafana
+  name: alertmanager
+  labels:
+    k8s-app: alertmanager
 spec:
   rules:
-  - host: grafana.jarvis
+  - host: alertmanager.jarvis
     http:
       paths:
       - path: /
