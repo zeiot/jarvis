@@ -21,3 +21,6 @@ images:
 - name: quay.io/coreos/kube-state-metrics:latest
   newName: quay.io/coreos/kube-state-metrics
   newTag: v1.6.0
+- name: k8s.gcr.io/addon-resizer:latest
+  newName: k8s.gcr.io/addon-resizer-amd64
+  newTag: 2.1

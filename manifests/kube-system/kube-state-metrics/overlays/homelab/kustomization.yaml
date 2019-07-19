@@ -19,5 +19,11 @@ commonLabels:
   env: homelab
 images:
 - name: quay.io/coreos/kube-state-metrics:latest
-  newName: zeiot/kube-state-metrics
-  newTag: v1.6.0.arm64
+  # newName: zeiot/kube-state-metrics
+  # newTag: v1.6.0.arm64
+  newName: gcr.io/google-containers/kube-state-metrics-arm64
+  newTag: v1.6.0
+- name: k8s.gcr.io/addon-resizer:latest
+  newName: gcr.io/google-containers/addon-resizer-arm64
+  # k8s.gcr.io/addon-resizer-arm64
+  newTag: "2.1"
