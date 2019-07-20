@@ -19,7 +19,6 @@ namespace: monitoring
 commonLabels:
   env: homelab
 resources:
-- ingress.yaml
 - deployment.yaml
 images:
 - name: quay.io/coreos/prometheus-operator:latest
