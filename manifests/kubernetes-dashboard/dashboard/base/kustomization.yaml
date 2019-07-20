@@ -31,4 +31,4 @@ resources:
 - configmap.yaml
 - service.yaml
 - deployment.yaml
-- network-policy.yaml
+# - network-policy.yaml
