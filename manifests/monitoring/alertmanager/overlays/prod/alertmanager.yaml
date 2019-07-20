@@ -11,10 +11,18 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
----
-apiVersion: v1
-kind: ServiceAccount
+apiVersion: monitoring.coreos.com/v1
+kind: Alertmanager
 metadata:
-  name: prometheus
   labels:
-    k8s-app: prometheus
+    alertmanager: main
+  name: main
+spec:
+  serviceAccountName: alertmanager-main
+  baseImage: quay.io/prometheus/alertmanager
+  version: v0.17.0
+  replicas: 1
+  securityContext:
+    fsGroup: 2000
+    runAsNonRoot: true
+    runAsUser: 1000

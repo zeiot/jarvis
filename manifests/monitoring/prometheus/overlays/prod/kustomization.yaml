@@ -18,6 +18,6 @@ bases:
 commonLabels:
   env: prod
 images:
-- name: prom/prometheus:latest
-  newName: prom/prometheus
-  newTag: v2.8.0
+- name: prom/alertmanager:latest
+  newName: prom/alertmanager
+  newTag: v0.16.2

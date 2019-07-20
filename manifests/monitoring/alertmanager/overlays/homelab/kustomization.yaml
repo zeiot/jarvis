@@ -19,13 +19,5 @@ namespace: monitoring
 commonLabels:
   env: homelab
 resources:
+- alertmanager.yaml
 - ingress.yaml
-- pvc.yaml
-configMapGenerator:
-- name: alertmanager
-  files:
-  - alertmanager.yml
-images:
-- name: prom/alertmanager:latest
-  newName: zeiot/alertmanager
-  newTag: v0.18.0.arm64

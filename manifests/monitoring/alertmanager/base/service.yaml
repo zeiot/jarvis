@@ -11,25 +11,19 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
----
-kind: Service
 apiVersion: v1
+kind: Service
 metadata:
-  name: alertmanager
   labels:
     k8s-app: alertmanager
-  annotations:
-    prometheus.io/scrape: 'true'
+    alertmanager: jarvis
+  name: alertmanager-jarvis
 spec:
   type: LoadBalancer
   selector:
-    k8s-app: alertmanager
+    alertmanager: jarvis
   ports:
-    - name: mesh
-      port: 6783
-      protocol: TCP
-      targetPort: mesh
-    - name: http
-      port: 9093
-      protocol: TCP
-      targetPort: http
+  - name: web
+    port: 9093
+    protocol: TCP
+    targetPort: web

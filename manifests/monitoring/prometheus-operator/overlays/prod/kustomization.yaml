@@ -18,4 +18,9 @@ bases:
 commonLabels:
   env: prod
 resources:
-- alertmanager.yaml
+- ingress.yaml
+- deployment.yaml
+images:
+- name: quay.io/coreos/prometheus-operator:latest
+  newName: quay.io/coreos/prometheus-operator
+  newTag: v0.31.1

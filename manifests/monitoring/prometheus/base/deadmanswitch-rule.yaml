@@ -11,11 +11,23 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-kind: Kustomization
-apiVersion: kustomize.config.k8s.io/v1beta1
-bases:
-- ../../base
-commonLabels:
-  env: prod
-resources:
-- alertmanager.yaml
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  labels:
+    app: "prometheus"
+    prometheus: "cluster"
+  name: kube-prometheus
+spec:
+  groups:
+    - name: deadmansswitch.rules
+      rules:
+        - alert: DeadMansSwitch
+          expr: vector(1)
+          labels:
+            severity: high
+          annotations:
+            description:
+              This is a DeadMansSwitch meant to ensure that the entire Alerting
+              pipeline is functional.
+            summary: Alerting DeadMansSwitch

@@ -22,4 +22,5 @@ commonLabels:
   app.kubernetes.io/managed-by: kustomize
 namespace: monitoring
 resources:
+- service-account.yaml
 - daemonset.yaml

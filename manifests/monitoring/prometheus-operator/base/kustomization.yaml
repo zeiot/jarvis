@@ -13,9 +13,18 @@
 # limitations under the License.
 kind: Kustomization
 apiVersion: kustomize.config.k8s.io/v1beta1
-bases:
-- ../../base
+namespace: monitoring
 commonLabels:
-  env: prod
+  app.kubernetes.io/name: prometheus-operator
+  app.kubernetes.io/instance: prometheus-operator
+  app.kubernetes.io/version: "v1"
+  app.kubernetes.io/component: monitoring
+  app.kubernetes.io/part-of: jarvis
+  app.kubernetes.io/managed-by: kustomize
 resources:
-- alertmanager.yaml
+  - service-account.yaml
+  - cluster-role.yaml
+  - cluster-role-binding.yaml
+  - deployment.yaml
+  - service.yaml
+  - service-monitor.yaml

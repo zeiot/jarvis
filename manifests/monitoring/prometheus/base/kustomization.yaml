@@ -13,6 +13,7 @@
 # limitations under the License.
 kind: Kustomization
 apiVersion: kustomize.config.k8s.io/v1beta1
+namespace: monitoring
 commonLabels:
   app.kubernetes.io/name: prometheus
   app.kubernetes.io/instance: prometheus
@@ -20,22 +21,6 @@ commonLabels:
   app.kubernetes.io/component: monitoring
   app.kubernetes.io/part-of: jarvis
   app.kubernetes.io/managed-by: kustomize
-namespace: monitoring
 resources:
-- serviceaccount.yaml
-- clusterrole.yaml
-- clusterrolebinding.yaml
-- network-policy.yaml
+- service-account.yaml
 - service.yaml
-# - statefulset.yaml
-- deployment.yaml
-configMapGenerator:
-- name: prometheus
-  files:
-  - prometheus.yml
-- name: prometheus-alert-rules
-  files:
-  - alert.rules
-- name: prometheus-job-rules
-  files:
-  - job.rules

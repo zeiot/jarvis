@@ -17,5 +17,3 @@ bases:
 - ../../base
 commonLabels:
   env: prod
-resources:
-- alertmanager.yaml

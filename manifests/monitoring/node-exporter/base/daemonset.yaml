@@ -43,8 +43,11 @@ spec:
           image: "quay.io/prometheus/node-exporter:latest"
           args:
           - --no-collector.filesystem
+          - --path.procfs=/host/proc
+          - --path.sysfs=/host/sys
           ports:
-            - containerPort: 9100
+            - name: metrics
+              containerPort: 9100
           securityContext:
               privileged: true
           volumeMounts:
@@ -52,15 +55,13 @@ spec:
               name: proc-fs
             - mountPath: /host/sys
               name: sys-fs
-            - mountPath: /rootfs
-              name: root-fs
           resources:
             requests:
-              memory: "200Mi"
-              cpu: "100m"
+              memory: "50Mi"
+              cpu: "10m"
             limits:
-              memory: "200Mi"
-              cpu: "200m"
+              memory: "75Mi"
+              cpu: "20m"
       hostNetwork: true
       hostPID: true
       volumes:
@@ -70,6 +71,3 @@ spec:
         - name: sys-fs
           hostPath:
             path: /sys
-        - name: root-fs
-          hostPath:
-            path: /
