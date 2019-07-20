@@ -19,7 +19,7 @@ metadata:
   labels:
     k8s-app: ingress-nginx
 spec:
-  externalTrafficPolicy: Local
+  # externalTrafficPolicy: Local
   type: LoadBalancer
   selector:
     k8s-app: ingress-nginx
