@@ -1,0 +1,196 @@
+# Copyright (C) 2016, 2019 Nicolas Lamirault <nicolas.lamirault@gmail.com>
+
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+---
+global:
+  scrape_interval: 15s
+  scrape_timeout: 10s
+  evaluation_interval: 15s
+alerting:
+  alertmanagers:
+  - static_configs:
+    - targets:
+      - alertmanager:80
+    scheme: http
+    timeout: 10s
+rule_files:
+  - "/etc/prometheus/job-rules/job.rules"
+  - "/etc/prometheus/alert-rules/alert.rules"
+
+scrape_configs:
+
+# Scrape prometheus itself
+- job_name: prometheus
+  scrape_interval: 15s
+  scrape_timeout: 10s
+  metrics_path: /metrics
+  scheme: http
+  static_configs:
+  - targets:
+    - localhost:9090
+
+# Scrape Kubernetes APIServers
+- job_name: 'kubernetes-apiservers'
+  scheme: https
+  tls_config:
+    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+  static_configs:
+  - targets:
+    - kubernetes.default.svc.cluster.local
+
+# Scrape node metrics
+- job_name: kubernetes-nodes
+  scheme: https
+  tls_config:
+    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+  kubernetes_sd_configs:
+    - role: node
+  relabel_configs:
+  - target_label: __address__
+    replacement: kubernetes.default.svc:443
+  - source_labels: [__meta_kubernetes_node_name]
+    regex: (.+)
+    target_label: __metrics_path__
+    replacement: /api/v1/nodes/${1}/proxy/metrics
+
+# Scrape containers metrics
+- job_name: 'kubernetes-cadvisor'
+  scheme: https
+  tls_config:
+    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+  kubernetes_sd_configs:
+  - role: node
+  relabel_configs:
+  - target_label: __address__
+    replacement: kubernetes.default.svc:443
+  - source_labels: [__meta_kubernetes_node_name]
+    regex: (.+)
+    target_label: __metrics_path__
+    replacement: /api/v1/nodes/${1}/proxy/metrics/cadvisor
+
+# Scrape service that has to be scraped with annotation
+#
+# * `prometheus.io/scrape`: Only scrape services that have a value of `true`
+# * `prometheus.io/scheme`: If the metrics endpoint is secured then set 'https'
+# * `prometheus.io/path`: If the metrics path is not `/metrics` override this.
+# * `prometheus.io/port`: If the metrics are exposed on a different port to the
+#                         service then set this appropriately.
+- job_name: 'kubernetes-scrape-services'
+  kubernetes_sd_configs:
+  - role: endpoints
+  relabel_configs:
+  - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scrape]
+    action: keep
+    regex: true
+  - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scheme]
+    action: replace
+    target_label: __scheme__
+    regex: (https?)
+  - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_path]
+    action: replace
+    target_label: __metrics_path__
+    regex: (.+)
+  - source_labels: [__address__, __meta_kubernetes_service_annotation_prometheus_io_port]
+    action: replace
+    target_label: __address__
+    regex: ([^:]+)(?::\d+)?;(\d+)
+    replacement: $1:$2
+  - action: labelmap
+    regex: __meta_kubernetes_service_label_(.+)
+  - source_labels: [__meta_kubernetes_namespace]
+    action: replace
+    target_label: kubernetes_namespace
+  - source_labels: [__meta_kubernetes_service_name]
+    action: replace
+    target_label: kubernetes_name
+
+# Scrape Pods that has to be scraped
+#
+# * `prometheus.io/scrape`: Only scrape pods that have a value of `true`
+# * `prometheus.io/path`: If the metrics path is not `/metrics` override this.
+# * `prometheus.io/port`: Scrape the pod on the indicated port
+- job_name: 'kubernetes-scrape-pods'
+  kubernetes_sd_configs:
+  - role: pod
+  relabel_configs:
+  - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
+    action: keep
+    regex: true
+  - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_path]
+    action: replace
+    target_label: __metrics_path__
+    regex: (.+)
+  - source_labels: [__address__, __meta_kubernetes_pod_annotation_prometheus_io_port]
+    action: replace
+    regex: ([^:]+)(?::\d+)?;(\d+)
+    replacement: $1:$2
+    target_label: __address__
+  - action: labeldrop
+    regex: __meta_kubernetes_pod_label_controller_revision_hash
+  - action: labeldrop
+    regex: __meta_kubernetes_pod_label_pod_template_generation
+  - action: labelmap
+    regex: __meta_kubernetes_pod_label_(.+)
+  - source_labels: [__meta_kubernetes_namespace]
+    action: replace
+    target_label: kubernetes_namespace
+  - source_labels: [__meta_kubernetes_pod_name]
+    action: replace
+    target_label: kubernetes_pod_name
+
+  # Scrape kube-state-metrics service
+  - job_name: "kube-state-metrics"
+    kubernetes_sd_configs:
+      - role: service
+        namespaces:
+          names: ["kube-system"]
+    relabel_configs:
+      - action: keep
+        source_labels: [__meta_kubernetes_service_name]
+        regex: "kube-state-metrics"
+      - action: labelmap
+        regex: __meta_kubernetes_service_(.+)
+      - source_labels: [__meta_kubernetes_service_port_name]
+        action: keep
+        regex: http-metrics
+
+  # Scrape metallb service
+  - job_name: "metallb"
+    kubernetes_sd_configs:
+      - role: pod
+        namespaces:
+          names: ["metallb-system"]
+    relabel_configs:
+      - source_labels: [__address__, __meta_kubernetes_pod_annotation_prometheus_io_port]
+        action: replace
+        regex: ([^:]+)(?::\d+)?;(\d+)
+        replacement: ${1}:${2}
+        target_label: __address__
+      - action: labelmap
+        regex: __meta_kubernetes_pod_(.+)
+
+  # Scrape external-dns service
+  - job_name: "external-dns"
+    kubernetes_sd_configs:
+      - role: service
+        namespaces:
+          names: ["external-dns"]
+    relabel_configs:
+      - source_labels: [__meta_kubernetes_service_name]
+        action: keep
+        regex: external-dns-metrics
+      - action: labelmap
+        regex: __meta_kubernetes_service_(.+)
