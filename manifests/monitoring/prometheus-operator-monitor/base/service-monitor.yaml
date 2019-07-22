@@ -22,7 +22,7 @@ spec:
   jobLabel: prometheus-operator
   selector:
     matchLabels:
-      operated-prometheus: "true"
+      k8s-app: prometheus-operator
   namespaceSelector:
     matchNames:
       - "monitoring"
