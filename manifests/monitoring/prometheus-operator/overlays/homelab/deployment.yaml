@@ -48,6 +48,7 @@ spec:
             memory: 100Mi
         securityContext:
           allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
       nodeSelector:
         beta.kubernetes.io/os: linux
       securityContext:

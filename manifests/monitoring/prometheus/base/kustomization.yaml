@@ -22,5 +22,10 @@ commonLabels:
   app.kubernetes.io/part-of: jarvis
   app.kubernetes.io/managed-by: kustomize
 resources:
+- cluster-role.yaml
+- cluster-role-binding.yaml
 - service-account.yaml
+- prometheus-rules.yaml
+- service-monitor.yaml
 - service.yaml
+

@@ -16,17 +16,26 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   labels:
-    k8s-app: prometheus-operator-monitor
-  name: prometheus-operator-monitor
+    k8s-app: kubernetes-apiserver-monitor
+    component: apiserver
+    prometheus: cluster
+  name: kubernetes-apiserver-monitor
 spec:
-  jobLabel: prometheus-operator
+  jobLabel: component
   selector:
     matchLabels:
-      operated-prometheus: "true"
+      component: apiserver
+      provider: kubernetes
   namespaceSelector:
     matchNames:
-      - "monitoring"
+      - "default"
   endpoints:
-    - port: http
-      interval: 30s
-      honorLabels: true
+    - port: https
+      interval: 15s
+      scheme: https
+      tlsConfig:
+        caFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+        # Skip verification until we have resolved why the certificate validation
+        # for the kubelet on API server nodes fail.
+        insecureSkipVerify: true
+      bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token

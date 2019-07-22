@@ -16,17 +16,18 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   labels:
-    k8s-app: prometheus-operator-monitor
-  name: prometheus-operator-monitor
+    k8s-app: node-exporter-monitor
+    component: node-exporter
+    prometheus: cluster
+  name: node-exporter-monitor
 spec:
-  jobLabel: prometheus-operator
+  jobLabel: component
   selector:
     matchLabels:
-      operated-prometheus: "true"
+      k8s-app: node-exporter
   namespaceSelector:
     matchNames:
       - "monitoring"
   endpoints:
-    - port: http
-      interval: 30s
-      honorLabels: true
+    - port: metrics
+      interval: 15s

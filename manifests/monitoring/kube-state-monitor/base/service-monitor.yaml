@@ -16,17 +16,19 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   labels:
-    k8s-app: prometheus-operator-monitor
-  name: prometheus-operator-monitor
+    k8s-app: kube-state-monitor
+    component: kube-state
+    prometheus: cluster
+  name: kube-state-monitor
 spec:
-  jobLabel: prometheus-operator
+  jobLabel: component
   selector:
     matchLabels:
-      operated-prometheus: "true"
+      k8s-app: kube-state-metrics
   namespaceSelector:
     matchNames:
-      - "monitoring"
+      - "kube-system"
   endpoints:
-    - port: http
-      interval: 30s
+    - port: http-metrics
+      interval: 15s
       honorLabels: true

@@ -12,21 +12,24 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 ---
-apiVersion: monitoring.coreos.com/v1
-kind: ServiceMonitor
+apiVersion: v1
+kind: Service
 metadata:
   labels:
-    k8s-app: prometheus-operator-monitor
-  name: prometheus-operator-monitor
+    k8s-app: kube-dns-monitor
+    component: kube-dns
+  name: kube-dns-monitor
 spec:
-  jobLabel: prometheus-operator
+  clusterIP: None
+  type: ClusterIP
+  ports:
+    - name: http-metrics-dnsmasq
+      port: 10054
+      protocol: TCP
+      targetPort: 10054
+    - name: http-metrics-skydns
+      port: 10055
+      protocol: TCP
+      targetPort: 10055
   selector:
-    matchLabels:
-      operated-prometheus: "true"
-  namespaceSelector:
-    matchNames:
-      - "monitoring"
-  endpoints:
-    - port: http
-      interval: 30s
-      honorLabels: true
+    k8s-app: kube-dns

@@ -16,17 +16,32 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   labels:
-    k8s-app: prometheus-operator-monitor
-  name: prometheus-operator-monitor
+    k8s-app: kubelet-monitor
+    component: kubelet
+    prometheus: cluster
+  name: kubelet-monitor
 spec:
-  jobLabel: prometheus-operator
+  jobLabel: component
   selector:
     matchLabels:
-      operated-prometheus: "true"
+      k8s-app: kubelet
   namespaceSelector:
     matchNames:
-      - "monitoring"
+      - "kube-system"
   endpoints:
-    - port: http
+    - port: https-metrics
+      scheme: https
+      interval: 15s
+      tlsConfig:
+        caFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+        insecureSkipVerify: true
+      bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+    - port: https-metrics
+      scheme: https
+      path: /metrics/cadvisor
       interval: 30s
       honorLabels: true
+      tlsConfig:
+        caFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+        insecureSkipVerify: true
+      bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token

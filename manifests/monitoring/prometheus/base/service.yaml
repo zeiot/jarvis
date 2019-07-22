@@ -11,21 +11,18 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-apiVersion: v1
+---
 kind: Service
+apiVersion: v1
 metadata:
+  name: prometheus
   labels:
     k8s-app: prometheus
-    prometheus: "cluster"
-  name: prometheus
 spec:
   type: LoadBalancer
-  sessionAffinity: "None"
   selector:
-    k8s-app: prometheus
     prometheus: prometheus
   ports:
-    - name: http
-      port: 9090
-      targetPort: 9090
-      protocol: TCP
+  - protocol: TCP
+    port: 9090
+    targetPort: web

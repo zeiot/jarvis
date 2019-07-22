@@ -22,7 +22,7 @@ spec:
   jobLabel: app
   selector:
     matchLabels:
-      k8s-app: prometheus
+      app: prometheus
       prometheus: cluster
   namespaceSelector:
     matchNames:
