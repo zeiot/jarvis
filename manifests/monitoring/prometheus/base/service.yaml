@@ -18,6 +18,7 @@ metadata:
   name: prometheus
   labels:
     k8s-app: prometheus
+    prometheus: cluster
 spec:
   type: LoadBalancer
   selector:

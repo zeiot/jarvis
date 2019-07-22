@@ -22,11 +22,11 @@ spec:
   jobLabel: app
   selector:
     matchLabels:
-      app: prometheus
+      k8s-app: prometheus
       prometheus: cluster
   namespaceSelector:
     matchNames:
       - "monitoring"
   endpoints:
-    - port: http
+    - port: web
       interval: 30s
