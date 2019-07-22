@@ -17,7 +17,7 @@ kind: Prometheus
 metadata:
   labels:
     k8s-app: prometheus
-    prometheus: cluster
+    prometheus: main
   name: prometheus
 spec:
   serviceAccountName: prometheus
@@ -39,7 +39,7 @@ spec:
   # serviceMonitorSelector: {} # auto discover all service monitors in namespaces configured one line above
   serviceMonitorSelector:
     matchLabels:
-      prometheus: cluster
+      prometheus: main
     # matchExpressions:
     # - key: promethus
     #   operator: In
@@ -47,7 +47,7 @@ spec:
     #     - cluster
   ruleSelector:
     matchLabels:
-      prometheus: cluster
+      prometheus: main
   ruleNamespaceSelector: {}
   resources:
     requests:

@@ -18,7 +18,7 @@ metadata:
   labels:
     k8s-app: kube-state-monitor
     component: kube-state
-    prometheus: cluster
+    prometheus: main
   name: kube-state-monitor
 spec:
   jobLabel: component

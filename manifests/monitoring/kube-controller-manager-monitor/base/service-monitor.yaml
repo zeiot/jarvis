@@ -18,7 +18,7 @@ metadata:
   labels:
     k8s-app: kube-controller-manager-monitor
     component: kube-controller-manager
-    prometheus: cluster
+    prometheus: main
   name: kube-controller-manager-monitor
 spec:
   jobLabel: component

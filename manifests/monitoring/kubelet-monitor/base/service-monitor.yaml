@@ -18,7 +18,7 @@ metadata:
   labels:
     k8s-app: kubelet-monitor
     component: kubelet
-    prometheus: cluster
+    prometheus: main
   name: kubelet-monitor
 spec:
   jobLabel: component

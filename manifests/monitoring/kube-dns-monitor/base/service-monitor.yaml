@@ -18,7 +18,7 @@ metadata:
   labels:
     k8s-app: kube-dns-monitor
     component: kube-dns
-    prometheus: cluster
+    prometheus: main
   name: kube-dns-monitor
 spec:
   jobLabel: component

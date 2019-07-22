@@ -17,7 +17,7 @@ kind: Prometheus
 metadata:
   labels:
     k8s-app: prometheus
-    prometheus: cluster
+    prometheus: main
   name: prometheus
 spec:
   replicas: 1
@@ -35,10 +35,10 @@ spec:
   serviceMonitorNamespaceSelector: {}
   serviceMonitorSelector:
     matchLabels:
-      prometheus: cluster
+      prometheus: main
   ruleSelector:
     matchLabels:
-      prometheus: cluster
+      prometheus: main
   ruleNamespaceSelector: {}
   storage:
     volumeClaimTemplate:

@@ -17,7 +17,7 @@ kind: PrometheusRule
 metadata:
   labels:
     k8s-app: kube-etcd-monitor
-    prometheus: cluster
+    prometheus: main
   name: kube-etcd-monitor
 spec:
   groups:

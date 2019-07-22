@@ -17,7 +17,7 @@ kind: PrometheusRule
 metadata:
   labels:
     k8s-app: kube-controller-manager-monitor
-    prometheus: cluster
+    prometheus: main
   name: kube-controller-manager-monitor
 spec:
   groups:

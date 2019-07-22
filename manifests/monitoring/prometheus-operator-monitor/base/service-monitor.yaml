@@ -17,6 +17,7 @@ kind: ServiceMonitor
 metadata:
   labels:
     k8s-app: prometheus-operator-monitor
+    prometheus: main
   name: prometheus-operator-monitor
 spec:
   jobLabel: prometheus-operator

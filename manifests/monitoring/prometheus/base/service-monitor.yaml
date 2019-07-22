@@ -11,19 +11,20 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+---
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   labels:
     k8s-app: prometheus
-    prometheus: cluster
+    prometheus: main
   name: prometheus
 spec:
   jobLabel: app
   selector:
     matchLabels:
       k8s-app: prometheus
-      prometheus: cluster
+      prometheus: main
   namespaceSelector:
     matchNames:
       - "monitoring"

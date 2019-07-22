@@ -18,7 +18,7 @@ metadata:
   labels:
     k8s-app: kube-scheduler-monitor
     component: kube-scheduler
-    prometheus: cluster
+    prometheus: main
   name: kube-scheduler-monitor
 spec:
   jobLabel: component

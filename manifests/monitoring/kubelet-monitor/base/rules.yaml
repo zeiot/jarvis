@@ -17,7 +17,7 @@ kind: PrometheusRule
 metadata:
   labels:
     k8s-app: kubelet-monitor
-    prometheus: cluster
+    prometheus: main
   name: kubelet-monitor
 spec:
   groups:

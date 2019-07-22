@@ -18,7 +18,7 @@ metadata:
   labels:
     k8s-app: node-exporter-monitor
     component: node-exporter
-    prometheus: cluster
+    prometheus: main
   name: node-exporter-monitor
 spec:
   jobLabel: component

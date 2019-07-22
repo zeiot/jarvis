@@ -18,7 +18,7 @@ metadata:
   labels:
     k8s-app: kubernetes-apiserver-monitor
     component: apiserver
-    prometheus: cluster
+    prometheus: main
   name: kubernetes-apiserver-monitor
 spec:
   jobLabel: component

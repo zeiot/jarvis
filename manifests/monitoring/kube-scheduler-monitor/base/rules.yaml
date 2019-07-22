@@ -17,7 +17,7 @@ kind: PrometheusRule
 metadata:
   labels:
     k8s-app: kube-scheduler-monitor
-    prometheus: cluster
+    prometheus: main
   name: kube-scheduler-monitor
 spec:
   groups:
