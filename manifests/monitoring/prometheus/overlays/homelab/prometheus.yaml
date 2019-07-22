@@ -23,6 +23,9 @@ spec:
   serviceAccountName: prometheus
   baseImage: "quay.io/prometheus/prometheus"
   version: "v2.11.1"
+  ports:
+  - name: web
+    containerPort: 9090
   alerting:
     alertmanagers:
       - namespace: monitoring
@@ -50,4 +53,26 @@ spec:
     requests:
       memory: 200Mi
       cpu: 150m
+    limits:
+      memory: 250Mi
+      cpu: 200m
+  # storage:
+  #   volumeClaimTemplate:
+  #     spec:
+  #       accessModes:
+  #       - ReadWriteOnce
+  #       resources:
+  #         requests:
+  #           storage: 10Gi
+  #       storageClassName: jarvis-nfs-client
+  affinity:
+    podAntiAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        - labelSelector:
+            matchExpressions:
+              - key: prometheus
+                operator: In
+                values:
+                - cluster
+          topologyKey: "failure-domain.beta.kubernetes.io/zone"
 
