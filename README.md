@@ -12,7 +12,7 @@ Kubernetes environment
 
 &nbsp;
 
-### Homelab ARM64
+### Homelab ARM64
 
 &nbsp;
 
@@ -24,12 +24,12 @@ GKE (Google Kubernetes Engine) provides our Kubernetes cluster on Google Cloud
 
 &nbsp;
 
-### EKS
+### EKS
 
 **TODO**
 &nbsp;
 
-### AKS
+### AKS
 
 **TODO**
 &nbsp;
@@ -57,7 +57,7 @@ Kaniko enables the build of OCI compliant containers without using the Docker da
 &nbsp;
 
 
-## Serverless
+## Serverless
 
 &nbsp;
 
