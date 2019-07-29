@@ -6,7 +6,7 @@
 * Master : [![Circle CI](https://circleci.com/gh/zeiot/jarvis/tree/master.svg?style=svg)](https://circleci.com/gh/zeiot/jarvis/tree/master)
 * Develop: [![Circle CI](https://circleci.com/gh/zeiot/jarvis/tree/develop.svg?style=svg)](https://circleci.com/gh/zeiot/jarvis/tree/develop)
 
-Kubernetes environment
+Kubernetes infrastructure
 
 ## Kubernetes cluster
 
@@ -59,7 +59,7 @@ Grafana is the UI of monitoring
 
 <img width=86 height=86 align="left" src="docs/assets/images/tekton.png">
 
-The Tekton Pipelines project provides Kubernetes-style resources for declaring CI/CD-style pipelines. Superseding Knative build, tekton provides more sophisticated capability and a focused community project independent of Knative.
+The Tekton Pipelines project provides Kubernetes-style resources for declaring CI/CD-style pipelines.
 
 &nbsp;
 
@@ -67,7 +67,7 @@ The Tekton Pipelines project provides Kubernetes-style resources for declaring C
 
 <img width=86 height=86 align="left" src="docs/assets/images/kaniko.png">
 
-Kaniko enables the build of OCI compliant containers without using the Docker daemon. The Kaniko executor also runs in user-space, avoiding privileged escalation, normally required for a Docker daemon based build. As Kaniko is just a binary tool, we can run it within a Kubernetes cluster with ease.
+Kaniko enables the build of OCI compliant containers without using the Docker daemon.
 
 &nbsp;
 
@@ -84,6 +84,25 @@ Knative components build on top of Kubernetes,
 
 &nbsp;
 
+
+## Networking
+
+### PiHole
+
+<img width=86 height=86 align="left" src="docs/assets/images/pihole.png">
+
+An advertisement and Internet tracker blocking application which acts as a DNS sinkhole.
+&nbsp;
+
+### ExternalDNS
+
+<img width=86 height=86 align="left" src="docs/assets/images/externaldns.png">
+
+Makes Ingresses and Services available via DNS
+
+&nbsp;
+
+
 ## Tools
 
 &nbsp;
@@ -96,9 +115,11 @@ For the management of Kubernetes resources, kustomize is used.
 
 &nbsp;
 
+
 ## Installation
 
 &nbsp;
+
 
 ## Contributing
 
@@ -106,11 +127,13 @@ See [CONTRIBUTING](CONTRIBUTING.md).
 
 &nbsp;
 
+
 ## License
 
 See [LICENSE](LICENSE) for the complete license.
 
 &nbsp;
+
 
 ## Changelog
 
@@ -118,11 +141,10 @@ A [changelog](ChangeLog.md) is available
 
 &nbsp;
 
+
 ## Contact
 
 Nicolas Lamirault <nicolas.lamirault@gmail.com>
-
-
 
 
 [badge-license]: https://img.shields.io/badge/license-Apache2-green.svg?style=flat
