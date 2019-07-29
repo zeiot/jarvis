@@ -32,6 +32,10 @@ WARN_COLOR=\033[33;01m
 
 MAKE_COLOR=\033[33;01m%-20s\033[0m
 
+OK=[✅]
+KO=[❌]
+WARN=[⚠️]
+
 .DEFAULT_GOAL := help
 
 .PHONY: help
@@ -47,32 +51,32 @@ guard-%:
 
 print-%:
 	@if [ "${$*}" == "" ]; then \
-		echo -e "$(ERROR_COLOR)[KO]$(NO_COLOR) $* = ${$*}"; \
+		echo -e "$(ERROR_COLOR)$(KO)$(NO_COLOR) $* = ${$*}"; \
 	else \
-		echo -e "$(OK_COLOR)[OK]$(NO_COLOR) $* = ${$*}"; \
+		echo -e "$(OK_COLOR)$(OK)$(NO_COLOR) $* = ${$*}"; \
 	fi
 
 .PHONY: check
 check: print-GOOGLE_APPLICATION_CREDENTIALS ## Check requirements
 	@if $$(hash terraform 2> /dev/null); then \
-		echo -e "$(OK_COLOR)[OK]$(NO_COLOR) terraform"; \
+		echo -e "$(OK_COLOR)$(OK)$(NO_COLOR) terraform"; \
 	else \
-		echo -e "$(ERROR_COLOR)[KO]$(NO_COLOR) terraform"; \
+		echo -e "$(ERROR_COLOR)$(KO)$(NO_COLOR) terraform"; \
 	fi
 	@if $$(hash kubectl 2> /dev/null); then \
-		echo -e "$(OK_COLOR)[OK]$(NO_COLOR) kubectl"; \
+		echo -e "$(OK_COLOR)$(OK)$(NO_COLOR) kubectl"; \
 	else \
-		echo -e "$(ERROR_COLOR)[KO]$(NO_COLOR) kubectl"; \
+		echo -e "$(ERROR_COLOR)$(KO)$(NO_COLOR) kubectl"; \
 	fi
 	@if $$(hash kustomize 2> /dev/null); then \
-		echo -e "$(OK_COLOR)[OK]$(NO_COLOR) kustomize"; \
+		echo -e "$(OK_COLOR)$(OK)$(NO_COLOR) kustomize"; \
 	else \
-		echo -e "$(ERROR_COLOR)[KO]$(NO_COLOR) kustomize"; \
+		echo -e "$(ERROR_COLOR)$(KO)$(NO_COLOR) kustomize"; \
 	fi
 	@if $$(hash conftest 2> /dev/null); then \
-		echo -e "$(OK_COLOR)[OK]$(NO_COLOR) conftest"; \
+		echo -e "$(OK_COLOR)$(OK)$(NO_COLOR) conftest"; \
 	else \
-		echo -e "$(ERROR_COLOR)[KO]$(NO_COLOR) conftest"; \
+		echo -e "$(ERROR_COLOR)$(KO)$(NO_COLOR) conftest"; \
 	fi
 
 
@@ -152,12 +156,12 @@ kubernetes-check: guard-SERVICE guard-ENV ## Check Kubernetes manifests using po
 .PHONY: kubernetes-build
 kubernetes-build: guard-SERVICE guard-ENV ## Build Kustomization (SERVICE=xxx ENV=xxx)
 	@echo -e "$(OK_COLOR)[$(APP)] Build kustomization$(NO_COLOR)"
-	@kustomize build $(SERVICE)/overlays/$(ENV)
+	kustomize build $(SERVICE)/overlays/$(ENV)
 
 kubernetes-apply: guard-SERVICE guard-ENV kubernetes-check-context ## Apply Kustomization (SERVICE=xxx ENV=xxx)
 	@echo -e "$(OK_COLOR)[$(APP)] Build kustomization$(NO_COLOR)"
-	@kustomize build $(SERVICE)/overlays/$(ENV)|kubectl apply -f -
+	kustomize build $(SERVICE)/overlays/$(ENV)|kubectl apply -f -
 
 kubernetes-delete: guard-SERVICE guard-ENV kubernetes-check-context ## Delete Kustomization (SERVICE=xxx ENV=xxx)
 	@echo -e "$(OK_COLOR)[$(APP)] Build kustomization$(NO_COLOR)"
-	@kustomize build $(SERVICE)/overlays/$(ENV)|kubectl delete -f -
+	kustomize build $(SERVICE)/overlays/$(ENV)|kubectl delete -f -
