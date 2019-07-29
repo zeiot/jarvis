@@ -65,7 +65,7 @@ print-%:
 	fi
 
 .PHONY: check
-check: print-GOOGLE_APPLICATION_CREDENTIALS ## Check requirements
+check: ## Check requirements
 	@if $$(hash gcloud 2> /dev/null); then \
 		echo -e "$(OK_COLOR)$(OK)$(NO_COLOR) gcloud"; \
 	else \
