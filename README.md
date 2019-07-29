@@ -6,17 +6,71 @@
 * Master : [![Circle CI](https://circleci.com/gh/zeiot/jarvis/tree/master.svg?style=svg)](https://circleci.com/gh/zeiot/jarvis/tree/master)
 * Develop: [![Circle CI](https://circleci.com/gh/zeiot/jarvis/tree/develop.svg?style=svg)](https://circleci.com/gh/zeiot/jarvis/tree/develop)
 
-Personal HomeLab.
+Kubernetes environment
+
+## Kubernetes cluster
+
+### Homelab ARM64
+
+### GKE
+
+<img width=86 height=86 align="left" src="docs/assets/images/gke.png">
+
+GKE (Google Kubernetes Engine) provides our Kubernetes cluster on Google Cloud
+
+### EKS
+
+**TODO**
+
+### AKS
+
+**TODO**
 
 
+## Monitoring
 
-![Dashboard](dashboard.png)
+
+## CI/CD
+
+### Tekton
+
+<img width=86 height=86 align="left" src="docs/assets/images/tekton.png">
+
+The Tekton Pipelines project provides Kubernetes-style resources for declaring CI/CD-style pipelines. Superseding Knative build, tekton provides more sophisticated capability and a focused community project independent of Knative.
+
+&nbsp;
+
+### Kaniko
+
+<img width=86 height=86 align="left" src="docs/assets/images/kaniko.png">
+
+Kaniko enables the build of OCI compliant containers without using the Docker daemon. The Kaniko executor also runs in user-space, avoiding privileged escalation, normally required for a Docker daemon based build. As Kaniko is just a binary tool, we can run it within a Kubernetes cluster with ease.
+
+&nbsp;
+
+## Serverless
+
+### Knative
+
+<img width=86 height=86 align="left" src="docs/assets/images/knative.png">
+
+Knative components build on top of Kubernetes, abstracting away the complex details and enabling developers to focus on what matters. Built by codifying the best practices shared by successful real-world implementations, Knative solves the "boring but difficult" parts of building, deploying, and managing cloud native services so you don't have to.
+
+&nbsp;
+
+## Tools
+
+### Kustomize
+
+<img width=86 height=86 align="left" src="docs/assets/images/kustomize.png">
+
+For the management of Kubernetes resources, kustomize is used.
+
+&nbsp;
+
 
 ## Intallation
 
-### Raspberry PI
-
-See [docs/en/index.adoc](documentation)
 
 ## Contributing
 
