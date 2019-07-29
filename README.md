@@ -112,11 +112,15 @@ Makes Ingresses and Services available via DNS
 
 <img width=86 height=86 align="left" src="docs/assets/images/radarr.png">
 
+Automatically downloading movies via Usenet and BitTorrent.
+
 &nbsp;
 
 ### TV
 
 <img width=86 height=86 align="left" src="docs/assets/images/sonarr.png">
+
+A PVR for Usenet and BitTorrent users. It can monitor multiple RSS feeds for new episodes of your favorite shows and will grab, sort and rename them
 
 &nbsp;
 
