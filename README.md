@@ -104,6 +104,23 @@ Makes Ingresses and Services available via DNS
 &nbsp;
 
 
+## Multimedia
+
+&nbsp;
+
+### Films
+
+<img width=86 height=86 align="left" src="docs/assets/images/radarr.png">
+
+&nbsp;
+
+### TV
+
+<img width=86 height=86 align="left" src="docs/assets/images/sonarr.png">
+
+&nbsp;
+
+
 ## Tools
 
 &nbsp;
