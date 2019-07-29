@@ -92,6 +92,7 @@ Knative components build on top of Kubernetes,
 <img width=86 height=86 align="left" src="docs/assets/images/pihole.png">
 
 An advertisement and Internet tracker blocking application which acts as a DNS sinkhole.
+
 &nbsp;
 
 ### ExternalDNS
