@@ -12,11 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-APP = jarvis
+APP = Jarvis
 
 VERSION = 0.3.0
 
-MINIKUBE_VERSION = 1.2.0
 KUBECTL_VERSION = 1.15.0
 KUSTOMIZE_VERSION = 3.0.0
 
@@ -81,47 +80,35 @@ check: print-GOOGLE_APPLICATION_CREDENTIALS ## Check requirements
 
 
 # ====================================
-# T E R R A F O R M
+# G K E
 # ====================================
 
-tf-lint:
-	@echo -e "$(OK_COLOR)[$(APP)] Lint Terraform lint$(NO_COLOR)"
-	@terraform fmt -check=true -write=false -diff=true
+.PHONY: help-gke
+help-gke: gke-kube-gcloud gke-kube-terraform ## Help for GKE
+	@echo -e "$(WARN_COLOR)[$(CLOUD)] Usage: make gke-.... SETUP=xxx $(NO_COLOR)"
 
-terraform-lint: check-gcp-credentials tf-lint ## Lint Terraform and Skale-5 style
+gke-kube-%:
+	@cd "kubernetes/gke/$*" && make help
 
-terraform-plan: guard-GOOGLE_APPLICATION_CREDENTIALS guard-CLOUD guard-ENV ## Plan Terraform (env=xxx)
-	@echo -e "$(OK_COLOR)[$(CLOUD)] Validate Terraform configurations$(NO_COLOR)"
-	@cd terraform/$(CLOUD) \
-		&& terraform init -reconfigure -backend-config=backend-vars/$(ENV).tfvars \
-		&& terraform plan -var-file=tfvars/$(ENV).tfvars
-
-terraform-apply: guard-GOOGLE_APPLICATION_CREDENTIALS guard-CLOUD guard-ENV ## Plan Terraform (env=xxx)
-	@echo -e "$(OK_COLOR)[$(CLOUD)] Validate Terraform configurations$(NO_COLOR)"
-	@cd kubernetes/$(CLOUD) \
-		&& terraform init -reconfigure -backend-config=backend-vars/$(ENV).tfvars \
-		&& terraform apply -var-file=tfvars/$(ENV).tfvars
+gke-%: guard-SETUP ## GKE setup
+	@echo -e "$(OK_COLOR)[$(APP)] GKE setup using $(SETUP)$(NO_COLOR)"
+	@cd "kubernetes/gke/$(SETUP)" && make $@
 
 
 # ====================================
-# M I N I K U B E
+# L O C A L
 # ====================================
 
-.PHONY: minikube-deps
-minikube-deps: ## Download development environment dependencies
-	@echo -e "$(OK_COLOR)[$(APP)] Download minikube$(NO_COLOR)"
-	@curl -sLo minikube https://storage.googleapis.com/minikube/releases/v$(MINIKUBE_VERSION)/minikube-linux-amd64 \
-		&& chmod +x minikube
+.PHONY: help-local
+help-local: local-kube-minikube ## Help for local
+	@echo -e "$(WARN_COLOR)[$(CLOUD)] Usage: make local-.... SETUP=xxx $(NO_COLOR)"
 
-.PHONY: minikube-init
-minikube-init: ## Initialize development environment
-	@echo -e "$(OK_COLOR)[$(APP)] Create Kubernetes cluster into Minikube$(NO_COLOR)"
-	./minikube --vm-driver=virtualbox start
+local-kube-%:
+	@cd "kubernetes/local/$*" && make help
 
-.PHONY: minikube-destroy
-minikube-destroy: ## Destroy the development environment
-	@echo -e "$(OK_COLOR)[$(APP)] Delete Kubernetes cluster from Minikube$(NO_COLOR)"
-	./minikube delete
+local-%: ## Local setup
+	@echo -e "$(OK_COLOR)[$(APP)] Local setup using $(SETUP)$(NO_COLOR)"
+	@cd "kubernetes/local/$(SETUP)" && make $@
 
 
 # ====================================

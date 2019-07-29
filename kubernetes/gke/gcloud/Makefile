@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-APP = jarvis
+APP = Jarvis
 
 
 # CURRENT_PROJECT=$(gcloud info --format='value(config.project)')
@@ -37,7 +37,7 @@ OK_COLOR=\033[32;01m
 ERROR_COLOR=\033[31;01m
 WARN_COLOR=\033[33;01m
 
-MAKE_COLOR=\033[33;01m%-20s\033[0m
+MAKE_COLOR=\033[33;01m%-35s\033[0m
 
 OK=[✅]
 KO=[❌]
@@ -64,8 +64,8 @@ print-%:
 		echo -e "$(OK_COLOR)$(OK)$(NO_COLOR) $* = ${$*}"; \
 	fi
 
-.PHONY: check
-check: ## Check requirements
+.PHONY: gke-gcloud-check
+gke-gcloud-check: ## Check requirements
 	@if $$(hash gcloud 2> /dev/null); then \
 		echo -e "$(OK_COLOR)$(OK)$(NO_COLOR) gcloud"; \
 	else \
@@ -78,11 +78,12 @@ check: ## Check requirements
 # ====================================
 
 
-project-billing: ## Display billing account
+.PHONY: gke-gcloud-project-billing
+gke-gcloud-project-billing: ## Display billing account
 	@gcloud beta billing accounts list --quiet |grep -v "ACCOUNT_ID"|awk -F" " '{ print $1 }'
 
-.PHONY: project-setup
-project-setup: ## Setup GCloud project for Kubernetes
+.PHONY: gke-gcloud-project-setup
+gke-gcloud-project-setup: ## Setup GCloud project for Kubernetes
 	@gcloud config set project ${PROJECT_ID}
 	@gcloud config set compute/zone $(ZONE)
 	@gcloud services enable iam.googleapis.com
@@ -96,18 +97,19 @@ project-setup: ## Setup GCloud project for Kubernetes
 	@gcloud projects add-iam-policy-binding $(PROJECT_ID) --member serviceAccount:$(GKE_SA_EMAIL) --role roles/monitoring.metricWriter
 	@gcloud projects add-iam-policy-binding $(PROJECT_ID) --member serviceAccount:$(GKE_SA_EMAIL) --role roles/container.admin
 
-.PHONY: project-create
-project-create: guard-GCP_BILLING ## Create the GCloud project
+.PHONY: gke-gcloud-project-create
+gke-gcloud-project-create: guard-GCP_BILLING ## Create the GCloud project
 	@echo -e "$(OK_COLOR)[$(APP)] Create GCloud project$(NO_COLOR)"
 	@gcloud projects create $(PROJECT_ID) --name $(PROJECT_NAME)
 	@gcloud beta billing projects link $(PROJECT_ID) --billing-account $(GCP_BILLING)
-.PHONY: project-delete
-project-delete: ## delete the GCloud project
+
+.PHONY: gke-gcloud-project-delete
+gke-gcloud-project-delete: ## delete the GCloud project
 	@echo -e "$(OK_COLOR)[$(APP)] Create GCloud project$(NO_COLOR)"
 	@gcloud projects delete $(PROJECT_ID)
 
-.PHONY: kubernetes-create
-kubernetes-create: ## Create the Kubernetes cluster
+.PHONY: gke-gcloud-kubernetes-create
+gke-gcloud-kubernetes-create: ## Create the Kubernetes cluster
 	@echo -e "$(OK_COLOR)[$(APP)] Create Kubernetes cluster$(NO_COLOR)"
 	@gcloud container clusters create \
 		$(CLUSTER_NAME) --zone=${ZONE} --machine-type $(MACHINE_TYPE) \
@@ -121,12 +123,12 @@ kubernetes-create: ## Create the Kubernetes cluster
 		--clusterrole=cluster-admin \
 		--user=$(gcloud config get-value core/account)
 
-.PHONY: kubernetes-delete
-kubernetes-delete: ## delete the Kubernetes cluster
+.PHONY: gke-gcloud-kubernetes-delete
+gke-gcloud-kubernetes-delete: ## delete the Kubernetes cluster
 	@echo -e "$(OK_COLOR)[$(APP)] delete Kubernetes cluster$(NO_COLOR)"
 	@gcloud container clusters delete $(CLUSTER_NAME)
 
-.PHONY: kubernetes-credentials
-kubernetes-credentials:
+.PHONY: gke-gcloud-kubernetes-credentials
+gke-gcloud-kubernetes-credentials:
 	@echo -e "$(OK_COLOR)[$(APP)] Retrieve Kubernetes credentials$(NO_COLOR)"
 	gcloud container clusters get-credentials $(CLUSTER_NAME) --zone=$(ZONE) --project $(PROJECT_ID)

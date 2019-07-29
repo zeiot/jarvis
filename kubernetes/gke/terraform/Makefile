@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-APP = jarvis
+APP = Jarvis
 
 VERSION = 0.3.0
 
@@ -30,7 +30,7 @@ OK_COLOR=\033[32;01m
 ERROR_COLOR=\033[31;01m
 WARN_COLOR=\033[33;01m
 
-MAKE_COLOR=\033[33;01m%-20s\033[0m
+MAKE_COLOR=\033[33;01m%-35s\033[0m
 
 OK=[✅]
 KO=[❌]
@@ -56,8 +56,8 @@ print-%:
 		echo -e "$(OK_COLOR)$(OK)$(NO_COLOR) $* = ${$*}"; \
 	fi
 
-.PHONY: check
-check: print-GOOGLE_APPLICATION_CREDENTIALS ## Check requirements
+.PHONY: gke-terraform-check
+gke-terraform-check: print-GOOGLE_APPLICATION_CREDENTIALS ## Check requirements
 	@if $$(hash terraform 2> /dev/null); then \
 		echo -e "$(OK_COLOR)$(OK)$(NO_COLOR) terraform"; \
 	else \
@@ -72,15 +72,17 @@ tf-lint:
 	@echo -e "$(OK_COLOR)[$(APP)] Lint Terraform lint$(NO_COLOR)"
 	@terraform fmt -check=true -write=false -diff=true
 
-terraform-lint: check-gcp-credentials tf-lint ## Lint Terraform and Skale-5 style
+gke-terraform-lint: check-gcp-credentials tf-lint ## Lint Terraform and Skale-5 style
 
-terraform-plan: guard-GOOGLE_APPLICATION_CREDENTIALS guard-CLOUD guard-ENV ## Plan Terraform (env=xxx)
+.PHONY: gke-terraform-plan
+gke-terraform-plan: guard-GOOGLE_APPLICATION_CREDENTIALS guard-CLOUD guard-ENV ## Plan Terraform (env=xxx)
 	@echo -e "$(OK_COLOR)[$(CLOUD)] Validate Terraform configurations$(NO_COLOR)"
 	@cd terraform/$(CLOUD) \
 		&& terraform init -reconfigure -backend-config=backend-vars/$(ENV).tfvars \
 		&& terraform plan -var-file=tfvars/$(ENV).tfvars
 
-terraform-apply: guard-GOOGLE_APPLICATION_CREDENTIALS guard-CLOUD guard-ENV ## Plan Terraform (env=xxx)
+.PHONY: gke-terraform-apply
+gke-terraform-apply: guard-GOOGLE_APPLICATION_CREDENTIALS guard-CLOUD guard-ENV ## Plan Terraform (env=xxx)
 	@echo -e "$(OK_COLOR)[$(CLOUD)] Validate Terraform configurations$(NO_COLOR)"
 	@cd kubernetes/$(CLOUD) \
 		&& terraform init -reconfigure -backend-config=backend-vars/$(ENV).tfvars \
