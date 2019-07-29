@@ -10,7 +10,11 @@ Kubernetes environment
 
 ## Kubernetes cluster
 
+&nbsp;
+
 ### Homelab ARM64
+
+&nbsp;
 
 ### GKE
 
@@ -18,13 +22,17 @@ Kubernetes environment
 
 GKE (Google Kubernetes Engine) provides our Kubernetes cluster on Google Cloud
 
+&nbsp;
+
 ### EKS
 
 **TODO**
+&nbsp;
 
 ### AKS
 
 **TODO**
+&nbsp;
 
 
 ## Monitoring
@@ -48,7 +56,10 @@ Kaniko enables the build of OCI compliant containers without using the Docker da
 
 &nbsp;
 
+
 ## Serverless
+
+&nbsp;
 
 ### Knative
 
@@ -59,6 +70,8 @@ Knative components build on top of Kubernetes, abstracting away the complex deta
 &nbsp;
 
 ## Tools
+
+&nbsp;
 
 ### Kustomize
 
@@ -71,21 +84,25 @@ For the management of Kubernetes resources, kustomize is used.
 
 ## Intallation
 
+&nbsp;
 
 ## Contributing
 
 See [CONTRIBUTING](CONTRIBUTING.md).
 
+&nbsp;
 
 ## License
 
 See [LICENSE](LICENSE) for the complete license.
 
+&nbsp;
 
 ## Changelog
 
 A [changelog](ChangeLog.md) is available
 
+&nbsp;
 
 ## Contact
 
