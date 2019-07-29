@@ -115,6 +115,7 @@ kubernetes-create: ## Create the Kubernetes cluster
 		--cluster-version=$(K8S_VERSION) \
 		--image-type="COS" \
 		--service-account $(GKE_SA_EMAIL) \
+		--scopes=service-control,service-management,compute-rw,storage-ro,cloud-platform,logging-write,monitoring-write,pubsub,datastore \
 		--num-nodes $(NUM_NODES) --min-nodes=$(MIN_NODES) --max-nodes=$(MAX_NODES)
 	@kubectl create clusterrolebinding cluster-admin-binding \
 		--clusterrole=cluster-admin \
