@@ -27,8 +27,6 @@ MetalLB CIDR:
 * Min: **192.168.1.225**
 * Max: **192.168.1.254**
 
-* Traefik Internal Ingress IP: **192.168.1.20**
-
 === Stack ===
 
 The Kubernetes cluster stack:

@@ -37,6 +37,21 @@ GKE (Google Kubernetes Engine) provides our Kubernetes cluster on Google Cloud
 
 ## Monitoring
 
+### Prometheus
+
+<img width=86 height=86 align="left" src="docs/assets/images/prometheus.png">
+
+Prometheus is used as the time series database for monitoring system
+
+&nbsp;
+
+### Grafana
+
+<img width=86 height=86 align="left" src="docs/assets/images/grafana.png">
+
+Grafana is the UI of monitoring
+
+&nbsp;
 
 ## CI/CD
 
@@ -65,7 +80,7 @@ Kaniko enables the build of OCI compliant containers without using the Docker da
 
 <img width=86 height=86 align="left" src="docs/assets/images/knative.png">
 
-Knative components build on top of Kubernetes, abstracting away the complex details and enabling developers to focus on what matters. Built by codifying the best practices shared by successful real-world implementations, Knative solves the "boring but difficult" parts of building, deploying, and managing cloud native services so you don't have to.
+Knative components build on top of Kubernetes,
 
 &nbsp;
 
@@ -81,8 +96,7 @@ For the management of Kubernetes resources, kustomize is used.
 
 &nbsp;
 
-
-## Intallation
+## Installation
 
 &nbsp;
 

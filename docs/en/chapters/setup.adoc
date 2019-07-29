@@ -26,9 +26,9 @@ Generate a new machineid on each host, see : https://github.com/hypriot/image-bu
 
 === Cluster ===
 
-https://www.ansible.com/[Ansible] is used to configure the cluster.
+https://www.ansible.com/[Ansible] is used to configure the *Salt* infrastructure.
 
-Go into the *ansible* directory to manage the cluster.
+Go into the *ansible* directory
 
 ==== Ansible ====
 
@@ -49,9 +49,6 @@ Example, my personal configuration is :
 <node2_ip_address>          ansible_connection=ssh        ansible_user=pirate
 <node3_ip_address>          ansible_connection=ssh        ansible_user=pirate
 
-[ha]
-<zero1_ip_address>          ansible_connection=ssh        ansible_user=pirate
-
 [osmc]
 <osmc_ip_address>          ansible_connection=ssh        ansible_user=pirate
 ----
@@ -62,21 +59,6 @@ You could now check communications with hosts:
 $ make check
 ----
 
-==== Kubernetes cluster ====
-
-Bootstrap and setup the Kubernetes cluster
-
-----
-$ make k8s-bootstrap
-$ make k8s-setup
-----
-
-After that, you could update or destroy the cluster :
-
-----
-$ make k8s-update
-$ make k8s-destroy
-----
 
 ==== Saltstack ====
 
@@ -103,10 +85,45 @@ $ make check
 $ make hosts
 ----
 
-Configure servers :
+Install Kubernetes dependencies :
 
 ----
-$ make commons
+$ make k8s-setup
+----
+
+You could check hosts setup :
+
+----
+$ make k8s-check
+[Jarvis / Salt] Check hosts
+jarvis-master:
+    ii  docker-ce                                                       18.06.1~ce~3-0~ubuntu                    arm64        Docker: the open-source application container engine
+jarvis-node3.localdomain:
+    ii  docker-ce                     18.06.1~ce~3-0~debian          arm64        Docker: the open-source application container engine
+jarvis-node2.localdomain:
+    ii  docker-ce                     18.06.1~ce~3-0~debian          arm64        Docker: the open-source application container engine
+jarvis-node1.localdomain:
+    ii  docker-ce                     18.06.1~ce~3-0~debian          arm64        Docker: the open-source application container engine
+jarvis-master:
+    ii  kubeadm                                                         1.13.3-00                                arm64        Kubernetes Cluster Bootstrapping Tool
+    ii  kubectl                                                         1.13.3-00                                arm64        Kubernetes Command Line Tool
+    ii  kubelet                                                         1.13.3-00                                arm64        Kubernetes Node Agent
+    ii  kubernetes-cni                                                  0.6.0-00                                 arm64        Kubernetes CNI
+jarvis-node2.localdomain:
+    ii  kubeadm                       1.13.3-00                      arm64        Kubernetes Cluster Bootstrapping Tool
+    ii  kubectl                       1.13.3-00                      arm64        Kubernetes Command Line Tool
+    ii  kubelet                       1.13.3-00                      arm64        Kubernetes Node Agent
+    ii  kubernetes-cni                0.6.0-00                       arm64        Kubernetes CNI
+jarvis-node3.localdomain:
+    ii  kubeadm                       1.13.3-00                      arm64        Kubernetes Cluster Bootstrapping Tool
+    ii  kubectl                       1.13.3-00                      arm64        Kubernetes Command Line Tool
+    ii  kubelet                       1.13.3-00                      arm64        Kubernetes Node Agent
+    ii  kubernetes-cni                0.6.0-00                       arm64        Kubernetes CNI
+jarvis-node1.localdomain:
+    ii  kubeadm                       1.13.3-00                      arm64        Kubernetes Cluster Bootstrapping Tool
+    ii  kubectl                       1.13.3-00                      arm64        Kubernetes Command Line Tool
+    ii  kubelet                       1.13.3-00                      arm64        Kubernetes Node Agent
+    ii  kubernetes-cni                0.6.0-00                       arm64        Kubernetes CNI
 ----
 
 === Components ===
@@ -116,10 +133,23 @@ $ make commons
 On the master initialize the cluster :
 
 ----
-$ sudo kubeadm init --kubernetes-version v1.9.6 \
+$ sudo kubeadm config images pull --kubernetes-version v1.13.3
+[config/images] Pulled k8s.gcr.io/kube-apiserver:v1.13.3
+[config/images] Pulled k8s.gcr.io/kube-controller-manager:v1.13.3
+[config/images] Pulled k8s.gcr.io/kube-scheduler:v1.13.3
+[config/images] Pulled k8s.gcr.io/kube-proxy:v1.13.3
+[config/images] Pulled k8s.gcr.io/pause:3.1
+[config/images] Pulled k8s.gcr.io/etcd:3.2.24
+[config/images] Pulled k8s.gcr.io/coredns:1.2.6
+
+$ sudo kubeadm init --kubernetes-version v1.13.8 \
     --apiserver-advertise-address=192.168.1.33 \
     --pod-network-cidr=10.244.0.0/16 \
     --skip-preflight-checks
+
+[...]
+
+kubeadm join 192.168.1.33:6443 --token zgr9qr.ek2obrpm191294nu --discovery-token-ca-cert-hash sha256:335b8f0b47864b3bd2b55fdae64eb97454eb3baeab8b3dc1b3ad29a7973b1336
 ----
 
 Wait for pods are available. Then install the CNI.
@@ -129,17 +159,32 @@ We use Flannel due to an error on Weave (RPI reboot) :
 $ curl -sSL https://raw.githubusercontent.com/coreos/flannel/v0.10.0/Documentation/kube-flannel.yml | sed 's/amd64/arm64/g' | kubectl create -f -
 ----
 
+
+Check logs. If there is an error with CNI plugin, check if file **/etc/cni/net.d/10-flannel.conf** exists.
+Create it with :
+
+----
+{
+  "name": "cbr0",
+  "type": "flannel",
+  "delegate": {
+    "isDefaultGateway": true
+  }
+}
+----
+
+
 Check the join command from the master :
 
 ----
 $ sudo kubeadm token create --print-join-command
-kubeadm join --token 63b510.cc71025ad4a04f4f 192.168.1.33:6443 --discovery-token-ca-cert-hash sha256:75e299f512e401072447f0e3ad22dbf8936446d38d6579f09d11cffc457c16f9
+kubeadm join 192.168.1.33:6443 --token zgr9qr.ek2obrpm191294nu --discovery-token-ca-cert-hash sha256:335b8f0b47864b3bd2b55fdae64eb97454eb3baeab8b3dc1b3ad29a7973b1336
 ----
 
 Then on each node, join the cluster :
 
 ----
-$ kubeadm join --token 63b510.cc71025ad4a04f4f 192.168.1.33:6443 --discovery-token-ca-cert-hash sha256:75e299f512e401072447f0e3ad22dbf8936446d38d6579f09d11cffc457c16f9
+$ sudo kubeadm join 192.168.1.33:6443 --token zgr9qr.ek2obrpm191294nu --discovery-token-ca-cert-hash sha256:335b8f0b47864b3bd2b55fdae64eb97454eb3baeab8b3dc1b3ad29a7973b1336
 ----
 
 Wait for control plane is available :
