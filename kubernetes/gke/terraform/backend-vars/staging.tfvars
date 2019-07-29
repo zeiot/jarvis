@@ -12,18 +12,4 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-env = "prd"
-
-project = "jarvis-prd"
-
-kubernetes_version = "1.12.6-gke.7"
-
-jarvis-gke-range = "10.12.0.0/16"
-
-preemptible = "false"
-
-secondary_range = "jarvis-gke-services-prd-subnet-europe-west1"
-
-min_node = 4
-
-max_node = 6
+bucket = "terraform-jarvis-staging"

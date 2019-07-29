@@ -16,7 +16,7 @@ APP = jarvis
 
 
 # CURRENT_PROJECT=$(gcloud info --format='value(config.project)')
-PROJECT_NAME=jarvis-prod
+PROJECT_NAME=jarvis-prod-gcloud
 PROJECT_ID=$(PROJECT_NAME)-1
 GKE_SA=$(CLUSTER_NAME)-gke-sa
 GKE_SA_EMAIL=$(GKE_SA)@$(PROJECT_ID).iam.gserviceaccount.com

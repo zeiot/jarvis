@@ -14,7 +14,7 @@
 
 env = "ppd"
 
-project = "jarvis-ppd"
+project = "jarvis-staging-tf"
 
 kubernetes_version = "1.12.6-gke.7"
 
