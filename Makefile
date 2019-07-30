@@ -83,16 +83,33 @@ check: print-GOOGLE_APPLICATION_CREDENTIALS ## Check requirements
 # G K E
 # ====================================
 
-.PHONY: help-gke
-help-gke: gke-kube-gcloud gke-kube-terraform ## Help for GKE
-	@echo -e "$(WARN_COLOR)[$(CLOUD)] Usage: make gke-.... SETUP=xxx $(NO_COLOR)"
-
 gke-kube-%:
 	@cd "kubernetes/gke/$*" && make help
 
 gke-%: guard-SETUP ## GKE setup
 	@echo -e "$(OK_COLOR)[$(APP)] GKE setup using $(SETUP)$(NO_COLOR)"
 	@cd "kubernetes/gke/$(SETUP)" && make $@
+
+.PHONY: help-gke
+help-gke: gke-kube-gcloud gke-kube-terraform ## Help for GKE
+	@echo -e "$(WARN_COLOR)[$(CLOUD)] Usage: make gke-.... SETUP=xxx $(NO_COLOR)"
+
+
+# ====================================
+# E K S
+# ====================================
+
+eks-kube-%:
+	@cd "kubernetes/eks/$*" && make help
+
+eks-%: guard-SETUP ## EKS setup
+	@echo -e "$(OK_COLOR)[$(APP)] EKS setup using $(SETUP)$(NO_COLOR)"
+	@cd "kubernetes/eks/$(SETUP)" && make $@
+
+.PHONY: help-eks
+help-eks: eks-kube-eksctl ## Help for EKS
+	@echo -e "$(WARN_COLOR)[$(CLOUD)] Usage: make gke-.... SETUP=xxx $(NO_COLOR)"
+
 
 
 # ====================================
