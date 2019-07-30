@@ -14,14 +14,7 @@
 
 APP = Jarvis
 
-# CURRENT_PROJECT=$(gcloud info --format='value(config.project)')
-PROJECT_NAME=jarvis-prod-gcloud
-PROJECT_ID=$(PROJECT_NAME)-1
-CLUSTER_NAME=jarvis-prod
-K8S_VERSION=1.13
-NUM_NODES=3
-MIN_NODES=2
-MAX_NODES=4
+CLUSTER_NAME=jarvis-prod-eksctl
 REGION=eu-west-3
 
 SHELL = /bin/bash
@@ -90,5 +83,5 @@ eks-eksctl-kubernetes-create: ## Create the Kubernetes cluster
 .PHONY: eks-eksctl-kubernetes-delete
 eks-eksctl-kubernetes-delete: ## delete the Kubernetes cluster
 	@echo -e "$(OK_COLOR)[$(APP)] delete Kubernetes cluster$(NO_COLOR)"
-	@eksctl delete cluster --name $(CLUSTER_NAME)
+	@eksctl delete cluster --name $(CLUSTER_NAME) --region $(REGION)
 

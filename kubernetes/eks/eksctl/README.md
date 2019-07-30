@@ -30,3 +30,22 @@ kube-system   coredns-746867d898-9zzxr   1/1     Running   0          11m
 kube-system   kube-proxy-d5287           1/1     Running   0          4m11s
 kube-system   kube-proxy-p5wnv           1/1     Running   0          4m11s
 ```
+
+And delete it :
+
+```bash
+$ make eks-eksctl-kubernetes-delete SETUP=eksctl
+[Jarvis] EKS setup using eksctl
+make[1]: Entering directory '/home/nicolas/Projects/Zeiot/jarvis/kubernetes/eks/eksctl'
+[Jarvis] delete Kubernetes cluster
+[ℹ]  using region eu-west-3
+[ℹ]  deleting EKS cluster "jarvis-prod-eksctl"
+[✔]  kubeconfig has been updated
+[ℹ]  cleaning up LoadBalancer services
+[ℹ]  2 sequential tasks: { delete nodegroup "ng-1", delete cluster control plane "jarvis-prod-eksctl" [async] }
+[ℹ]  will delete stack "eksctl-jarvis-prod-eksctl-nodegroup-ng-1"
+[ℹ]  waiting for stack "eksctl-jarvis-prod-eksctl-nodegroup-ng-1" to get deleted
+[ℹ]  will delete stack "eksctl-jarvis-prod-eksctl-cluster"
+[✔]  all cluster resources were deleted
+make[1]: Leaving directory '/home/nicolas/Projects/Zeiot/jarvis/kubernetes/eks/eksctl'
+```
