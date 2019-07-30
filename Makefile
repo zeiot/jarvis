@@ -108,7 +108,25 @@ eks-%: guard-SETUP ## EKS setup
 
 .PHONY: help-eks
 help-eks: eks-kube-eksctl ## Help for EKS
-	@echo -e "$(WARN_COLOR)[$(CLOUD)] Usage: make gke-.... SETUP=xxx $(NO_COLOR)"
+	@echo -e "$(WARN_COLOR)[$(CLOUD)] Usage: make eks-.... SETUP=xxx $(NO_COLOR)"
+
+
+
+# ====================================
+# A K S
+# ====================================
+
+aks-kube-%:
+	@cd "kubernetes/aks/$*" && make help
+
+aks-%: guard-SETUP ## AKS setup
+	@echo -e "$(OK_COLOR)[$(APP)] AKS setup using $(SETUP)$(NO_COLOR)"
+	@cd "kubernetes/aks/$(SETUP)" && make $@
+
+.PHONY: help-aks
+help-aks: aks-kube-cli ## Help for EKS
+	@echo -e "$(WARN_COLOR)[$(CLOUD)] Usage: make aks-.... SETUP=xxx $(NO_COLOR)"
+
 
 
 
