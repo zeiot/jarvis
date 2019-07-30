@@ -28,7 +28,12 @@ See [kubernetes/gke/](gke)
 
 ### EKS
 
-**TODO**
+<img width=86 height=86 align="left" src="docs/assets/images/eks.png">
+
+Amazon EKS provides our Kubernetes cluster on Amazon AWS
+
+See [kubernetes/eks](eks)
+
 &nbsp;
 
 ### AKS
