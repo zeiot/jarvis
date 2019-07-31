@@ -37,5 +37,13 @@ When you want to delete it :
 
 ```bash
 $ make gke-gcloud-kubernetes-delete SETUP=gcloud
+[Jarvis] GKE setup using gcloud
+[Jarvis] delete Kubernetes cluster
+The following clusters will be deleted.
+ - [jarvis-prod-gcloud] in [europe-west1-c]
 
+Do you want to continue (Y/n)?  y
+
+Deleting cluster jarvis-prod-gcloud...done.
+Deleted [https://container.googleapis.com/v1/projects/jarvis-prod-1/zones/europe-west1-c/clusters/jarvis-prod-gcloud].
 ```
