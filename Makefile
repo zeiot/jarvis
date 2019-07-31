@@ -19,7 +19,6 @@ VERSION = 0.3.0
 KUBECTL_VERSION = 1.15.0
 KUSTOMIZE_VERSION = 3.0.0
 
-KUBE_CONTEXT=kube-jarvis
 KUBE_CURRENT_CONTEXT=$(shell kubectl config current-context)
 
 SHELL = /bin/bash
@@ -86,6 +85,7 @@ check: print-GOOGLE_APPLICATION_CREDENTIALS ## Check requirements
 gke-kube-%:
 	@cd "kubernetes/gke/$*" && make help
 
+.SILENT:
 gke-%: guard-SETUP ## GKE setup
 	@echo -e "$(OK_COLOR)[$(APP)] GKE setup using $(SETUP)$(NO_COLOR)"
 	@cd "kubernetes/gke/$(SETUP)" && make $@
@@ -102,6 +102,7 @@ help-gke: gke-kube-gcloud gke-kube-terraform ## Help for GKE
 eks-kube-%:
 	@cd "kubernetes/eks/$*" && make help
 
+.SILENT:
 eks-%: guard-SETUP ## EKS setup
 	@echo -e "$(OK_COLOR)[$(APP)] EKS setup using $(SETUP)$(NO_COLOR)"
 	@cd "kubernetes/eks/$(SETUP)" && make $@
@@ -119,6 +120,7 @@ help-eks: eks-kube-eksctl ## Help for EKS
 aks-kube-%:
 	@cd "kubernetes/aks/$*" && make help
 
+.SILENT:
 aks-%: guard-SETUP ## AKS setup
 	@echo -e "$(OK_COLOR)[$(APP)] AKS setup using $(SETUP)$(NO_COLOR)"
 	@cd "kubernetes/aks/$(SETUP)" && make $@
@@ -180,10 +182,10 @@ kubernetes-build: guard-SERVICE guard-ENV ## Build Kustomization (SERVICE=xxx EN
 	@echo -e "$(OK_COLOR)[$(APP)] Build kustomization$(NO_COLOR)"
 	kustomize build $(SERVICE)/overlays/$(ENV)
 
-kubernetes-apply: guard-SERVICE guard-ENV kubernetes-check-context ## Apply Kustomization (SERVICE=xxx ENV=xxx)
+kubernetes-apply: guard-SERVICE guard-ENV guard-KUBE_CONTEXT kubernetes-check-context ## Apply Kustomization (SERVICE=xxx ENV=xxx)
 	@echo -e "$(OK_COLOR)[$(APP)] Build kustomization$(NO_COLOR)"
 	kustomize build $(SERVICE)/overlays/$(ENV)|kubectl apply -f -
 
-kubernetes-delete: guard-SERVICE guard-ENV kubernetes-check-context ## Delete Kustomization (SERVICE=xxx ENV=xxx)
+kubernetes-delete: guard-SERVICE guard-ENV guard-KUBE_CONTEXT kubernetes-check-context ## Delete Kustomization (SERVICE=xxx ENV=xxx)
 	@echo -e "$(OK_COLOR)[$(APP)] Build kustomization$(NO_COLOR)"
 	kustomize build $(SERVICE)/overlays/$(ENV)|kubectl delete -f -

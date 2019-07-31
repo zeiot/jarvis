@@ -29,6 +29,8 @@ ZONE=europe-west1-c
 MACHINE_TYPE=n1-standard-1
 # MACHINE_TYPE=f1-micro
 
+KUBE_CONTEXT=gke_jarvis-prod-1_europe-west1-c_jarvis-prod-gcloud
+
 SHELL = /bin/bash
 
 NO_COLOR=\033[0m
@@ -76,6 +78,10 @@ gke-gcloud-check: ## Check requirements
 # G C L O U D
 # ====================================
 
+.SILENT:
+.PHONY: gke-gcloud-kube-context
+gke-gcloud-kube-context: ## Display Kubernetes context
+	@echo $(KUBE_CONTEXT)
 
 .PHONY: gke-gcloud-project-billing
 gke-gcloud-project-billing: ## Display billing account
