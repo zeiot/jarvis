@@ -6,10 +6,10 @@
 
 * 1x Rock64 4Go RAM for the master
 * 3x Raspberry PI 3 for workers
-* 3x https://www.amazon.com/gp/product/B017Z32E6M/ref=oh_aui_detailpage_o08_s00?ie=UTF8&psc=1[PiBlox Cases]
-* https://www.amazon.com/gp/product/B0056ZSF74/ref=oh_aui_detailpage_o00_s00?ie=UTF8&psc=1[Ethernet cables]
-* https://www.amazon.com/gp/product/B01MRH8P7E/ref=oh_aui_detailpage_o00_s00?ie=UTF8&psc=1[Micro USB cables]
-* https://www.amazon.com/gp/product/B00JP47EFG/ref=oh_aui_detailpage_o00_s01?ie=UTF8&psc=1[ORICO USB2.0 HUB]
+* 3x [PiBlox Cases](https://www.amazon.com/gp/product/B017Z32E6M/ref=oh_aui_detailpage_o08_s00?ie=UTF8&psc=1)
+* [Ethernet cables](https://www.amazon.com/gp/product/B0056ZSF74/ref=oh_aui_detailpage_o00_s00?ie=UTF8&psc=1)
+* [Micro USB cables](https://www.amazon.com/gp/product/B01MRH8P7E/ref=oh_aui_detailpage_o00_s00?ie=UTF8&psc=1)
+* [ORICO USB2.0 HUB](https://www.amazon.com/gp/product/B00JP47EFG/ref=oh_aui_detailpage_o00_s01?ie=UTF8&psc=1)
 * 4x 32GB memory cards
 
 ### Network

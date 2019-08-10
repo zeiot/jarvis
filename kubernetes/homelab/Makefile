@@ -17,6 +17,8 @@ APP = Jarvis
 ANSIBLE_DIR = ansible
 SALT_DIR = salt
 
+KUBE_CONTEXT=kube-jarvis
+
 SHELL = /bin/bash
 
 NO_COLOR=\033[0m

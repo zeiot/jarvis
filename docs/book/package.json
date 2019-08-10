@@ -6,10 +6,14 @@
   "main": "index.js",
   "dependencies": {
     "cryptiles": "^4.1.2",
-    "gitbook-plugin-ga": "^1.0.1",
+    "gitbook": "^2.6.9",
+    "gitbook-cli": "^2.3.2",
+    "gitbook-plugin-codegroup": "^2.3.3",
+    "gitbook-plugin-include-codeblock": "^3.2.2",
     "gitbook-plugin-panel": "^0.0.1",
     "gitbook-plugin-sequence-diagrams": "^1.1.0",
     "gitbook-plugin-theme-api": "^1.1.2",
+    "package.json": "^2.0.1",
     "phantomjs-prebuilt": "^2.1.16"
   },
   "devDependencies": {},

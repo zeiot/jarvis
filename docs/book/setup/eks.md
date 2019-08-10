@@ -2,7 +2,7 @@
 
 ## Description
 
-We will use [eksctl][https://eksctl.io] tool.
+We will use [eksctl](https://eksctl.io) tool.
 
 You must setup your AWS credentials using :
 

@@ -3,7 +3,6 @@
       "theme-api",
       "panel",
       "sequence-diagrams",
-      "ga",
       "codegroup",
       "include-codeblock"
   ],
@@ -14,9 +13,6 @@
     "sequence-diagrams": {
       "theme": "simple"
 
-    },
-    "ga": {
-        "token": "dew-create-me"
     }
   },
   "gitbook": ">= 3.0.0",

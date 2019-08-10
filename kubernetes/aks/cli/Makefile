@@ -84,6 +84,6 @@ aks-cli-kubernetes-delete: ## delete the Kubernetes cluster
 	@echo -e "$(OK_COLOR)[$(APP)] delete Kubernetes cluster$(NO_COLOR)"
 
 .PHONY: aks-cli-kubernetes-credentials
-ask-cli-kubernetes-credentials:
+aks-cli-kubernetes-credentials:
 	@echo -e "$(OK_COLOR)[$(APP)] Retrieve Kubernetes credentials$(NO_COLOR)"
 	@az aks get-credentials --resource-group $(RESOURCE_GROUP) --name $(CLUSTER_NAME) --admin

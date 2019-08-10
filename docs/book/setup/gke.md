@@ -11,10 +11,18 @@ $ gcloud auth login
 Then create your cluster :
 
 ```bash
-
-
 $ make gke-gcloud-kubernetes-create SETUP=gcloud
+```
 
+THen configure credentials for `kubectl` :
+
+```bash
+$ make gke-gcloud-kubernetes-credentials SETUP=gcloud
+```
+
+Check access to your cluster :
+
+```bash
 $ kubectl config current-context
 gke_jarvis-prod-1_europe-west1-c_jarvis-prod-gcloud
 
