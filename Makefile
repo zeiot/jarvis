@@ -92,7 +92,7 @@ gke-%: guard-SETUP ## GKE setup
 
 .PHONY: help-gke
 help-gke: gke-kube-gcloud gke-kube-terraform ## Help for GKE
-	@echo -e "$(WARN_COLOR)[$(CLOUD)] Usage: make gke-.... SETUP=xxx $(NO_COLOR)"
+	@echo -e "$(NO_COLOR) > Usage: make gke-.... SETUP=xxx $(NO_COLOR)"
 
 
 # ====================================
@@ -109,7 +109,7 @@ eks-%: guard-SETUP ## EKS setup
 
 .PHONY: help-eks
 help-eks: eks-kube-eksctl ## Help for EKS
-	@echo -e "$(WARN_COLOR)[$(CLOUD)] Usage: make eks-.... SETUP=xxx $(NO_COLOR)"
+	@echo -e "$(NO_COLOR) > Usage: make eks-.... SETUP=xxx $(NO_COLOR)"
 
 
 
@@ -127,7 +127,7 @@ aks-%: guard-SETUP ## AKS setup
 
 .PHONY: help-aks
 help-aks: aks-kube-cli ## Help for EKS
-	@echo -e "$(WARN_COLOR)[$(CLOUD)] Usage: make aks-.... SETUP=xxx $(NO_COLOR)"
+	@echo -e "$(NO_COLOR) > Usage: make aks-.... SETUP=xxx $(NO_COLOR)"
 
 
 

@@ -15,6 +15,13 @@
 * [EKS](setup/eks.md)
 * [AKS](setup/aks.md)
 
-## Usage
+## Kubernetes services
 
 * [Overview](kubernetes/overview.md)
+* [Specific Bare Metal](kubernetes/baremetal.md)
+* [Monitoring](kubernetes/monitoring.md)
+* [Logging](kubernetes/logging.md)
+* [Networking](kubernetes/networking.md)
+* [CI/CD](kubernetes/cicd.md)
+* [Multimedia](kubernetes/multimedia.md)
+* [Serverless](kubernetes/serverless.md)
