@@ -56,7 +56,7 @@ $ make kubernetes-apply SERVICE=monitoring/node-exporter ENV=xxx
 
 ## Grafana
 
-![Grafana](grafana.png){:height="36px" width="36px"}
+![Grafana](grafana.png)
 
 Grafana is the UI of monitoring.
 
