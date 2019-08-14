@@ -4,9 +4,9 @@
 
 Several [Container Network Interface - CNI](https://github.com/containernetworking) providers are available :
 
-* [Flannel](https://github.com/coreos/flannel)
-* [Calico](https://www.projectcalico.org/)
-* [WeaveNet](https://www.weave.works/oss/net/)
+* ![Flannel](flannel.png) [Flannel](https://github.com/coreos/flannel)
+* ![Calico](calico.png) [Calico](https://www.projectcalico.org/)
+* ![WeaveNet](weavenet.png) [WeaveNet](https://www.weave.works/oss/net/)
 
 Choose one and install it :
 
