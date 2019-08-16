@@ -1,0 +1,59 @@
+# Copyright (C) 2016, 2019 Nicolas Lamirault <nicolas.lamirault@gmail.com>
+
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: memcached
+  labels:
+    k8s-app: memcached
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: memcached
+  template:
+    metadata:
+      labels:
+        name: memcached
+    spec:
+      serviceAccountName: memcached
+      containers:
+      - name: memcached
+        image: memcached:latest
+        imagePullPolicy: IfNotPresent
+        args:
+        - -m 512   # Maximum memory to use, in megabytes
+        - -I 5m    # Maximum size for one item
+        - -p 11211 # Default port
+        # - -vv    # Uncomment to get logs of each request and response.
+        ports:
+        - name: memcached
+          containerPort: 11211
+        livenessProbe:
+          tcpSocket:
+            port: memcached
+          initialDelaySeconds: 30
+          timeoutSeconds: 5
+          failureThreshold: 6
+        readinessProbe:
+          tcpSocket:
+            port: memcached
+          initialDelaySeconds: 5
+          timeoutSeconds: 3
+          periodSeconds: 5
+        securityContext:
+          runAsUser: 11211
+          runAsGroup: 11211
+          allowPrivilegeEscalation: false
