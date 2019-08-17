@@ -82,6 +82,7 @@ check: print-GOOGLE_APPLICATION_CREDENTIALS ## Check requirements
 # G K E
 # ====================================
 
+
 gke-kube-%:
 	@cd "kubernetes/gke/$*" && make help
 
@@ -98,6 +99,7 @@ help-gke: gke-kube-gcloud gke-kube-terraform ## Help for GKE
 # ====================================
 # E K S
 # ====================================
+
 
 eks-kube-%:
 	@cd "kubernetes/eks/$*" && make help
@@ -117,6 +119,7 @@ help-eks: eks-kube-eksctl ## Help for EKS
 # A K S
 # ====================================
 
+
 aks-kube-%:
 	@cd "kubernetes/aks/$*" && make help
 
@@ -130,15 +133,11 @@ help-aks: aks-kube-cli ## Help for EKS
 	@echo -e "$(NO_COLOR) > Usage: make aks-.... SETUP=xxx $(NO_COLOR)"
 
 
-
-
 # ====================================
 # L O C A L
 # ====================================
 
-.PHONY: help-local
-help-local: local-kube-minikube ## Help for local
-	@echo -e "$(WARN_COLOR)[$(CLOUD)] Usage: make local-.... SETUP=xxx $(NO_COLOR)"
+
 
 local-kube-%:
 	@cd "kubernetes/local/$*" && make help
@@ -146,6 +145,10 @@ local-kube-%:
 local-%: ## Local setup
 	@echo -e "$(OK_COLOR)[$(APP)] Local setup using $(SETUP)$(NO_COLOR)"
 	@cd "kubernetes/local/$(SETUP)" && make $@
+
+.PHONY: help-local
+help-local: local-kube-minikube local-kube-k3d ## Help for local
+	@echo -e "$(NO_COLOR)[$(CLOUD)] Usage: make local-.... SETUP=xxx $(NO_COLOR)"
 
 
 # ====================================

@@ -36,7 +36,7 @@ WARN=[⚠️]
 
 .PHONY: help
 help:
-	@echo -e "$(OK_COLOR)==== $(APP) / BareMetal / local k3d ====$(NO_COLOR)"
+	@echo -e "$(OK_COLOR)==== $(APP) / Local / k3d ====$(NO_COLOR)"
 	@grep -E '^[a-zA-Z0-9_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "$(MAKE_COLOR) : %s\n", $$1, $$2}'
 
 
@@ -81,9 +81,9 @@ local-k3d-create: ## Create the Kubernetes cluster
 .PHONY: local-k3d-destroy
 local-k3d-destroy: ## Create the Kubernetes cluster
 	@echo -e "$(OK_COLOR)[$(APP)] Destroy the cluster$(NO_COLOR)"
-	@k3d delete
+	@k3d delete --name jarvis
 
 .SILENT:
 .PHONY: local-k3d-config
-local-k3d-config:
-	@k3d get-kubeconfig --name jarvis
+local-k3d-config: ## Generate kube-config file
+	@k3d get-kubeconfig --name="jarvis"

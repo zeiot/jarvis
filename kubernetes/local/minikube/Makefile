@@ -23,7 +23,7 @@ OK_COLOR=\033[32;01m
 ERROR_COLOR=\033[31;01m
 WARN_COLOR=\033[33;01m
 
-MAKE_COLOR=\033[33;01m%-20s\033[0m
+MAKE_COLOR=\033[33;01m%-30s\033[0m
 
 OK=[✅]
 KO=[❌]
@@ -33,7 +33,7 @@ WARN=[⚠️]
 
 .PHONY: help
 help:
-	@echo -e "$(OK_COLOR)==== $(APP) / Minikube ====$(NO_COLOR)"
+	@echo -e "$(OK_COLOR)==== $(APP) / Local / Minikube ====$(NO_COLOR)"
 	@grep -E '^[a-zA-Z0-9_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "$(MAKE_COLOR) : %s\n", $$1, $$2}'
 
 guard-%:

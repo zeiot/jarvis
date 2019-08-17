@@ -10,11 +10,13 @@
 
 ## Setup
 
-- [Kubeadm ARM](setup/arm_kubeadm.md)
-- [K3s](setup/k3s.md)
+- [ARM Kubeadm](setup/arm_kubeadm.md)
+- [ARM K3s](setup/k3s.md)
 - [GKE](setup/gke.md)
 - [EKS](setup/eks.md)
 - [AKS](setup/aks.md)
+- [Local / Minikube](setup/minikube.md)
+- [Local / k3d](setup/k3d.md)
 
 ## Kubernetes services
 
