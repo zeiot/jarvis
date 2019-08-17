@@ -10,7 +10,8 @@
 
 ## Setup
 
-- [Bare Metal ARM](setup/arm.md)
+- [Kubeadm ARM](setup/arm_kubeadm.md)
+- [K3s](setup/k3s.md)
 - [GKE](setup/gke.md)
 - [EKS](setup/eks.md)
 - [AKS](setup/aks.md)
