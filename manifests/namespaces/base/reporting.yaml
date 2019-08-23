@@ -1,0 +1,11 @@
+# Copyright (C) 2019 Skale-5 <ops@skale-5.com>
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: reporting
+  labels:
+    app.kubernetes.io/name: reporting
+    app.kubernetes.io/instance: reporting
+    app.kubernetes.io/version: v1
+    app.kubernetes.io/component: reporting
