@@ -1,5 +1,5 @@
-# Copyright (C) 2016, 2019 Nicolas Lamirault <nicolas.lamirault@gmail.com>
-
+# Copyright 2016-2018 Nicolas Lamirault <nicolas.lamirault@gmail.com>
+#
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -12,12 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: grafana
   labels:
     k8s-app: grafana
+  name: grafana
 spec:
   replicas: 1
   selector:
@@ -28,64 +28,62 @@ spec:
       labels:
         k8s-app: grafana
     spec:
-      serviceAccountName: grafana
-      securityContext:
-        fsGroup: 472
-        runAsUser: 472
+      automountServiceAccountToken: false
       containers:
-      - image: grafana/grafana:latest
-        imagePullPolicy: Always
+      - image: grafana/grafana:5.3.4
         name: grafana
-        ports:
-        - name: http
-          containerPort: 3000
-          protocol: TCP
         env:
-        - name: GF_SECURITY_ADMIN_USER
-          valueFrom:
-            secretKeyRef:
-              name: grafana
-              key: admin-user
-        - name: GF_SECURITY_ADMIN_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: grafana
-              key: admin-password
+        - name: GF_AUTH_ANONYMOUS_ENABLED
+          value: "true"
+        - name: GF_AUTH_ANONYMOUS_ORG_ROLE
+          value: "Admin"
+        ports:
+        - containerPort: 3000
+          name: http
         resources:
           limits:
-            cpu: 70m
-            memory: 150Mi
+            cpu: 200m
+            memory: 200Mi
           requests:
-            cpu: 50m
+            cpu: 100m
             memory: 100Mi
-        livenessProbe:
-          httpGet:
-            path: /api/health
-            port: http
-        readinessProbe:
-          httpGet:
-            path: /api/health
-            port: http
-          initialDelaySeconds: 60
-          timeoutSeconds: 30
-          failureThreshold: 10
-          periodSeconds: 10
         volumeMounts:
-          - name: grafana-config
-            mountPath: "/etc/grafana"
-          - name: grafana-data
-            mountPath: "/var/lib/grafana"
-          # - name: datasources
-          #   mountPath: "/etc/grafana/provisioning/datasources/"
-          # - name: dashboardproviders
-          #   mountPath: "/etc/grafana/provisioning/dashboards/"
+        - mountPath: /var/lib/grafana
+          name: grafana-storage
+          readOnly: false
+        - mountPath: /etc/grafana/provisioning/datasources
+          name: grafana-datasources
+          readOnly: false
+        - mountPath: /etc/grafana/provisioning/dashboards
+          name: grafana-dashboards
+          readOnly: false
+        - mountPath: /grafana-dashboard-definitions/0/k8s
+          name: grafana-dashboard-definitions-k8s
+          readOnly: false
+        - mountPath: /grafana-dashboard-definitions/0/gluster
+          name: grafana-dashboard-definitions-gluster
+          readOnly: false
+        - mountPath: /grafana-dashboard-definitions/0/nginx
+          name: grafana-dashboard-definitions-nginx
+          readOnly: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65534
       volumes:
-        - name: grafana-data
-          persistentVolumeClaim:
-            claimName: grafana-data
-        - name: grafana-config
-          configMap:
-            name: grafana
-            items:
-              - key: grafana.ini
-                path: grafana.ini
+      - emptyDir: {}
+        name: grafana-storage
+      - configMap:
+          name: grafana-datasources
+        name: grafana-datasources
+      - configMap:
+          name: grafana-dashboards
+        name: grafana-dashboards
+      - configMap:
+          name: grafana-dashboard-definitions-k8s
+        name: grafana-dashboard-definitions-k8s
+      - configMap:
+          name: grafana-dashboard-definitions-gluster
+        name: grafana-dashboard-definitions-gluster
+      - configMap:
+          name: grafana-dashboard-definitions-nginx
+        name: grafana-dashboard-definitions-nginx
