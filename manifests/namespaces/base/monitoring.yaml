@@ -19,6 +19,6 @@ metadata:
   labels:
     app.kubernetes.io/name: monitoring
     app.kubernetes.io/instance: monitoring
-    app.kubernetes.io/version: "v1"
+    app.kubernetes.io/version: v1
     app.kubernetes.io/component: monitoring
 

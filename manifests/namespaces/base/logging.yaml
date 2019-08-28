@@ -19,5 +19,5 @@ metadata:
   labels:
     app.kubernetes.io/name: logging
     app.kubernetes.io/instance: logging
-    app.kubernetes.io/version: "v1"
+    app.kubernetes.io/version: v1
     app.kubernetes.io/component: logging

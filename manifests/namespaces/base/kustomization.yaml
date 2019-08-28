@@ -17,12 +17,13 @@ commonLabels:
   app.kubernetes.io/part-of: jarvis
   app.kubernetes.io/managed-by: kustomize
 resources:
-- kubernetes-dashboard.yaml
 - ingress.yaml
+- kubernetes-dashboard.yaml
 - logging.yaml
 - metrics.yaml
 - monitoring.yaml
 - multimedia.yaml
+- reporting.yaml
 - security.yaml
 - storage.yaml
 - tools.yaml

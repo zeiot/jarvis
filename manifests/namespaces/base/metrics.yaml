@@ -19,5 +19,5 @@ metadata:
   labels:
     app.kubernetes.io/name: metrics
     app.kubernetes.io/instance: metrics
-    app.kubernetes.io/version: "v1"
+    app.kubernetes.io/version: v1
     app.kubernetes.io/component: metrics

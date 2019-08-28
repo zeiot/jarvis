@@ -19,5 +19,5 @@ metadata:
   labels:
     app.kubernetes.io/name: multimedia
     app.kubernetes.io/instance: multimedia
-    app.kubernetes.io/version: "v1"
+    app.kubernetes.io/version: v1
     app.kubernetes.io/component: multimedia

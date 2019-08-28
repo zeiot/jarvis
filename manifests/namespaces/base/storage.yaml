@@ -19,6 +19,6 @@ metadata:
   labels:
     app.kubernetes.io/name: storage
     app.kubernetes.io/instance: storage
-    app.kubernetes.io/version: "v1"
+    app.kubernetes.io/version: v1
     app.kubernetes.io/component: storage
 

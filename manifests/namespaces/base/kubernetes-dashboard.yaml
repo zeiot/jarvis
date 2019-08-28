@@ -19,6 +19,5 @@ metadata:
   labels:
     app.kubernetes.io/name: kubernetes-dashboard
     app.kubernetes.io/instance: kubernetes-dashboard
-    app.kubernetes.io/version: "v1"
+    app.kubernetes.io/version: v1
     app.kubernetes.io/component: kubernetes-dashboard
-

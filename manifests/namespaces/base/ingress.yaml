@@ -19,6 +19,5 @@ metadata:
   labels:
     app.kubernetes.io/name: ingress-controllers
     app.kubernetes.io/instance: ingress-controllers
-    app.kubernetes.io/version: "v1"
+    app.kubernetes.io/version: v1
     app.kubernetes.io/component: ingress-controllers
-

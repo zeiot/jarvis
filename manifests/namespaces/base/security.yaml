@@ -19,6 +19,6 @@ metadata:
   labels:
     app.kubernetes.io/name: security
     app.kubernetes.io/instance: security
-    app.kubernetes.io/version: "v1"
+    app.kubernetes.io/version: v1
     app.kubernetes.io/component: security
 
