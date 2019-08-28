@@ -1,4 +1,4 @@
-# Copyright 2016-2018 Nicolas Lamirault <nicolas.lamirault@gmail.com>
+# Copyright 2016-2019 Nicolas Lamirault <nicolas.lamirault@gmail.com>
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -25,7 +25,18 @@ namespace: monitoring
 #   app.kubernetes.io/part-of: jarvis
 #   app.kubernetes.io/managed-by: kustomize
 #   env: staging
-# images:
-# - name: grafana/grafana:latest
-#   newName: grafana/grafana
-#   newTag: 6.2.5
+images:
+- name: grafana/grafana:latest
+  newName: grafana/grafana
+  newTag: 6.3.2
+# generatorOptions:
+#   disableNameSuffixHash: true
+#   labels:
+#     k8s-app: grafana
+#     app.kubernetes.io/name: grafana
+#     app.kubernetes.io/instance: grafana-minotor
+#     app.kubernetes.io/component: dashboard
+#     app.kubernetes.io/version: v6.2.5
+#     app.kubernetes.io/part-of: jarvis
+#     app.kubernetes.io/managed-by: kustomize
+#     app.kubernetes.io/manufacturer: jarvis

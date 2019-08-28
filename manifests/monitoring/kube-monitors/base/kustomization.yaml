@@ -1,4 +1,4 @@
-# Copyright 2016-2018 Nicolas Lamirault <nicolas.lamirault@gmail.com>
+# Copyright 2016-2019 Nicolas Lamirault <nicolas.lamirault@gmail.com>
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,11 +16,11 @@ kind: Kustomization
 apiVersion: kustomize.config.k8s.io/v1beta1
 namespace: monitoring
 # commonLabels:
-#   app.kubernetes.io/manufacturer: jarvis team
+#   app.kubernetes.io/manufacturer: jarvis
 resources:
 - apiserver-service-monitor.yaml
 - etcd-metrics-service-monitor.yaml
 - controller-manager-service-monitor.yaml
-- coredns-service-monitor.yaml
+- kube-dns-service-monitor.yaml
 - kubelet-service-monitor.yaml
 - scheduler-service-monitor.yaml

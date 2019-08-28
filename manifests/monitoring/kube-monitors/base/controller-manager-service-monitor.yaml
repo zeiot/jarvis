@@ -1,4 +1,4 @@
-# Copyright 2016-2018 Nicolas Lamirault <nicolas.lamirault@gmail.com>
+# Copyright 2016-2019 Nicolas Lamirault <nicolas.lamirault@gmail.com>
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,9 +15,9 @@
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
+  name: kube-controller-manager
   labels:
     k8s-app: kube-controller-manager
-  name: kube-controller-manager
 spec:
   endpoints:
   - interval: 30s
@@ -33,4 +33,4 @@ spec:
     - kube-system
   selector:
     matchLabels:
-      k8s-app: kube-controller-manager
+      k8s-app: kube-controller-manager-prometheus-discovery

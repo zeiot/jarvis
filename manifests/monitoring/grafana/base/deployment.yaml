@@ -1,4 +1,4 @@
-# Copyright 2016-2018 Nicolas Lamirault <nicolas.lamirault@gmail.com>
+# Copyright 2016-2019 Nicolas Lamirault <nicolas.lamirault@gmail.com>
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ metadata:
   labels:
     k8s-app: grafana
   name: grafana
+  namespace: monitoring
 spec:
   replicas: 1
   selector:
@@ -28,18 +29,16 @@ spec:
       labels:
         k8s-app: grafana
     spec:
-      automountServiceAccountToken: false
       containers:
-      - image: grafana/grafana:5.3.4
+      - image: grafana/grafana:latest
         name: grafana
-        env:
-        - name: GF_AUTH_ANONYMOUS_ENABLED
-          value: "true"
-        - name: GF_AUTH_ANONYMOUS_ORG_ROLE
-          value: "Admin"
         ports:
         - containerPort: 3000
           name: http
+        readinessProbe:
+          httpGet:
+            path: /api/health
+            port: http
         resources:
           limits:
             cpu: 200m
@@ -51,39 +50,156 @@ spec:
         - mountPath: /var/lib/grafana
           name: grafana-storage
           readOnly: false
+        - mountPath: /etc/grafana
+          name: grafana-config
+          readOnly: false
+        - mountPath: /etc/grafana/provisioning/notifiers
+          name: grafana-notifier
+          readOnly: false
         - mountPath: /etc/grafana/provisioning/datasources
           name: grafana-datasources
           readOnly: false
         - mountPath: /etc/grafana/provisioning/dashboards
           name: grafana-dashboards
           readOnly: false
-        - mountPath: /grafana-dashboard-definitions/0/k8s
-          name: grafana-dashboard-definitions-k8s
+        - mountPath: /grafana-dashboard-definitions/0/apiserver
+          name: grafana-dashboard-apiserver
           readOnly: false
-        - mountPath: /grafana-dashboard-definitions/0/gluster
-          name: grafana-dashboard-definitions-gluster
+        - mountPath: /grafana-dashboard-definitions/0/controller-manager
+          name: grafana-dashboard-controller-manager
           readOnly: false
-        - mountPath: /grafana-dashboard-definitions/0/nginx
-          name: grafana-dashboard-definitions-nginx
+        - mountPath: /grafana-dashboard-definitions/0/coredns-dashboard
+          name: grafana-dashboard-coredns-dashboard
           readOnly: false
+        - mountPath: /grafana-dashboard-definitions/0/k8s-resources-cluster
+          name: grafana-dashboard-k8s-resources-cluster
+          readOnly: false
+        - mountPath: /grafana-dashboard-definitions/0/k8s-resources-namespace
+          name: grafana-dashboard-k8s-resources-namespace
+          readOnly: false
+        - mountPath: /grafana-dashboard-definitions/0/k8s-resources-pod
+          name: grafana-dashboard-k8s-resources-pod
+          readOnly: false
+        - mountPath: /grafana-dashboard-definitions/0/k8s-resources-workload
+          name: grafana-dashboard-k8s-resources-workload
+          readOnly: false
+        - mountPath: /grafana-dashboard-definitions/0/k8s-resources-workloads-namespace
+          name: grafana-dashboard-k8s-resources-workloads-namespace
+          readOnly: false
+        - mountPath: /grafana-dashboard-definitions/0/kubelet
+          name: grafana-dashboard-kubelet
+          readOnly: false
+        - mountPath: /grafana-dashboard-definitions/0/kubernetes-cluster-dashboard
+          name: grafana-dashboard-kubernetes-cluster-dashboard
+          readOnly: false
+        - mountPath: /grafana-dashboard-definitions/0/persistentvolumesusage
+          name: grafana-dashboard-persistentvolumesusage
+          readOnly: false
+        - mountPath: /grafana-dashboard-definitions/0/pods
+          name: grafana-dashboard-pods
+          readOnly: false
+        - mountPath: /grafana-dashboard-definitions/0/nodes
+          name: grafana-dashboard-nodes
+          readOnly: false
+        - mountPath: /grafana-dashboard-definitions/0/prometheus-dashboard
+          name: grafana-dashboard-prometheus-dashboard
+          readOnly: false
+        - mountPath: /grafana-dashboard-definitions/0/prometheus-remote-write
+          name: grafana-dashboard-prometheus-remote-write
+          readOnly: false
+        - mountPath: /grafana-dashboard-definitions/0/prometheus
+          name: grafana-dashboard-prometheus
+          readOnly: false
+        - mountPath: /grafana-dashboard-definitions/0/proxy
+          name: grafana-dashboard-proxy
+          readOnly: false
+        - mountPath: /grafana-dashboard-definitions/0/scheduler
+          name: grafana-dashboard-scheduler
+          readOnly: false
+        - mountPath: /grafana-dashboard-definitions/0/statefulset
+          name: grafana-dashboard-statefulset
+          readOnly: false
+        - mountPath: /grafana-dashboard-definitions/0/rsrc-use
+          name: grafana-dashboard-cluster-rsrc-use
+          readOnly: false
+      # nodeSelector:
+      #   beta.kubernetes.io/os: linux
       securityContext:
         runAsNonRoot: true
         runAsUser: 65534
+      serviceAccountName: grafana
       volumes:
       - emptyDir: {}
         name: grafana-storage
-      - configMap:
-          name: grafana-datasources
-        name: grafana-datasources
+      - name: grafana-datasources
+        secret:
+          secretName: grafana-datasources
       - configMap:
           name: grafana-dashboards
         name: grafana-dashboards
+      - name: grafana-config
+        secret:
+          secretName: grafana-config
+      - name: grafana-notifier
+        secret:
+          secretName: grafana-notifier
       - configMap:
-          name: grafana-dashboard-definitions-k8s
-        name: grafana-dashboard-definitions-k8s
+          name: grafana-dashboard-apiserver
+        name: grafana-dashboard-apiserver
       - configMap:
-          name: grafana-dashboard-definitions-gluster
-        name: grafana-dashboard-definitions-gluster
+          name: grafana-dashboard-controller-manager
+        name: grafana-dashboard-controller-manager
       - configMap:
-          name: grafana-dashboard-definitions-nginx
-        name: grafana-dashboard-definitions-nginx
+          name: grafana-dashboard-coredns-dashboard
+        name: grafana-dashboard-coredns-dashboard
+      - configMap:
+          name: grafana-dashboard-k8s-resources-cluster
+        name: grafana-dashboard-k8s-resources-cluster
+      - configMap:
+          name: grafana-dashboard-k8s-resources-namespace
+        name: grafana-dashboard-k8s-resources-namespace
+      - configMap:
+          name: grafana-dashboard-k8s-resources-pod
+        name: grafana-dashboard-k8s-resources-pod
+      - configMap:
+          name: grafana-dashboard-k8s-resources-workload
+        name: grafana-dashboard-k8s-resources-workload
+      - configMap:
+          name: grafana-dashboard-k8s-resources-workloads-namespace
+        name: grafana-dashboard-k8s-resources-workloads-namespace
+      - configMap:
+          name: grafana-dashboard-kubelet
+        name: grafana-dashboard-kubelet
+      - configMap:
+          name: grafana-dashboard-kubernetes-cluster-dashboard
+        name: grafana-dashboard-kubernetes-cluster-dashboard
+      - configMap:
+          name: grafana-dashboard-persistentvolumesusage
+        name: grafana-dashboard-persistentvolumesusage
+      - configMap:
+          name: grafana-dashboard-pods
+        name: grafana-dashboard-pods
+      - configMap:
+          name: grafana-dashboard-nodes
+        name: grafana-dashboard-nodes
+      - configMap:
+          name: grafana-dashboard-prometheus-dashboard
+        name: grafana-dashboard-prometheus-dashboard
+      - configMap:
+          name: grafana-dashboard-prometheus-remote-write
+        name: grafana-dashboard-prometheus-remote-write
+      - configMap:
+          name: grafana-dashboard-prometheus
+        name: grafana-dashboard-prometheus
+      - configMap:
+          name: grafana-dashboard-proxy
+        name: grafana-dashboard-proxy
+      - configMap:
+          name: grafana-dashboard-scheduler
+        name: grafana-dashboard-scheduler
+      - configMap:
+          name: grafana-dashboard-statefulset
+        name: grafana-dashboard-statefulset
+      - configMap:
+          name: grafana-dashboard-cluster-rsrc-use
+        name: grafana-dashboard-cluster-rsrc-use

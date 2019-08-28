@@ -1,4 +1,4 @@
-# Copyright 2016-2018 Nicolas Lamirault <nicolas.lamirault@gmail.com>
+# Copyright 2016-2019 Nicolas Lamirault <nicolas.lamirault@gmail.com>
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@ kind: Kustomization
 apiVersion: kustomize.config.k8s.io/v1beta1
 bases:
 - ../../base
-- ../../static
+# - ../../static
 namespace: monitoring
 # commonLabels:
 #   app.kubernetes.io/name: prometheus-operated

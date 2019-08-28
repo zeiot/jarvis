@@ -1,4 +1,4 @@
-# Copyright 2016-2018 Nicolas Lamirault <nicolas.lamirault@gmail.com>
+# Copyright 2016-2019 Nicolas Lamirault <nicolas.lamirault@gmail.com>
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@ kind: Kustomization
 apiVersion: kustomize.config.k8s.io/v1beta1
 namespace: monitoring
 # commonLabels:
-#   app.kubernetes.io/manufacturer: jarvis team
+#   app.kubernetes.io/manufacturer: jarvis
 resources:
 - service-account.yaml
 - deployment.yaml
@@ -26,29 +26,80 @@ resources:
 configMapGenerator:
 - name: grafana-dashboards
   files:
-  - dashboards.yaml
-- name: grafana-dashboard-definitions-k8s
+  - config/dashboards.yaml
+- name: grafana-dashboard-apiserver
   files:
-  - dashboards/etcd.json
-  - dashboards/coredns.json
-  - dashboards/kubernetes-cluster.json
-  - dashboards/kubernetes-deployments.json
-  - dashboards/kubernetes-nodes.json
-  - dashboards/kubernetes-pods.json
-  - dashboards/kubernetes-statefulsets.json
-- name: grafana-dashboard-definitions-gluster
+  - dashboards/k8s-apiserver.json
+- name: grafana-dashboard-controller-manager
   files:
-  - dashboards/gluster-nodes.json
-  - dashboards/gluster-utilisation.json
-- name: grafana-dashboard-definitions-nginx
+  - dashboards/k8s-controller-manager.json
+- name: grafana-dashboard-coredns-dashboard
   files:
-  - dashboards/nginx-ingress.json
+  - dashboards/k8s-coredns.json
+- name: grafana-dashboard-k8s-resources-cluster
+  files:
+  - dashboards/k8s-resources-cluster.json
+- name: grafana-dashboard-k8s-resources-namespace
+  files:
+  - dashboards/k8s-resources-namespace.json
+- name: grafana-dashboard-k8s-resources-pod
+  files:
+  - dashboards/k8s-resources-pod.json
+- name: grafana-dashboard-k8s-resources-workload
+  files:
+  - dashboards/k8s-resources-workload.json
+- name: grafana-dashboard-k8s-resources-workloads-namespace
+  files:
+  - dashboards/k8s-resources-workloads-namespace.json
+- name: grafana-dashboard-kubelet
+  files:
+  - dashboards/kubelet.json
+- name: grafana-dashboard-kubernetes-cluster-dashboard
+  files:
+  - dashboards/k8s-cluster-dashboard.json
+- name: grafana-dashboard-persistentvolumesusage
+  files:
+  - dashboards/persistentvolumesusage.json
+- name: grafana-dashboard-pods
+  files:
+  - dashboards/pods.json
+- name: grafana-dashboard-nodes
+  files:
+  - dashboards/nodes.json
+- name: grafana-dashboard-prometheus-dashboard
+  files:
+  - dashboards/prometheus-dashboard.json
+- name: grafana-dashboard-prometheus-remote-write
+  files:
+  - dashboards/prometheus-remote-write.json
+- name: grafana-dashboard-prometheus
+  files:
+  - dashboards/prometheus.json
+- name: grafana-dashboard-proxy
+  files:
+  - dashboards/k8s-proxy.json
+- name: grafana-dashboard-scheduler
+  files:
+  - dashboards/k8s-scheduler.json
+- name: grafana-dashboard-statefulset
+  files:
+  - dashboards/statefulset.json
+- name: grafana-dashboard-cluster-rsrc-use
+  files:
+  - dashboards/k8s-cluster-rsrc-use.json
+
+secretGenerator:
 - name: grafana-datasources
   files:
-  - prometheus.yaml
+  - config/datasources.yaml
+- name: grafana-config
+  files:
+  - config/grafana.ini
+- name: grafana-notifier
+  files:
+  - config/notifications.yaml
 
-
-# secretGenerator:
-#   - name: grafana-datasources
-#     commands:
-#       prometheus.yaml: "cat prometheus.yaml"
+generatorOptions:
+  disableNameSuffixHash: true
+  labels:
+    k8s-app: grafana

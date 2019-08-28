@@ -1,4 +1,4 @@
-# Copyright 2016-2018 Nicolas Lamirault <nicolas.lamirault@gmail.com>
+# Copyright 2016-2019 Nicolas Lamirault <nicolas.lamirault@gmail.com>
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,14 +15,15 @@
 apiVersion: monitoring.coreos.com/v1
 kind: Alertmanager
 metadata:
-  name: main
   labels:
     alertmanager: main
+  name: main
 spec:
   serviceAccountName: alertmanager-main
   baseImage: quay.io/prometheus/alertmanager
   version: v0.18.0
   replicas: 1
+  logLevel: debug
   # externalUrl: http://127.0.0.1:8001/api/v1/proxy/namespaces/monitoring/services/alertmanager-main:web/
   resources:
     limits:

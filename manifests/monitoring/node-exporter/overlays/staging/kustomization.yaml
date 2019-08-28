@@ -1,4 +1,4 @@
-# Copyright 2016-2018 Nicolas Lamirault <nicolas.lamirault@gmail.com>
+# Copyright 2016-2019 Nicolas Lamirault <nicolas.lamirault@gmail.com>
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,11 +17,15 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 bases:
 - ../../base
 namespace: monitoring
-# commonLabels:
-#   app.kubernetes.io/name: node-exporter
-#   app.kubernetes.io/instance: node-exporter
-#   app.kubernetes.io/version: v0.18.1
-#   app.kubernetes.io/component: monitoring
-#   app.kubernetes.io/part-of: jarvis
-#   app.kubernetes.io/managed-by: kustomize
-#   env: staging
+commonLabels:
+  app.kubernetes.io/name: node-exporter
+  app.kubernetes.io/instance: node-exporter
+  app.kubernetes.io/version: v0.18.1
+  app.kubernetes.io/component: monitoring
+  app.kubernetes.io/part-of: jarvis
+  app.kubernetes.io/managed-by: kustomize
+  env: staging
+images:
+- name: quay.io/prometheus/node-exporter:latest
+  newName: quay.io/prometheus/node-exporter
+  newTag: v0.18.1

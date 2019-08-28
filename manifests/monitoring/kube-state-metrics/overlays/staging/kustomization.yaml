@@ -1,4 +1,4 @@
-# Copyright 2016-2018 Nicolas Lamirault <nicolas.lamirault@gmail.com>
+# Copyright 2016-2019 Nicolas Lamirault <nicolas.lamirault@gmail.com>
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -20,8 +20,12 @@ namespace: monitoring
 # commonLabels:
 #   app.kubernetes.io/name: kube-state-metrics
 #   app.kubernetes.io/instance: kube-state-metrics
-#   app.kubernetes.io/version: v1.6.0
+#   app.kubernetes.io/version: v1.7.2
 #   app.kubernetes.io/component: monitoring
 #   app.kubernetes.io/part-of: jarvis
 #   app.kubernetes.io/managed-by: kustomize
 #   env: staging
+images:
+- name: quay.io/coreos/kube-state-metrics:latest
+  newName: quay.io/coreos/kube-state-metrics
+  newTag: v1.7.2
