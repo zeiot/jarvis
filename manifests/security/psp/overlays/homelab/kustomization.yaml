@@ -11,14 +11,10 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+---
 kind: Kustomization
 apiVersion: kustomize.config.k8s.io/v1beta1
+bases:
+- ../../base
 commonLabels:
-  app.kubernetes.io/part-of: jarvis
-  app.kubernetes.io/managed-by: kustomize
-resources:
-# - permit-root.yaml
-# - privileged.yaml
-- restrict-ports.yaml
-- restrict-root.yaml
-# - restrict-volume-nfs.yaml
+  env: homelab
