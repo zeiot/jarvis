@@ -17,7 +17,7 @@ commonLabels:
   app.kubernetes.io/name: vault
   app.kubernetes.io/instance: vault
   app.kubernetes.io/version: "v1"
-  app.kubernetes.io/component: secrets
+  app.kubernetes.io/component: security
   app.kubernetes.io/part-of: jarvis
   app.kubernetes.io/managed-by: kustomize
 namespace: security
