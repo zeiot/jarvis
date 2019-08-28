@@ -11,14 +11,18 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+---
 kind: Kustomization
 apiVersion: kustomize.config.k8s.io/v1beta1
-namespace: monitoring
 bases:
 - ../../base
 commonLabels:
+  app.kubernetes.io/version: v2.0.0-beta2
   env: prod
 images:
-- name: pihole/pihole:latest
-  newName: pihole/pihole
-  newTag: 4.2.2
+- name: kubernetesui/dashboard:latest
+  newName: kubernetesui/dashboard
+  newTag: v2.0.0-beta2
+- name: kubernetesui/metrics-scraper:latest
+  newName: kubernetesui/metrics-scraper
+  newTag: v1.0.1

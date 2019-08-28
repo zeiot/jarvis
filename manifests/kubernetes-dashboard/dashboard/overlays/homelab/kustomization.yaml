@@ -11,18 +11,18 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+---
 kind: Kustomization
 apiVersion: kustomize.config.k8s.io/v1beta1
 bases:
 - ../../base
 commonLabels:
+  app.kubernetes.io/version: v2.0.0-beta3
   env: homelab
-resources:
-- ingress.yaml
 images:
 - name: kubernetesui/dashboard:latest
   newName: kubernetesui/dashboard
-  newTag: v2.0.0-beta1
+  newTag: v2.0.0-beta3
 - name: kubernetesui/metrics-scraper:latest
   newName: kubernetesui/metrics-scraper
-  newTag: v1.0.0
+  newTag: v1.0.1
