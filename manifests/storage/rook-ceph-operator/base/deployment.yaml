@@ -32,7 +32,7 @@ spec:
       serviceAccountName: rook-ceph-system
       containers:
       - name: rook-ceph-operator
-        image: "rook/ceph:latest"
+        image: rook/ceph:latest
         imagePullPolicy: IfNotPresent
         args: ["ceph", "operator"]
         env:
@@ -80,10 +80,9 @@ spec:
           value: INFO
         - name: ROOK_ENABLE_SELINUX_RELABELING
           value: true
-{{- if .Values.disableDeviceHotplug }}
+        # Disable automatic orchestration when new devices are discovered
         - name: ROOK_DISABLE_DEVICE_HOTPLUG
-          value: {{ .Values.disableDeviceHotplug }}
-{{- end }}
+          value: "false"
         - name: NODE_NAME
           valueFrom:
             fieldRef:
