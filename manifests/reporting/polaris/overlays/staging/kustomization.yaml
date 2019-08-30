@@ -21,7 +21,7 @@ commonLabels:
   app.kubernetes.io/instance: polaris
   app.kubernetes.io/component: reporting
   app.kubernetes.io/version: v0.16
-  app.kubernetes.io/part-of: moonworkers-exploitation
+  app.kubernetes.io/part-of: jarvis
   app.kubernetes.io/managed-by: kustomize
   env: staging
 images:
