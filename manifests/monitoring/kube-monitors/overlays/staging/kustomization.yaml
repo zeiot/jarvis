@@ -19,7 +19,7 @@ bases:
 namespace: monitoring
 # commonLabels:
 #   app.kubernetes.io/name: kube-monitors
-#   app.kubernetes.io/instance: kube-monitor-minotor
+#   app.kubernetes.io/instance: kube-monitor-jarvis
 #   app.kubernetes.io/version: v0.31.1
 #   app.kubernetes.io/component: monitoring
 #   app.kubernetes.io/part-of: jarvis
