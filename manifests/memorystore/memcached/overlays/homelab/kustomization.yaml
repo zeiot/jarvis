@@ -18,6 +18,6 @@ bases:
 commonLabels:
   env: homelab
 images:
-- name: docker.io/fluxcd/flux:latest
-  newName: zeiot/flux
-  newTag: v1.13.3.arm64
+- name: memcached:latest
+  newName: memcached
+  newTag: "1.5.16"
