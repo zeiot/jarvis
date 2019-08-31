@@ -38,4 +38,4 @@ generatorOptions:
     app.kubernetes.io/component: logging
     app.kubernetes.io/part-of: jarvis
     app.kubernetes.io/managed-by: kustomize
-    env: staging
+    env: homelab

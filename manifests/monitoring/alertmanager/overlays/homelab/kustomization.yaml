@@ -16,13 +16,27 @@ kind: Kustomization
 apiVersion: kustomize.config.k8s.io/v1beta1
 bases:
 - ../../base
-# - ../../static
 namespace: monitoring
 # commonLabels:
-#   app.kubernetes.io/name: prometheus-operated
-#   app.kubernetes.io/instance: prometheus-operated
-#   app.kubernetes.io/version: v2.12.0
+#   app.kubernetes.io/name: alertmanager-operated
+#   app.kubernetes.io/instance: alertmanager-operated
+#   app.kubernetes.io/version: v0.16.0
 #   app.kubernetes.io/component: monitoring
 #   app.kubernetes.io/part-of: jarvis
 #   app.kubernetes.io/managed-by: kustomize
-#   env: staging
+#   env: homelab
+secretGenerator:
+- name: alertmanager-main
+  files:
+    - alertmanager.yaml
+  type: Opaque
+generatorOptions:
+  disableNameSuffixHash: true
+  # labels:
+  #   k8s-app: alertmanager-monitor
+  #   app.kubernetes.io/name: alertmanager-operated
+  #   app.kubernetes.io/instance: alertmanager-operated
+  #   app.kubernetes.io/component: monitoring
+  #   app.kubernetes.io/part-of: jarvis
+  #   app.kubernetes.io/managed-by: kustomize
+  #   app.kubernetes.io/manufacturer: jarvis

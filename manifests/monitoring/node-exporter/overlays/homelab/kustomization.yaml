@@ -16,16 +16,16 @@ kind: Kustomization
 apiVersion: kustomize.config.k8s.io/v1beta1
 bases:
 - ../../base
-namespace: logging
+namespace: monitoring
 commonLabels:
-  app.kubernetes.io/name: promtail
-  app.kubernetes.io/instance: promtail-minotor
-  app.kubernetes.io/version: v0.3.0
-  app.kubernetes.io/component: logging
+  app.kubernetes.io/name: node-exporter
+  app.kubernetes.io/instance: node-exporter
+  app.kubernetes.io/version: v0.18.1
+  app.kubernetes.io/component: monitoring
   app.kubernetes.io/part-of: jarvis
   app.kubernetes.io/managed-by: kustomize
-  env: staging
+  env: homelab
 images:
-- name: grafana/promtail:latest
-  newName: grafana/promtail
-  newTag: v0.3.0
+- name: quay.io/prometheus/node-exporter:latest
+  newName: quay.io/prometheus/node-exporter
+  newTag: v0.18.1

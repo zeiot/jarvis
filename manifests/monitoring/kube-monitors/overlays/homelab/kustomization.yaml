@@ -1,4 +1,4 @@
-# Copyright (C) 2016, 2019 Nicolas Lamirault <nicolas.lamirault@gmail.com>
+# Copyright (C) 2016-2019 Nicolas Lamirault <nicolas.lamirault@gmail.com>
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,16 +16,12 @@ kind: Kustomization
 apiVersion: kustomize.config.k8s.io/v1beta1
 bases:
 - ../../base
-commonLabels:
-  app.kubernetes.io/name: kube-resource-report
-  app.kubernetes.io/instance: kube-resource-report
-  app.kubernetes.io/component: reporting
-  app.kubernetes.io/version: v0.16
-  app.kubernetes.io/part-of: jarvis
-  app.kubernetes.io/managed-by: kustomize
-  env: staging
-images:
-- name: hjacobs/kube-resource-report:latest
-  newName: hjacobs/kube-resource-report
-  newTag: "0.16"
-
+namespace: monitoring
+# commonLabels:
+#   app.kubernetes.io/name: kube-monitors
+#   app.kubernetes.io/instance: kube-monitor-minotor
+#   app.kubernetes.io/version: v0.31.1
+#   app.kubernetes.io/component: monitoring
+#   app.kubernetes.io/part-of: jarvis
+#   app.kubernetes.io/managed-by: kustomize
+#   env: homelab

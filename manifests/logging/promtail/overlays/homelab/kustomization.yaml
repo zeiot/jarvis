@@ -18,14 +18,14 @@ bases:
 - ../../base
 namespace: logging
 commonLabels:
-  app.kubernetes.io/name: loki
-  app.kubernetes.io/instance: loki-minotor
+  app.kubernetes.io/name: promtail
+  app.kubernetes.io/instance: promtail-minotor
   app.kubernetes.io/version: v0.3.0
   app.kubernetes.io/component: logging
   app.kubernetes.io/part-of: jarvis
   app.kubernetes.io/managed-by: kustomize
-  env: staging
+  env: homelab
 images:
-- name: grafana/loki:latest
-  newName: grafana/loki
+- name: grafana/promtail:latest
+  newName: grafana/promtail
   newTag: v0.3.0

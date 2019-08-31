@@ -16,11 +16,16 @@ kind: Kustomization
 apiVersion: kustomize.config.k8s.io/v1beta1
 bases:
 - ../../base
-# commonLabels:
-#   app.kubernetes.io/name: kube-monitors
-#   app.kubernetes.io/instance: kube-monitors-minotor
-#   app.kubernetes.io/version: v0.31.1
-#   app.kubernetes.io/component: monitoring
-#   app.kubernetes.io/part-of: jarvis
-#   app.kubernetes.io/managed-by: kustomize
-#   env: staging
+namespace: logging
+commonLabels:
+  app.kubernetes.io/name: loki
+  app.kubernetes.io/instance: loki-minotor
+  app.kubernetes.io/version: v0.3.0
+  app.kubernetes.io/component: logging
+  app.kubernetes.io/part-of: jarvis
+  app.kubernetes.io/managed-by: kustomize
+  env: homelab
+images:
+- name: grafana/loki:latest
+  newName: grafana/loki
+  newTag: v0.3.0

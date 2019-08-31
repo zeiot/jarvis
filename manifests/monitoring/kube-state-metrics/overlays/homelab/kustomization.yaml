@@ -18,25 +18,14 @@ bases:
 - ../../base
 namespace: monitoring
 # commonLabels:
-#   app.kubernetes.io/name: alertmanager-operated
-#   app.kubernetes.io/instance: alertmanager-operated
-#   app.kubernetes.io/version: v0.16.0
+#   app.kubernetes.io/name: kube-state-metrics
+#   app.kubernetes.io/instance: kube-state-metrics
+#   app.kubernetes.io/version: v1.6.0
 #   app.kubernetes.io/component: monitoring
 #   app.kubernetes.io/part-of: jarvis
 #   app.kubernetes.io/managed-by: kustomize
-#   env: staging
-secretGenerator:
-- name: alertmanager-main
-  files:
-    - alertmanager.yaml
-  type: Opaque
-generatorOptions:
-  disableNameSuffixHash: true
-  # labels:
-  #   k8s-app: alertmanager-monitor
-  #   app.kubernetes.io/name: alertmanager-operated
-  #   app.kubernetes.io/instance: alertmanager-operated
-  #   app.kubernetes.io/component: monitoring
-  #   app.kubernetes.io/part-of: jarvis
-  #   app.kubernetes.io/managed-by: kustomize
-  #   app.kubernetes.io/manufacturer: jarvis
+#   env: homelab
+images:
+- name: quay.io/coreos/kube-state-metrics:latest
+  newName: quay.io/coreos/kube-state-metrics
+  newTag: v1.7.2

@@ -24,7 +24,7 @@ namespace: monitoring
 #   app.kubernetes.io/component: monitoring
 #   app.kubernetes.io/part-of: jarvis
 #   app.kubernetes.io/managed-by: kustomize
-#   env: staging
+#   env: homelab
 images:
 - name: grafana/grafana:latest
   newName: grafana/grafana

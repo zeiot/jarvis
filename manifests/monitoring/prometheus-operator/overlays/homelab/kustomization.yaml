@@ -18,14 +18,10 @@ bases:
 - ../../base
 namespace: monitoring
 # commonLabels:
-#   app.kubernetes.io/name: kube-state-metrics
-#   app.kubernetes.io/instance: kube-state-metrics
-#   app.kubernetes.io/version: v1.6.0
+#   app.kubernetes.io/name: prometheus-operator
+#   app.kubernetes.io/instance: prometheus-operator
+#   app.kubernetes.io/version: v0.31.1
 #   app.kubernetes.io/component: monitoring
 #   app.kubernetes.io/part-of: jarvis
 #   app.kubernetes.io/managed-by: kustomize
-#   env: staging
-images:
-- name: quay.io/coreos/kube-state-metrics:latest
-  newName: quay.io/coreos/kube-state-metrics
-  newTag: v1.7.2
+#   env: homelab

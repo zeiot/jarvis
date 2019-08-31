@@ -45,7 +45,7 @@ receivers:
 
       {{ end }}
 
-      You can find more information on: https://staging.jarvis.local
+      You can find more information on: https://homelab.jarvis.local
       Have a great day !"
 
     send_resolved: true
@@ -72,7 +72,7 @@ receivers:
 
       {{ end }}
 
-      You can find more information on: https://staging.jarvis.local
+      You can find more information on: https://homelab.jarvis.local
       Have a great day !"
 
     send_resolved: true
@@ -99,7 +99,7 @@ receivers:
 
       {{ end }}
 
-      You can find more information on: https://staging.jarvis.local
+      You can find more information on: https://homelab.jarvis.local
       Have a great day !"
 
     send_resolved: true
