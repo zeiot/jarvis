@@ -1,5 +1,5 @@
-# Copyright 2016-2019 Nicolas Lamirault <nicolas.lamirault@gmail.com>
-#
+# Copyright (C) 2016-2019 Nicolas Lamirault <nicolas.lamirault@gmail.com>
+
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -41,11 +41,11 @@ spec:
           name: http
         resources:
           limits:
-            cpu: 200m
-            memory: 200Mi
-          requests:
             cpu: 100m
             memory: 100Mi
+          requests:
+            cpu: 30m
+            memory: 30Mi
         securityContext:
           allowPrivilegeEscalation: false
           readOnlyRootFilesystem: true

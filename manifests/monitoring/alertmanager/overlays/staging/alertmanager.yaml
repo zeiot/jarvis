@@ -24,73 +24,82 @@ route:
 receivers:
 - name: high_alert_manager
   slack_configs:
-  - api_url: "https://hooks.slack.com/services/foo/bar/xxx"
-    username: "Jarvis / Staging"
+  - api_url: "https://hooks.slack.com/services/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"
+    username: "Moonworkers / Exploitation / Staging"
     color: "danger"
-    channel: '#run'
-    icon_emoji: ":panda_face:"
-    title: "Jarvis - {{ .CommonLabels.alertname }}"
+    channel: '#test-alert-manager'
+    # icon_emoji: ":panda_face:"
+    title: "Moonworkers / Exploitation / Staging - {{ .CommonLabels.alertname }}"
     text: |-
-      Hello,
+      Hello Skalers,
 
       {{ range .Alerts -}}
 
       *Alert:* {{ .Annotations.summary }}
-      *Description:* {{ .Annotations.description }}
+      *Description:* {{ .Annotations.message }}
       *Details:*
       {{ range .Labels.SortedPairs }}
       • *{{ .Name }}:* `{{ .Value }}`
       {{ end }}
-      {{- if .Annotations.runbook }} :notebook: *<{{ .Annotations.runbook }}|Runbook>* {{ end }}
+      {{- if .Annotations.runbook_url }} :notebook: *<{{ .Annotations.runbook_url }}|Runbook>* {{ end }}
 
       {{ end }}
+
+      You can find more information on: https://staging.jarvis.local
+      Have a great day !"
 
     send_resolved: true
 
 - name: slack_alert_manager_medium
   slack_configs:
-  - api_url: "https://hooks.slack.com/services/foo/bar/xxx"
-    username: "Jarvis / Staging"
+  - api_url: "https://hooks.slack.com/services/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"
+    username: "Moonworkers / Exploitation / Staging"
     color: "warning"
-    channel: '#run'
-    title: "Jarvis - {{ .CommonLabels.alertname }}"
+    channel: '#test-alert-manager'
+    title: "Moonworkers / Exploitation / Staging - {{ .CommonLabels.alertname }}"
     text: |-
-      Hello,
+      Hello Skalers,
 
       {{ range .Alerts -}}
 
       *Alert:* {{ .Annotations.summary }}
-      *Description:* {{ .Annotations.description }}
+      *Description:* {{ .Annotations.message }}
       *Details:*
       {{ range .Labels.SortedPairs }}
       • *{{ .Name }}:* `{{ .Value }}`
       {{ end }}
-      {{- if .Annotations.runbook }} :notebook: *<{{ .Annotations.runbook }}|Runbook>* {{ end }}
+      {{- if .Annotations.runbook_url }} :notebook: *<{{ .Annotations.runbook_url }}|Runbook>* {{ end }}
 
       {{ end }}
+
+      You can find more information on: https://staging.jarvis.local
+      Have a great day !"
 
     send_resolved: true
 
 - name: slack_alert_manager_low
   slack_configs:
-  - api_url: "https://hooks.slack.com/services/foo/bar/xxx"
-    username: "Jarvis / Staging"
+  - api_url: "https://hooks.slack.com/services/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"
+    username: "Moonworkers / Exploitation / Staging"
     color: "#439FE0"
-    channel: '#run'
-    title: "Jarvis - {{ .CommonLabels.alertname }}"
+    channel: '#test-alert-manager'
+    title: "Moonworkers / Exploitation / Staging - {{ .CommonLabels.alertname }}"
     text: |-
-      Hello,
+      Hello Skalers,
 
       {{ range .Alerts -}}
 
       *Alert:* {{ .Annotations.summary }}
-      *Description:* {{ .Annotations.description }}
+      *Description:* {{ .Annotations.message }}
       *Details:*
       {{ range .Labels.SortedPairs }}
       • *{{ .Name }}:* `{{ .Value }}`
       {{ end }}
-      {{- if .Annotations.runbook }} :notebook: *<{{ .Annotations.runbook }}|Runbook>* {{ end }}
+      {{- if .Annotations.runbook_url }} :notebook: *<{{ .Annotations.runbook_url }}|Runbook>* {{ end }}
 
       {{ end }}
+
+      You can find more information on: https://staging.jarvis.local
+      Have a great day !"
 
     send_resolved: true

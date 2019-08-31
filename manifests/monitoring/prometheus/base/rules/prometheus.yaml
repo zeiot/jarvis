@@ -1,5 +1,5 @@
-# Copyright 2016-2019 Nicolas Lamirault <nicolas.lamirault@gmail.com>
-#
+# Copyright (C) 2016-2019 Nicolas Lamirault <nicolas.lamirault@gmail.com>
+
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -31,7 +31,7 @@ spec:
         severity: warning
       annotations:
 
-        description: Reloading Prometheus' configuration has failed for {{$labels.namespace}}/{{$labels.pod}}
+        message: Reloading Prometheus' configuration has failed for {{$labels.namespace}}/{{$labels.pod}}
 
         summary: Reloading Promehteus' configuration failed
 
@@ -41,7 +41,7 @@ spec:
       labels:
         severity: warning
       annotations:
-        description:
+        message:
 
           Prometheus' alert notification queue is running full for {{$labels.namespace}}/{{
           $labels.pod}}
@@ -56,7 +56,7 @@ spec:
       labels:
         severity: warning
       annotations:
-        description:
+        message:
 
           Errors while sending alerts from Prometheus {{$labels.namespace}}/{{
           $labels.pod}} to Alertmanager {{$labels.Alertmanager}}
@@ -71,7 +71,7 @@ spec:
       labels:
         severity: critical
       annotations:
-        description:
+        message:
 
           Errors while sending alerts from Prometheus {{$labels.namespace}}/{{
           $labels.pod}} to Alertmanager {{$labels.Alertmanager}}
@@ -84,7 +84,7 @@ spec:
       labels:
         severity: warning
       annotations:
-        description:
+        message:
 
           Prometheus {{ $labels.namespace }}/{{ $labels.pod}} is not connected
           to any Alertmanagers
@@ -97,7 +97,7 @@ spec:
       labels:
         severity: warning
       annotations:
-        description:
+        message:
 
           "{{$labels.job}} at {{$labels.instance}} had {{$value | humanize}}
           reload failures over the last four hours."
@@ -110,7 +110,7 @@ spec:
       labels:
         severity: warning
       annotations:
-        description:
+        message:
 
           "{{$labels.job}} at {{$labels.instance}} had {{$value | humanize}}
           compaction failures over the last four hours."
@@ -123,7 +123,7 @@ spec:
       labels:
         severity: warning
       annotations:
-        description:
+        message:
 
           "{{$labels.job}} at {{$labels.instance}} has a corrupted write-ahead
           log (WAL)."
@@ -137,7 +137,7 @@ spec:
         severity: warning
       annotations:
 
-        description: "Prometheus {{ $labels.namespace }}/{{ $labels.pod}} isn't ingesting samples."
+        message: "Prometheus {{ $labels.namespace }}/{{ $labels.pod}} isn't ingesting samples."
 
         summary: "Prometheus isn't ingesting samples"
 
@@ -148,6 +148,6 @@ spec:
         severity: warning
       annotations:
 
-        description: "{{$labels.namespace}}/{{$labels.pod}} has many samples rejected due to duplicate timestamps but different values"
+        message: "{{$labels.namespace}}/{{$labels.pod}} has many samples rejected due to duplicate timestamps but different values"
 
         summary: Prometheus has many samples rejected

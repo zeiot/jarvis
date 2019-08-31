@@ -48,3 +48,7 @@ datasources:
   version: 1
   # <bool> allow users to edit datasources from the UI.
   editable: true
+- name: Loki
+  type: loki
+  access: proxy
+  url: http://loki.logging.svc:3100

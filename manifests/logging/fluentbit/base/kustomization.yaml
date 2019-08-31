@@ -11,15 +11,11 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+---
 kind: Kustomization
 apiVersion: kustomize.config.k8s.io/v1beta1
 commonLabels:
-  app.kubernetes.io/name: fluentbit
-  app.kubernetes.io/instance: fluentbit
-  app.kubernetes.io/version: "v1"
-  app.kubernetes.io/component: logging
-  app.kubernetes.io/part-of: jarvis
-  app.kubernetes.io/managed-by: kustomize
+  app.kubernetes.io/manufacturer: jarvis
 namespace: logging
 resources:
 - rbac.yaml
