@@ -14,17 +14,20 @@
 ---
 kind: Kustomization
 apiVersion: kustomize.config.k8s.io/v1beta1
+bases:
+- "../../base"
 commonLabels:
-  app.kubernetes.io/manufacturer: jarvis
-namespace: certificates
-resources:
-- 0crd-certificate.yaml
-- 0crd-clusterissuer.yaml
-- 0crd-issuer.yaml
-- serviceAccount.yaml
-- clusterRole.yaml
-- clusterRoleBinding.yaml
-- clusterIssuer.yaml
-- deployment.yaml
-- service.yaml
-- serviceMonitor.yaml
+  app.kubernetes.io/name: certmanager
+  app.kubernetes.io/instance: certmanager
+  app.kubernetes.io/component: certificates
+  app.kubernetes.io/version: v0.9.1
+  app.kubernetes.io/part-of: jarvis
+  app.kubernetes.io/managed-by: kustomize
+  env: staging
+images:
+- name: quay.io/jetstack/cert-manager-controller:latest
+  newName: quay.io/jetstack/cert-manager-controller
+  newTag: v0.9.1
+- name: quay.io/jetstack/cert-manager-cainjector:latest
+  newName: quay.io/jetstack/cert-manager-controller
+  newTag: v0.9.1

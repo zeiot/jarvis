@@ -12,19 +12,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 ---
-kind: Kustomization
-apiVersion: kustomize.config.k8s.io/v1beta1
-commonLabels:
-  app.kubernetes.io/manufacturer: jarvis
-namespace: certificates
-resources:
-- 0crd-certificate.yaml
-- 0crd-clusterissuer.yaml
-- 0crd-issuer.yaml
-- serviceAccount.yaml
-- clusterRole.yaml
-- clusterRoleBinding.yaml
-- clusterIssuer.yaml
-- deployment.yaml
-- service.yaml
-- serviceMonitor.yaml
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: cert-manager
+  labels:
+    k8s-app: cert-manager
+spec:
+  jobLabel: cert-manager
+  selector:
+    matchLabels:
+      k8s-app: cert-manager
+  endpoints:
+  - targetPort: http
+    path: /metrics
+    interval: 60s
+    scrapeTimeout: 30s
