@@ -15,7 +15,7 @@
 kind: Kustomization
 apiVersion: kustomize.config.k8s.io/v1beta1
 commonLabels:
-  app.kubernetes.io/manufacturer: jarvis team
+  app.kubernetes.io/manufacturer: jarvis
 namespace: reporting
 resources:
 - service-account.yaml

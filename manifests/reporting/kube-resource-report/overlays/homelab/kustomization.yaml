@@ -14,11 +14,18 @@
 ---
 kind: Kustomization
 apiVersion: kustomize.config.k8s.io/v1beta1
+bases:
+- ../../base
 commonLabels:
-  app.kubernetes.io/manufacturer: jarvis
-namespace: reporting
-resources:
-- configmap.yaml
-- deployment.yaml
-- rbac.yaml
-- service.yaml
+  app.kubernetes.io/name: kube-resource-report
+  app.kubernetes.io/instance: kube-resource-report
+  app.kubernetes.io/component: reporting
+  app.kubernetes.io/version: v0.16
+  app.kubernetes.io/part-of: jarvis
+  app.kubernetes.io/managed-by: kustomize
+  env: homelab
+images:
+- name: hjacobs/kube-resource-report:latest
+  newName: zeiot/kube-resource-report
+  newTag: v0.16.0-arm64.latest
+
