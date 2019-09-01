@@ -25,13 +25,13 @@ receivers:
 - name: high_alert_manager
   slack_configs:
   - api_url: "https://hooks.slack.com/services/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"
-    username: "Moonworkers / Exploitation / Staging"
+    username: "Jarvis / Homelab / Staging"
     color: "danger"
-    channel: '#test-alert-manager'
+    channel: '#alerts'
     # icon_emoji: ":panda_face:"
-    title: "Moonworkers / Exploitation / Staging - {{ .CommonLabels.alertname }}"
+    title: "Jarvis / Homelab / Staging - {{ .CommonLabels.alertname }}"
     text: |-
-      Hello Skalers,
+      Hello,
 
       {{ range .Alerts -}}
 
@@ -53,12 +53,12 @@ receivers:
 - name: slack_alert_manager_medium
   slack_configs:
   - api_url: "https://hooks.slack.com/services/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"
-    username: "Moonworkers / Exploitation / Staging"
+    username: "Jarvis / Homelab / Staging"
     color: "warning"
-    channel: '#test-alert-manager'
-    title: "Moonworkers / Exploitation / Staging - {{ .CommonLabels.alertname }}"
+    channel: '#alerts'
+    title: "Jarvis / Homelab / Staging - {{ .CommonLabels.alertname }}"
     text: |-
-      Hello Skalers,
+      Hello,
 
       {{ range .Alerts -}}
 
@@ -80,12 +80,12 @@ receivers:
 - name: slack_alert_manager_low
   slack_configs:
   - api_url: "https://hooks.slack.com/services/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"
-    username: "Moonworkers / Exploitation / Staging"
+    username: "Jarvis / Homelab / Staging"
     color: "#439FE0"
-    channel: '#test-alert-manager'
-    title: "Moonworkers / Exploitation / Staging - {{ .CommonLabels.alertname }}"
+    channel: '#alerts'
+    title: "Jarvis / Homelab / Staging - {{ .CommonLabels.alertname }}"
     text: |-
-      Hello Skalers,
+      Hello,
 
       {{ range .Alerts -}}
 

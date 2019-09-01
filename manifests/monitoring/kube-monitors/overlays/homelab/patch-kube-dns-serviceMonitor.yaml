@@ -12,18 +12,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 ---
-kind: Kustomization
-apiVersion: kustomize.config.k8s.io/v1beta1
-bases:
-- ../../base
-namespace: monitoring
-# commonLabels:
-#   app.kubernetes.io/name: kube-monitors
-#   app.kubernetes.io/instance: kube-monitor-minotor
-#   app.kubernetes.io/version: v0.31.1
-#   app.kubernetes.io/component: monitoring
-#   app.kubernetes.io/part-of: jarvis
-#   app.kubernetes.io/managed-by: kustomize
-#   env: homelab
-patches:
-- patch-kube-dns-serviceMonitor.yaml
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: kube-dns
+  labels:
+    k8s-app: kube-dns
+spec:
+  endpoints:
+  - interval: 15s
+    port: metrics
+  jobLabel: k8s-app
+  namespaceSelector:
+    matchNames:
+    - kube-system
+  selector:
+    matchLabels:
+      k8s-app: kube-dns-prometheus-discovery
