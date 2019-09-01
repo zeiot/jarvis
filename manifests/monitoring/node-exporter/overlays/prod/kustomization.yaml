@@ -17,14 +17,14 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 bases:
 - ../../base
 namespace: monitoring
-commonLabels:
-  app.kubernetes.io/name: node-exporter
-  app.kubernetes.io/instance: node-exporter
-  app.kubernetes.io/version: v0.18.1
-  app.kubernetes.io/component: monitoring
-  app.kubernetes.io/part-of: jarvis
-  app.kubernetes.io/managed-by: kustomize
-  env: prod
+# commonLabels:
+#   app.kubernetes.io/name: node-exporter
+#   app.kubernetes.io/instance: node-exporter
+#   app.kubernetes.io/version: v0.18.1
+#   app.kubernetes.io/component: monitoring
+#   app.kubernetes.io/part-of: jarvis
+#   app.kubernetes.io/managed-by: kustomize
+#   env: prod
 images:
 - name: quay.io/prometheus/node-exporter:latest
   newName: quay.io/prometheus/node-exporter
