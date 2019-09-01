@@ -12,22 +12,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 ---
-kind: Kustomization
-apiVersion: kustomize.config.k8s.io/v1beta1
-bases:
-- ../../base
-namespace: monitoring
-commonLabels:
-  app.kubernetes.io/name: prometheus-operator
-  app.kubernetes.io/instance: prometheus-operator
-  app.kubernetes.io/version: v0.31.1
-  app.kubernetes.io/component: monitoring
-  app.kubernetes.io/part-of: jarvis
-  app.kubernetes.io/managed-by: kustomize
-  env: homelab
-images:
-- name: quay.io/coreos/prometheus-operator:latest
-  newName: carlosedp/prometheus-operator
-  newTag: v0.31.1
-patches:
-- patch-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    k8s-app: prometheus-operator
+  name: prometheus-operator
+spec:
+  template:
+    spec:
+      containers:
+      - name: prometheus-operator
+        args:
+        - --kubelet-service=kube-system/kubelet
+        - --logtostderr=true
+        - --config-reloader-image=carlosedp/configmap-reload:v0.2.2
+        - --prometheus-config-reloader=carlosedp/prometheus-config-reloader:v0.31.1

@@ -26,3 +26,10 @@ namespace: monitoring
 #   app.kubernetes.io/part-of: jarvis
 #   app.kubernetes.io/managed-by: kustomize
 #   env: homelab
+patchesJson6902:
+- target:
+    group: monitoring.coreos.com
+    version: v1
+    kind: Prometheus
+    name: k8s
+  path: patch-prometheus.yaml
