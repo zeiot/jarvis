@@ -25,3 +25,7 @@ commonLabels:
   app.kubernetes.io/part-of: jarvis
   app.kubernetes.io/managed-by: kustomize
   env: prod
+images:
+- name: quay.io/coreos/prometheus-operator:latest
+  newName: quay.io/coreos/prometheus-operator
+  newTag: v0.31.1
