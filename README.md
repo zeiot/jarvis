@@ -8,6 +8,8 @@
 
 Kubernetes infrastructure
 
+![architecture](docs/assets/images/jarvis.png)
+
 ## Kubernetes cluster
 
 &nbsp;
