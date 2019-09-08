@@ -12,7 +12,7 @@ namespace: monitoring
 #   app.kubernetes.io/component: monitoring
 #   app.kubernetes.io/part-of: jarvis
 #   app.kubernetes.io/managed-by: kustomize
-#   env: prod
+#   env: staging
 secretGenerator:
 - name: alertmanager-main
   files:

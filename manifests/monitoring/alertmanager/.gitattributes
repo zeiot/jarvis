@@ -1,0 +1,3 @@
+overlays/homelab/alertmanager.yaml filter=git-crypt diff=git-crypt
+overlays/staging/alertmanager.yaml filter=git-crypt diff=git-crypt
+overlays/prod/alertmanager.yaml filter=git-crypt diff=git-crypt
