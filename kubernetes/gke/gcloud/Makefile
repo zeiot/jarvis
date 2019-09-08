@@ -15,21 +15,30 @@
 APP = Jarvis
 
 # CURRENT_PROJECT=$(gcloud info --format='value(config.project)')
-PROJECT_NAME=jarvis-prod
-PROJECT_ID=$(PROJECT_NAME)-1
-CLUSTER_NAME=jarvis-prod-gcloud
-GKE_SA=$(CLUSTER_NAME)-gke-sa
+CUSTOMER=jarvis
+PROJECT_ID=$(CUSTOMER)-$(ENV)
+CLUSTER_NAME=$(PROJECT_ID)-gcloud
+NETWORK=$(PROJECT_ID)-gke-net
+SUBNETWORK=$(PROJECT_ID)-gke-subnet
+GKE_SA=gke-gcloud-sa
 GKE_SA_EMAIL=$(GKE_SA)@$(PROJECT_ID).iam.gserviceaccount.com
-K8S_VERSION=1.12.8-gke.10
+
+K8S_VERSION=1.13.7-gke.19
+
 NUM_NODES=3
 MIN_NODES=2
 MAX_NODES=4
-REGION=europe-west1
-ZONE=europe-west1-c
-MACHINE_TYPE=n1-standard-1
+REGION=europe-west2
+DEFAULT_ZONE=europe-west2-a
+ZONE_LOCATIONS=europe-west2-a,europe-west2-b,europe-west2-c
+MACHINE_TYPE_prod=n1-standard-2
+MACHINE_TYPE_staging=n1-standard-2
+CIDR_prod=10.40.144.0/20
+CIDR_preprod=10.40.160.0/20
 # MACHINE_TYPE=f1-micro
 
-KUBE_CONTEXT=gke_jarvis-prod-1_europe-west1-c_jarvis-prod-gcloud
+KUBE_CONTEXT=gke_$(PROJECT_ID)-1_europe-west1-c_$(PROJECT_ID)-gcloud
+GCP_CURRENT_PROJECT=$(shell gcloud info --format='value(config.project)')
 
 SHELL = /bin/bash
 
@@ -83,6 +92,22 @@ gke-gcloud-check: ## Check requirements
 gke-gcloud-kube-context: ## Display Kubernetes context
 	@echo $(KUBE_CONTEXT)
 
+.SILENT:
+.PHONY: gke-gcloud-current-project
+gke-gcloud-current-project: ## Display current GCP project
+        @gcloud info --format='value(config.project)'
+
+.PHONY: gke-gcloud-check-project
+gke-gcloud-check-project: guard-ENV
+        @if [[ "${PROJECT_ID}" != "${GCP_CURRENT_PROJECT}" ]] ; then \
+                echo -e "$(ERROR_COLOR)[KO]$(NO_COLOR) GCP project: ${PROJECT_ID} vs ${GCP_CURRENT_PROJECT}"; \
+                exit 1; \
+        fi
+
+.PHONY: gke-gcloud-project-switch
+gke-gcloud-project-switch: guard-ENV ## Switch GCP project
+        gcloud config set project ${PROJECT_ID}
+
 .PHONY: gke-gcloud-project-billing
 gke-gcloud-project-billing: ## Display billing account
 	@gcloud beta billing accounts list --quiet |grep -v "ACCOUNT_ID"|awk -F" " '{ print $1 }'
@@ -114,19 +139,28 @@ gke-gcloud-project-delete: ## delete the GCloud project
 	@gcloud projects delete $(PROJECT_ID)
 
 .PHONY: gke-gcloud-kubernetes-create
-gke-gcloud-kubernetes-create: ## Create the Kubernetes cluster
+gke-gcloud-kubernetes-create: guard-ENV ## Create the Kubernetes cluster
 	@echo -e "$(OK_COLOR)[$(APP)] Create Kubernetes cluster$(NO_COLOR)"
-	@gcloud container clusters create \
-		$(CLUSTER_NAME) --zone=${ZONE} --machine-type $(MACHINE_TYPE) \
-		--preemptible --enable-autoscaling \
-		--cluster-version=$(K8S_VERSION) \
-		--image-type="COS" \
-		--service-account $(GKE_SA_EMAIL) \
-		--scopes=service-control,service-management,compute-rw,storage-ro,cloud-platform,logging-write,monitoring-write,pubsub,datastore \
-		--num-nodes $(NUM_NODES) --min-nodes=$(MIN_NODES) --max-nodes=$(MAX_NODES)
-	@kubectl create clusterrolebinding cluster-admin-binding \
-		--clusterrole=cluster-admin \
-		--user=$(gcloud config get-value core/account)
+	@echo -e "Create network project: $(OK_COLOR)$(NETWORK)$(NO_COLOR)"
+	gcloud compute networks create $(NETWORK) --subnet-mode custom
+	@echo -e "Create subnet project: $(OK_COLOR)$(SUBNETWORK)$(NO_COLOR)"
+	gcloud compute networks subnets create $(SUBNETWORK) \
+			--network $(NETWORK) \
+			--region $(REGION) \
+			--range $(CIDR_${ENV})
+	gcloud container clusters create $(CLUSTER_NAME) \
+			--zone=$(DEFAULT_ZONE) \
+			--machine-type $(MACHINE_TYPE) \
+			--network $(NETWORK) --subnetwork $(SUBNETWORK) \
+			--preemptible --enable-autoscaling \
+			--num-nodes $(NUM_NODES) --min-nodes=$(MIN_NODES) --max-nodes=$(MAX_NODES) \
+			--cluster-version=$(K8S_VERSION) \
+			--image-type="COS" \
+			--service-account $(GKE_SA_EMAIL) \
+			--scopes=service-control,service-management,compute-rw,storage-ro,cloud-platform,logging-write,monitoring-write,pubsub,datastore
+	kubectl create clusterrolebinding cluster-admin-binding \
+			--clusterrole=cluster-admin \
+			--user=$(gcloud config get-value core/account)
 
 .PHONY: gke-gcloud-kubernetes-delete
 gke-gcloud-kubernetes-delete: ## delete the Kubernetes cluster

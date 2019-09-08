@@ -9,8 +9,6 @@ $ gcloud auth login
 Then create your cluster :
 
 ```bash
-
-
 $ make gke-gcloud-kubernetes-create SETUP=gcloud
 
 $ kubectl config current-context
