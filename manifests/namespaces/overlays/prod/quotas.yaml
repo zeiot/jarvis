@@ -13,12 +13,23 @@
 # limitations under the License.
 ---
 apiVersion: v1
-kind: Namespace
+kind: ResourceQuota
 metadata:
-  name: logging
-  labels:
-    app.kubernetes.io/name: logging
-    app.kubernetes.io/instance: logging
-    app.kubernetes.io/version: v1
-    app.kubernetes.io/component: logging
-
+  name: compute-resources
+spec:
+  hard:
+    pods: 4
+    requests.cpu: 500m
+    requests.memory: 100Mib
+    limits.cpu: 1000m
+    limits.memory: 750Mib
+---
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: storage-resources
+spec:
+  hard:
+    persistentvolumeclaims: 200
+    requests.storage: 500Gi
+    zonal-pd-ssd.storageclass.storage.k8s.io/requests.storage: 500Gi

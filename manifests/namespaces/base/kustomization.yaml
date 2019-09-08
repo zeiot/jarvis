@@ -11,20 +11,20 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+---
 kind: Kustomization
 apiVersion: kustomize.config.k8s.io/v1beta1
 commonLabels:
   app.kubernetes.io/part-of: jarvis
   app.kubernetes.io/managed-by: kustomize
+  app.kubernetes.io/manufacturer: jarvis
 resources:
+- certificates.yaml
+- customer.yaml
+- identity.yaml
 - ingress.yaml
-- kubernetes-dashboard.yaml
 - logging.yaml
-- metrics.yaml
 - monitoring.yaml
-- multimedia.yaml
 - reporting.yaml
 - security.yaml
-- storage.yaml
-- tools.yaml
-- network-default-deny-all.yaml
+# - network-default-deny-all.yaml
