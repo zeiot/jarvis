@@ -16,7 +16,7 @@ kind: Kustomization
 apiVersion: kustomize.config.k8s.io/v1beta1
 namespace: kube-system
 # commonLabels:
-#   app.kubernetes.io/manufacturer: skale-5
+#   app.kubernetes.io/manufacturer: jarvis
 resources:
 - kube-etcd-metrics-service.yaml
 - kube-controller-manager-service.yaml
