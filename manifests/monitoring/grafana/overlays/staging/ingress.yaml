@@ -1,0 +1,24 @@
+# Copyright (C) 2019 Skale-5 <ops@jarvis.com>
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: grafana
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    kubernetes.io/tls-acme: "true"
+    ingress.kubernetes.io/class: nginx
+    ingress.kubernetes.io/ssl-redirect: "true"
+    ingress.kubernetes.io/limit-rps: "20"
+    nginx.ingress.kubernetes.io/rewrite-target: "/"
+    # nginx.ingress.kubernetes.io/rewrite-target: /$1  # >= 0.22
+spec:
+  rules:
+  - host: jarvis-staging.lamirault.xyz
+    http:
+      paths:
+      - backend:
+          serviceName: grafana
+          servicePort: 3000
+        path: /grafana
+        # path: /grafana/?(.*) # >= 0.22
