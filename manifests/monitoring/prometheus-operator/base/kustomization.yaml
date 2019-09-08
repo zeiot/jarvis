@@ -1,4 +1,4 @@
-# Copyright (C) 2016-2019 Nicolas Lamirault <nicolas.lamirault@gmail.com>
+# Copyright (C) 2016, 2019 Nicolas Lamirault <nicolas.lamirault@gmail.com>
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,10 +18,10 @@ namespace: monitoring
 # commonLabels:
 #   app.kubernetes.io/manufacturer: jarvis
 resources:
-  - 0crd-rule.yaml
-  - 0crd-prometheus.yaml
-  - 0crd-alertmanager.yaml
-  - 0crd-servicemonitor.yaml
+  # - 0crd-rule.yaml
+  # - 0crd-prometheus.yaml
+  # - 0crd-alertmanager.yaml
+  # - 0crd-servicemonitor.yaml
   - cluster-role-binding.yaml
   - cluster-role.yaml
   - service-account.yaml

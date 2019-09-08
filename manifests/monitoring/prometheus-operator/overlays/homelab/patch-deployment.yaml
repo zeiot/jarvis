@@ -23,6 +23,7 @@ spec:
     spec:
       containers:
       - name: prometheus-operator
+        image: carlosedp/prometheus-operator:v0.31.1
         args:
         - --kubelet-service=kube-system/kubelet
         - --logtostderr=true

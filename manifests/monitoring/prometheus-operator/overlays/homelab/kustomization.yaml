@@ -25,9 +25,5 @@ commonLabels:
   app.kubernetes.io/part-of: jarvis
   app.kubernetes.io/managed-by: kustomize
   env: homelab
-images:
-- name: quay.io/coreos/prometheus-operator:latest
-  newName: carlosedp/prometheus-operator
-  newTag: v0.31.1
 patches:
 - patch-deployment.yaml
