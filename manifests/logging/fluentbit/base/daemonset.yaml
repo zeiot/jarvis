@@ -41,14 +41,15 @@ spec:
       - name: fluent-bit
         image: fluent/fluent-bit:latest
         ports:
-        - containerPort: 2020
+        - name: metrics
+          containerPort: 2020
         volumeMounts:
         - name: varlog
           mountPath: /var/log
         - name: varlibdockercontainers
           mountPath: /var/lib/docker/containers
           readOnly: true
-        - name: fluentbit
+        - name: fluentbit-config
           mountPath: /fluent-bit/etc/
         resources:
           limits:

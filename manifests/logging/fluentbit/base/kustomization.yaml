@@ -18,13 +18,17 @@ commonLabels:
   app.kubernetes.io/manufacturer: jarvis
 namespace: logging
 resources:
-- rbac.yaml
+- clusterRole.yaml
+- clusterRoleBinding.yaml
 - serviceaccount.yaml
 - daemonset.yaml
+- service.yaml
+- serviceMonitor.yaml
 configMapGenerator:
 - name: fluentbit
   files:
-  - fluent-bit.conf
-  - input-kubernetes.conf
-  - filter-kubernetes.conf
-  - output-papertrail.conf
+  - config/fluent-bit.conf
+  - config/parser.conf
+  - config/input-kubernetes.conf
+  - config/filter-kubernetes.conf
+  - config/output-papertrail.conf
