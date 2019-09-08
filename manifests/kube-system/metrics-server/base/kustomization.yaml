@@ -11,24 +11,18 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+---
 kind: Kustomization
 apiVersion: kustomize.config.k8s.io/v1beta1
-commonLabels:
-  app.kubernetes.io/name: metrics-server
-  app.kubernetes.io/instance: metrics-server
-  app.kubernetes.io/version: "v1"
-  app.kubernetes.io/component: kube-metrics
-  app.kubernetes.io/part-of: jarvis
-  app.kubernetes.io/managed-by: kustomize
 namespace: kube-system
+commonLabels:
+  app.kubernetes.io/manufacturer: jarvis
 resources:
-- service-account.yaml
-- aggregated-metrics-reader.yaml
-- auth-delegator.yaml
-- auth-reader.yaml
-- pdb.yaml
-- metrics-apiservice.yaml
-- metrics-server-deployment.yaml
-- metrics-server-service.yaml
-- resource-reader.yaml
-- network-policy.yaml
+- serviceAccount.yaml
+- clusterRole.yaml
+- clusterRoleBinding.yaml
+- roleBinding.yaml
+- apiService.yaml
+- deployment.yaml
+- service.yaml
+- serviceMonitor.yaml
