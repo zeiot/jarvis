@@ -11,11 +11,19 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+---
 kind: Kustomization
 apiVersion: kustomize.config.k8s.io/v1beta1
-bases:
-- "../../base"
+# bases:
+# - "../../base"
 commonLabels:
+  app.kubernetes.io/name: nfs-test
+  app.kubernetes.io/instance: nfs-test
+  app.kubernetes.io/version: "v1"
+  app.kubernetes.io/component: storage
+  app.kubernetes.io/part-of: jarvis
+  app.kubernetes.io/managed-by: kustomize
   env: homelab
 resources:
 - nfs-pvc-test.yaml
+- nfs-pod-test.yaml
