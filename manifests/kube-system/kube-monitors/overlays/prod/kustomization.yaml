@@ -1,4 +1,4 @@
-# Copyright (C) 2016-2019 Nicolas Lamirault <nicolas.lamirault@gmail.com>
+# Copyright (C) 2016, 2019 Nicolas Lamirault <nicolas.lamirault@gmail.com>
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -21,6 +21,6 @@ bases:
 #   app.kubernetes.io/instance: kube-monitors-minotor
 #   app.kubernetes.io/version: v0.31.1
 #   app.kubernetes.io/component: monitoring
-#   app.kubernetes.io/part-of: jarvis
+#   app.kubernetes.io/part-of: moonworkers-exploitation
 #   app.kubernetes.io/managed-by: kustomize
 #   env: prod

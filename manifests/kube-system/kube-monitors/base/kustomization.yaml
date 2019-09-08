@@ -1,4 +1,4 @@
-# Copyright (C) 2016-2019 Nicolas Lamirault <nicolas.lamirault@gmail.com>
+# Copyright (C) 2016, 2019 Nicolas Lamirault <nicolas.lamirault@gmail.com>
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -11,13 +11,12 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 ---
 kind: Kustomization
 apiVersion: kustomize.config.k8s.io/v1beta1
 namespace: kube-system
 # commonLabels:
-#   app.kubernetes.io/manufacturer: jarvis
+#   app.kubernetes.io/manufacturer: skale-5
 resources:
 - kube-etcd-metrics-service.yaml
 - kube-controller-manager-service.yaml
