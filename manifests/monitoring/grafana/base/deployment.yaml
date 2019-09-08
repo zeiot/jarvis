@@ -122,11 +122,14 @@ spec:
         - mountPath: /grafana-dashboard-definitions/0/rsrc-use
           name: grafana-dashboard-cluster-rsrc-use
           readOnly: false
-        - mountPath: /grafana-dashboard-definitions/0/alertmanager-dashboard
-          name: alertmanager-dashboard
+        - mountPath: /grafana-dashboard-definitions/0/grafana-dashboard-alertmanager
+          name: grafana-dashboard-alertmanager
           readOnly: false
-        - mountPath: /grafana-dashboard-definitions/0/loki-dashboard
-          name: loki-dashboard
+        - mountPath: /grafana-dashboard-definitions/0/grafana-dashboard-loki
+          name: grafana-dashboard-loki
+          readOnly: false
+        - mountPath: /grafana-dashboard-definitions/0/grafana-dashboard-nginx
+          name: grafana-dashboard-nginx
           readOnly: false
       # nodeSelector:
       #   beta.kubernetes.io/os: linux
@@ -210,8 +213,11 @@ spec:
           name: grafana-dashboard-cluster-rsrc-use
         name: grafana-dashboard-cluster-rsrc-use
       - configMap:
-          name: alertmanager-dashboard
-        name: alertmanager-dashboard
+          name: grafana-dashboard-alertmanager
+        name: grafana-dashboard-alertmanager
       - configMap:
-          name: loki-dashboard
-        name: loki-dashboard
+          name: grafana-dashboard-loki
+        name: grafana-dashboard-loki
+      - configMap:
+          name: grafana-dashboard-nginx
+        name: grafana-dashboard-nginx
