@@ -47,4 +47,19 @@ Create the cluser :
 
 ```bash
 $ make local-k3d-create SETUP=k3d
+[Jarvis] Local setup using k3s
+[Jarvis] Create the cluster
+
+[...]
+```
+
+Then on the master check kubernetes nodes :
+
+```bash
+$ sudo k3s kubectl get node
+NAME            STATUS   ROLES    AGE   VERSION
+jarvis-master   Ready    master   38m   v1.14.5-k3s.1
+jarvis-node1    Ready    worker   64s   v1.14.5-k3s.1
+jarvis-node2    Ready    worker   58s   v1.14.5-k3s.1
+jarvis-node3    Ready    worker   60s   v1.14.5-k3s.1
 ```
