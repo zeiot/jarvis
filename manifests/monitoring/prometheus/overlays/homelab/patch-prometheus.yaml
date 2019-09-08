@@ -15,3 +15,18 @@
 - op: replace
   path: /spec/version
   value: v2.12.0
+- op: replace
+  path: /spec/resources/requests/cpu
+  value: 200m
+- op: replace
+  path: /spec/resources/limits/cpu
+  value: 400m
+- op: replace
+  path: /spec/resources/requests/memory
+  value: 300Mi
+- op: replace
+  path: /spec/resources/limits/memory
+  value: 500Mi
+- op: replace
+  path: /spec/storage/volumeClaimTemplate/spec/storageClassName
+  value: jarvis-nfs-client

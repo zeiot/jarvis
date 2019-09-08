@@ -1,4 +1,4 @@
-# Copyright (C) 2016-2019 Nicolas Lamirault <nicolas.lamirault@gmail.com>
+# Copyright (C) 2016, 2019 Nicolas Lamirault <nicolas.lamirault@gmail.com>
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -25,15 +25,15 @@ spec:
       namespace: monitoring
       port: web
   baseImage: quay.io/prometheus/prometheus
-  version: latest
+  version: v2.12.0
   replicas: 1
   logLevel: info
   resources:
     requests:
-      cpu: 100m
+      cpu: 50m
       memory: 300Mi
     limits:
-      cpu: 200m
+      cpu: 100m
       memory: 400Mi
   retention: 30d
   ruleSelector:
@@ -55,9 +55,8 @@ spec:
   storage:
     volumeClaimTemplate:
       spec:
-        storageClassName: jarvis-nfs-client
         accessModes:
         - ReadWriteMany
         resources:
           requests:
-            storage: 5Gi
+            storage: 50Gi
