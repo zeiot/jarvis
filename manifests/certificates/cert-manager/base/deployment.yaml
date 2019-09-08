@@ -1,4 +1,4 @@
-# Copyright (C) 2016-2019 Nicolas Lamirault <nicolas.lamirault@gmail.com>
+# Copyright (C) 2016, 2019 Nicolas Lamirault <nicolas.lamirault@gmail.com>
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: cert-manager-cainjector
-  namespace: "cert-manager"
   labels:
     k8s-app: cert-manager
     component: cert-manager-cainjector
@@ -47,7 +46,7 @@ spec:
                 fieldPath: metadata.namespace
           resources:
             requests:
-              cpu: 10m
+              cpu: 50m
               memory: 32Mi
             limits:
               cpu: 100m
@@ -62,6 +61,7 @@ metadata:
   name: cert-manager
   labels:
     k8s-app: cert-manager
+    component: cert-manager-controller
   annotations:
     prometheus.io/path: "/metrics"
     prometheus.io/scrape: 'true'
@@ -71,10 +71,12 @@ spec:
   selector:
     matchLabels:
       k8s-app: cert-manager
+      component: cert-manager-controller
   template:
     metadata:
       labels:
         k8s-app: cert-manager
+        component: cert-manager-controller
     spec:
       serviceAccountName: cert-manager
       containers:
@@ -95,7 +97,7 @@ spec:
               fieldPath: metadata.namespace
         resources:
           requests:
-            cpu: 10m
+            cpu: 50m
             memory: 32Mi
           limits:
             cpu: 100m
