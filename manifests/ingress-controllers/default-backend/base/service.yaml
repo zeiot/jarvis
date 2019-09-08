@@ -1,4 +1,4 @@
-# Copyright (C) 2016-2019 Nicolas Lamirault <nicolas.lamirault@gmail.com>
+# Copyright (C) 2016, 2019 Nicolas Lamirault <nicolas.lamirault@gmail.com>
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -22,6 +22,5 @@ spec:
   selector:
     k8s-app: default-http-backend
   ports:
-  - name: http
-    port: 80
+  - port: 80
     targetPort: http
