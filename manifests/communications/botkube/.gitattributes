@@ -1,0 +1,3 @@
+overlays/homelab/config/config.yaml filter=git-crypt diff=git-crypt
+overlays/staging/config/config.yaml filter=git-crypt diff=git-crypt
+overlays/prod/config/config.yaml filter=git-crypt diff=git-crypt
