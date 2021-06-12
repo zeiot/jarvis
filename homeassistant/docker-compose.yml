@@ -3,7 +3,7 @@ version: '2'
 services:
 
   homeassistant:
-    image: homeassistant/raspberrypi3-homeassistant:0.118.5
+    image: homeassistant/raspberrypi3-homeassistant:2021.6.4
     container_name: homeassistant
     ports:
       - "8123:8123"
